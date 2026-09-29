@@ -1,0 +1,116 @@
+{
+  "project": "jumpmath-numerix",
+  "captureDate": "2026-09-28",
+  "workspacePath": "/workspace/artifacts/Zyrxmath-main",
+  "sourceAuthority": {
+    "gitCheckout": false,
+    "branch": null,
+    "head": null,
+    "statement": "THIS WORKSPACE IS NOT CURRENTLY A GIT CHECKOUT. NO AUTHORITATIVE COMMIT HASH EXISTS FOR THIS STATE.",
+    "manifest": "STATE_CAPTURE_MANIFEST.sha256"
+  },
+  "buildIdentity": {
+    "vite": "6.4.3",
+    "react": "19.3.0",
+    "reactDom": "19.3.0",
+    "typescript": "5.8.3",
+    "tsx": "4.23.15",
+    "esbuildVite": "0.25.12",
+    "esbuildTsx": "0.28.2",
+    "node": "v22.23.3",
+    "npm": "10.9.9",
+    "modulesReportedByVite": 60,
+    "js": {
+      "file": "index-w1UmiH7H.js",
+      "bytes": 342151,
+      "sha256": "b3eb41d72e6ccbb6939f9714e8594220028945b806e7f850357fa33654801d31"
+    },
+    "css": {
+      "file": "index-DSooJG3U.css",
+      "bytes": 8739,
+      "sha256": "c2fa2fd1051bc097604b2dc27fe3b7e60b06d3b26e1182e1a44e832307f07dd8"
+    }
+  },
+  "toolchain": {
+    "test": "node ./scripts/run-tests.mjs",
+    "testPlasma": "node ./scripts/run-tests.mjs --only=architecture",
+    "build": "node ./scripts/run-vite.mjs build",
+    "doNotUse": "npx vite",
+    "parentVite": "8.3.1",
+    "lockfile": null,
+    "esbuildBinMode": "644"
+  },
+  "campaign": {
+    "levels": 30,
+    "realms": 6,
+    "perRealm": 5,
+    "authority": "src/engine/LevelDatabase.ts"
+  },
+  "realms": ["lattice", "orbital", "field", "signal", "plasma", "quantum"],
+  "playerAccepted": [
+    "plasma physical motion is wave.y -= baseSpeed * dt during active simulation",
+    "correct and wrong landings do not teleport the wave",
+    "spawnDistanceBehind 900, baseSpeed 28, proximityCollisionDist 26, warningDistance 520"
+  ],
+  "testAccepted": [
+    "npm test exit 0 on the capture run",
+    "MB9 200/200",
+    "contracts A through AG including the plasma group AA AB AH AL AM AN AO AP AQ AR AS AC AD AE"
+  ],
+  "knownBroken": [
+    "plasma visible presentation is not player-accepted",
+    "tsc --noEmit exits 2",
+    "no lockfile; clean install is not known to reproduce this tree"
+  ],
+  "experimental": [
+    "?levelStudio=1",
+    "src/studio/VisualScene.ts"
+  ],
+  "deferred": [
+    "sound design pass",
+    "Gate 7B non-src TypeScript diagnostics",
+    "Gate 8 reproducibility",
+    "per-level visual authoring"
+  ],
+  "openGates": ["plasma lockdown", "Gate 7B", "Gate 8"],
+  "typescript": {
+    "command": "node ./node_modules/typescript/bin/tsc --noEmit",
+    "exitCode": 2,
+    "srcDiagnostics": 0,
+    "otherDiagnostics": [
+      "tests/architecture_contract_suite.ts TS2307 url",
+      "tests/architecture_contract_suite.ts TS2352 MockCanvas x3",
+      "tests/architecture_contract_suite.ts TS2367 DYING vs playing x2",
+      "tests/architecture_contract_suite.ts TS2367 0 vs 1 x2",
+      "tests/challenge_trace_suite.ts TS2352 MockCanvas",
+      "tests/torture_suite.ts TS2367 10 vs 0",
+      "vite.config.ts TS2307 node:url"
+    ]
+  },
+  "plasma": {
+    "status": "NOT_PLAYER_ACCEPTED",
+    "shockFrontWorldY": "wave.y + SHOCK_FRONT_WORLD_OFFSET",
+    "shockFrontWorldOffset": 0,
+    "syntheticPlayerScreenFrontPresent": false,
+    "lastPlayerRejection": "visible wall moved with Zyrx and the camera on the previous candidate",
+    "authorityDoc": "docs/PLASMA_AUTHORITY_R1.md"
+  },
+  "forensicArtifacts": {
+    "september18Zip": "forensics/Zyrxmath-main (3).zip",
+    "index-RVFpfK1p.js": "NOT AVAILABLE IN CURRENT WORKSPACE"
+  },
+  "importantFiles": [
+    "src/engine/GameEngine.ts",
+    "src/engine/plasmaPresentation.ts",
+    "src/engine/Renderer.ts",
+    "src/engine/Camera.ts",
+    "src/engine/LevelDatabase.ts",
+    "src/math/MathChallengeEngine.ts",
+    "src/config/defaults.ts",
+    "src/App.tsx",
+    "tests/architecture_contract_suite.ts",
+    "scripts/project-toolchain.mjs",
+    "scripts/run-vite.mjs",
+    "scripts/run-tests.mjs"
+  ]
+}

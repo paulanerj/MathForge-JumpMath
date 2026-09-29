@@ -1,0 +1,26 @@
+{
+  "name": "jumpmath-numerix",
+  "private": true,
+  "version": "2.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node ./scripts/run-vite.mjs --port=8080 --host=0.0.0.0",
+    "build": "node ./scripts/run-vite.mjs build",
+    "preview": "node ./scripts/run-vite.mjs preview",
+    "clean": "rm -rf dist",
+    "lint": "node ./node_modules/typescript/bin/tsc --noEmit",
+    "test": "node ./scripts/run-tests.mjs",
+    "test:plasma": "node ./scripts/run-tests.mjs --only=architecture"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "tsx": "^4.21.0",
+    "typescript": "~5.8.2",
+    "vite": "^6.2.0"
+  },
+  "description": "JumpMath: Path of the Numerix \u2014 educational interstellar math arcade"
+}

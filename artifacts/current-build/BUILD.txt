@@ -1,0 +1,17 @@
+Vite 6.4.3
+React 19.3.0
+React DOM 19.3.0
+TypeScript 5.8.3
+tsx 4.23.15
+esbuild (vite) 0.25.12
+esbuild (tsx) 0.28.2
+Node v22.23.3
+npm 10.9.9
+
+JS index-w1UmiH7H.js
+342151 bytes
+SHA-256 b3eb41d72e6ccbb6939f9714e8594220028945b806e7f850357fa33654801d31
+
+CSS index-DSooJG3U.css
+8739 bytes
+SHA-256 c2fa2fd1051bc097604b2dc27fe3b7e60b06d3b26e1182e1a44e832307f07dd8

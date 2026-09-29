@@ -1,8 +1,9 @@
-﻿node_modules/
+node_modules/
+build/
 dist/
-.vite/
-*.log
+coverage/
+.cache/
 .DS_Store
-Thumbs.db
-.env
-.env.*
+*.log
+.env*
+!.env.example
