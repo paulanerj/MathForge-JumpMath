@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { GameEngine } from './engine/GameEngine';
 import { LevelSchema } from './types';
 import { describeLevelObjective } from './math/objectivePresentation';
@@ -9,7 +9,7 @@ import {
   reviewLaunchFromSearch,
   sectorForCampaignLevel,
 } from './review/reviewMode';
-import { DEFAULT_ZYX_CONFIG } from './config';
+import { DEFAULT_ZYX_CONFIG, createZyxConfig } from './config';
 import {
   getVisualCalibration,
   setRuntimeVisualCalibration,
@@ -147,10 +147,64 @@ export default function App() {
   const [mathMode, setMathMode] = useState<'SUM_TO' | 'SKIP_COUNT' | 'MULTIPLY' | 'DIFFERENCE'>('SUM_TO');
   const [targetsInput, setTargetsInput] = useState('10, 15, 20');
   const [customFactor, setCustomFactor] = useState(3);
+  const [plasmaSettings, setPlasmaSettings] = useState<{ entranceDelaySeconds: number; verticalSpeed: number }>(() => {
+    try {
+      const raw = localStorage.getItem('zyrxmath_plasma_tuning_v2');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        return {
+          entranceDelaySeconds: typeof parsed.entranceDelaySeconds === 'number' ? parsed.entranceDelaySeconds : 2.5,
+          verticalSpeed: typeof parsed.verticalSpeed === 'number' ? parsed.verticalSpeed : 28,
+        };
+      }
+    } catch { /* ignore */ }
+    return {
+      entranceDelaySeconds: DEFAULT_ZYX_CONFIG.wave.plasmaEntranceDelaySeconds ?? 2.5,
+      verticalSpeed: DEFAULT_ZYX_CONFIG.wave.plasmaVerticalSpeed ?? DEFAULT_ZYX_CONFIG.wave.baseSpeed,
+    };
+  });
+  const [stagedPlasma, setStagedPlasma] = useState(() => ({ ...plasmaSettings }));
+  const [stagedMuted, setStagedMuted] = useState(muted);
+
+  const openSettings = useCallback((e?: { stopPropagation: () => void }) => {
+    if (e) e.stopPropagation();
+    setStagedPlasma({ ...plasmaSettings });
+    setStagedMuted(muted);
+    setPlayMenu(true);
+    engineRef.current?.setCalibrationFrozen(true);
+  }, [plasmaSettings, muted]);
+
+  const cancelSettings = useCallback(() => {
+    setStagedPlasma({ ...plasmaSettings });
+    setPlayMenu(false);
+    engineRef.current?.setCalibrationFrozen(false);
+  }, [plasmaSettings]);
+
+  const applySettings = useCallback(() => {
+    setPlasmaSettings({ ...stagedPlasma });
+    try {
+      localStorage.setItem('zyrxmath_plasma_tuning_v2', JSON.stringify(stagedPlasma));
+    } catch { /* ignore */ }
+    if (engineRef.current) {
+      engineRef.current.updateWaveConfig({
+        plasmaEntranceDelaySeconds: stagedPlasma.entranceDelaySeconds,
+        plasmaVerticalSpeed: stagedPlasma.verticalSpeed,
+        baseSpeed: stagedPlasma.verticalSpeed,
+      });
+      engineRef.current.setCalibrationFrozen(false);
+    }
+    if (stagedMuted !== muted) {
+      setMuted(stagedMuted);
+      try { localStorage.setItem(MUTE_KEY, stagedMuted ? '1' : '0'); } catch { /* ignore */ }
+      engineRef.current?.audio.setMuted(stagedMuted);
+    }
+    setPlayMenu(false);
+  }, [stagedPlasma, stagedMuted, muted]);
+
   const [visualCal, setVisualCal] = useState<VisualCalibrationConfig>(() => getVisualCalibration());
   const [calibrationMode, setCalibrationMode] = useState(false);
   const [playMenu, setPlayMenu] = useState(false);
-  const [probeOn, setProbeOn] = useState(false);
+  const [probeOn, setProbeOn] = useState(initialPlasmaLab);
   const scoreEl = useRef<HTMLSpanElement>(null);
   const comboEl = useRef<HTMLSpanElement>(null);
   const timeEl = useRef<HTMLSpanElement>(null);
@@ -348,9 +402,31 @@ export default function App() {
         if (timeEl.current) timeEl.current.textContent = `${eng.state.timeLeft.toFixed(1)}s`;
         if (plasmaReadoutRef.current) {
           const view = eng.plasmaPresentation();
-          plasmaReadoutRef.current.textContent = view
-            ? `WORLD\nplayer ${eng.state.zyx.y.toFixed(0)}  cam ${eng.camera.y.toFixed(0)}\nwave ${view.physical.worldY.toFixed(0)}  front ${view.physical.worldY.toFixed(0)}\nSCREEN\nwave ${view.physical.screenY.toFixed(0)}  front ${view.physical.screenY.toFixed(0)}\ngap ${view.physicalGap.toFixed(0)}  threat ${view.atmosphere.threat01.toFixed(2)}`
-            : '';
+          if (view) {
+            const delay = eng.config.wave.plasmaEntranceDelaySeconds ?? 2.5;
+            const vertSpeed = eng.config.wave.plasmaVerticalSpeed ?? eng.config.wave.baseSpeed;
+            const initialWaveY = eng.calculateNewLevelEntranceY();
+            const shockFrontWorldY = view.physical.worldY;
+            const initialCameraY = -eng.config.camera.targetOffsetY;
+            const viewportH = view.physical.viewportBottom;
+            const initialScreenY = (viewportH / 2) - initialCameraY + initialWaveY;
+            const initialOffscreen = initialScreenY - viewportH;
+            const predictedTimeRemaining = Math.max(0, (view.physical.screenY - viewportH) / (vertSpeed || 1));
+            plasmaReadoutRef.current.textContent = [
+              `Entrance Delay: ${delay.toFixed(2)}s`,
+              `Vertical Speed: ${vertSpeed.toFixed(1)} units/s`,
+              `Calculated initial physical wave Y: ${initialWaveY.toFixed(1)}`,
+              `Calculated shock-front world Y: ${shockFrontWorldY.toFixed(1)}`,
+              `Initial projected shock-front screen Y: ${initialScreenY.toFixed(1)} px`,
+              `Viewport bottom: ${viewportH.toFixed(0)} px`,
+              `Initial offscreen amount: ${initialOffscreen.toFixed(1)} px`,
+              `Predicted time until viewport entry: ${predictedTimeRemaining.toFixed(2)}s`,
+              `Current physical gap: ${view.physicalGap.toFixed(1)}`,
+              `Current projected screen Y: ${view.physical.screenY.toFixed(1)} px`,
+            ].join('\n');
+          } else {
+            plasmaReadoutRef.current.textContent = '';
+          }
         }
       }
       hudFrame = requestAnimationFrame(paintHud);
@@ -872,11 +948,7 @@ export default function App() {
           <button
             type="button"
             data-ui="true"
-            onClick={(e) => {
-              e.stopPropagation();
-              setPlayMenu(true);
-              engineRef.current?.setCalibrationFrozen(true);
-            }}
+            onClick={openSettings}
           >
             Menu
           </button>
@@ -894,10 +966,7 @@ export default function App() {
           type="button"
           className="settings-launch"
           data-ui="true"
-          onClick={(event) => {
-            event.stopPropagation();
-            setPlayMenu(true);
-          }}
+          onClick={openSettings}
         >
           Settings
         </button>
@@ -933,98 +1002,227 @@ export default function App() {
       {screen === 'playing' && probeOn && (
         <div className="plasma-lab" data-ui="true">
           <div className="ready-kicker">Plasma lab</div>
-          <button type="button" data-ui="true" onClick={(event) => { event.stopPropagation(); engineRef.current?.freezePlasmaTime(); }}>Freeze time</button>
-          <button type="button" data-ui="true" onClick={(event) => { event.stopPropagation(); engineRef.current?.moveLabPlayer(-1); }}>Move player up</button>
-          <button type="button" data-ui="true" onClick={(event) => { event.stopPropagation(); engineRef.current?.moveLabPlayer(1); }}>Move player down</button>
-          <button type="button" data-ui="true" onClick={(event) => { event.stopPropagation(); engineRef.current?.moveLabCamera(-1); }}>Move camera up</button>
-          <button type="button" data-ui="true" onClick={(event) => { event.stopPropagation(); engineRef.current?.moveLabCamera(1); }}>Move camera down</button>
-          <button type="button" data-ui="true" onClick={(event) => { event.stopPropagation(); engineRef.current?.advancePlasmaTime(); }}>Advance time</button>
-          <button type="button" data-ui="true" onClick={(event) => { event.stopPropagation(); engineRef.current?.playPlasmaPursuit(); }}>Play pursuit</button>
-          <button type="button" data-ui="true" onClick={(event) => { event.stopPropagation(); engineRef.current?.resetPlasmaLab(); }}>Reset</button>
-          {(['distant', 'approaching', 'warning', 'danger', 'collision'] as const).map((state) => (
-            <button key={state} type="button" data-ui="true" onClick={(event) => { event.stopPropagation(); engineRef.current?.inspectPlasma(state); }}>
-              {state}
+          <div className="plasma-lab-controls">
+            <button type="button" data-ui="true" onClick={(event) => { event.stopPropagation(); engineRef.current?.freezePlasmaTime(); }}>Freeze time</button>
+            <button type="button" data-ui="true" onClick={(event) => { event.stopPropagation(); engineRef.current?.moveLabPlayer(-1); }}>Move player up</button>
+            <button type="button" data-ui="true" onClick={(event) => { event.stopPropagation(); engineRef.current?.moveLabPlayer(1); }}>Move player down</button>
+            <button type="button" data-ui="true" onClick={(event) => { event.stopPropagation(); engineRef.current?.moveLabCamera(-1); }}>Move camera up</button>
+            <button type="button" data-ui="true" onClick={(event) => { event.stopPropagation(); engineRef.current?.moveLabCamera(1); }}>Move camera down</button>
+            <button type="button" data-ui="true" onClick={(event) => { event.stopPropagation(); engineRef.current?.advancePlasmaTime(); }}>Advance time (dt)</button>
+            <button type="button" data-ui="true" onClick={(event) => { event.stopPropagation(); engineRef.current?.playPlasmaPursuit(); }}>Play pursuit</button>
+            <button type="button" data-ui="true" onClick={(event) => { event.stopPropagation(); engineRef.current?.resetPlasmaLab(); }}>Reset</button>
+          </div>
+          <div className="plasma-lab-presets">
+            <span className="plasma-lab-label">Presets:</span>
+            {[900, 700, 520, 90, 26].map((gap) => (
+              <button key={gap} type="button" data-ui="true" onClick={(event) => { event.stopPropagation(); engineRef.current?.inspectPlasma(gap); }}>
+                {gap}
+              </button>
+            ))}
+            <button
+              type="button"
+              data-ui="true"
+              className="btn-lab-configured"
+              onClick={(event) => {
+                event.stopPropagation();
+                engineRef.current?.testNewLevelEntrance();
+              }}
+            >
+              TEST NEW LEVEL ENTRANCE
             </button>
-          ))}
-          <pre ref={plasmaReadoutRef} />
+          </div>
+          <pre ref={plasmaReadoutRef} className="plasma-readout" />
         </div>
       )}
 
       {(screen === 'playing' || screen === 'ready') && playMenu && !calibrationMode && (
         <div className="play-menu" data-ui="true">
-          <div className="play-menu-card">
-            <div className="ready-kicker">Settings</div>
-            <div className="play-menu-level">
-              {reviewMode ? 'REVIEW MODE' : (activeSector ? activeSector.name : 'CUSTOM')} · L{levelIdx + 1}/{playlist.length || 1}
+          <div className="play-menu-modal" data-ui="true">
+            {/* PERSISTENT HEADER */}
+            <div className="play-menu-header">
+              <div className="play-menu-title-block">
+                <span className="ready-kicker">Settings</span>
+                <span className="play-menu-subtitle">
+                  {reviewMode ? 'REVIEW MODE' : (activeSector ? activeSector.name : 'CUSTOM')} · L{levelIdx + 1}/{playlist.length || 1}
+                </span>
+              </div>
+              <button
+                type="button"
+                className="btn-close-x"
+                aria-label="Close"
+                onClick={cancelSettings}
+                data-ui="true"
+              >
+                ✕
+              </button>
             </div>
-            <button
-              type="button"
-              className="btn-primary"
-              onClick={() => {
-                setPlayMenu(false);
-                engineRef.current?.setCalibrationFrozen(false);
-              }}
-            >
-              Resume
-            </button>
-            <button type="button" className="btn-ghost" onClick={toggleMute}>
-              {muted ? 'Audio off' : 'Audio on'}
-            </button>
-            <div className="settings-review" data-ui="true">
-              <div className="ready-kicker">Review / development</div>
+
+            {/* SCROLLABLE CONTENT BODY */}
+            <div className="play-menu-body">
+              {/* PLASMA SECTION */}
+              <div className="settings-section plasma-tuning-section" data-ui="true">
+                <div className="section-title">PLASMA</div>
+                
+                {/* Entrance Delay */}
+                <div className="tuning-item">
+                  <div className="tuning-row-header">
+                    <span className="tuning-label">Entrance Delay</span>
+                    <span className="tuning-readout">
+                      <strong>{stagedPlasma.entranceDelaySeconds.toFixed(2)}</strong> <span className="tuning-unit">seconds</span>
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min={0.5}
+                    max={5.0}
+                    step={0.25}
+                    value={stagedPlasma.entranceDelaySeconds}
+                    onChange={(e) => setStagedPlasma((prev) => ({ ...prev, entranceDelaySeconds: Number(e.target.value) }))}
+                    className="tuning-slider"
+                  />
+                  <div className="tuning-button-row">
+                    <button type="button" className="btn-tuning-step" onClick={() => setStagedPlasma((p) => ({ ...p, entranceDelaySeconds: Math.max(0.5, +(p.entranceDelaySeconds - 0.25).toFixed(2)) }))}>-0.25s</button>
+                    <button type="button" className="btn-tuning-step" onClick={() => setStagedPlasma((p) => ({ ...p, entranceDelaySeconds: Math.min(5.0, +(p.entranceDelaySeconds + 0.25).toFixed(2)) }))}>+0.25s</button>
+                    <button type="button" className="btn-tuning-reset" onClick={() => setStagedPlasma((p) => ({ ...p, entranceDelaySeconds: 2.5 }))}>Reset to Baseline (2.5s)</button>
+                  </div>
+                </div>
+
+                {/* Vertical Speed */}
+                <div className="tuning-item">
+                  <div className="tuning-row-header">
+                    <span className="tuning-label">Vertical Speed</span>
+                    <span className="tuning-readout">
+                      <strong>{stagedPlasma.verticalSpeed}</strong> <span className="tuning-unit">units/s</span>
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min={10}
+                    max={80}
+                    step={1}
+                    value={stagedPlasma.verticalSpeed}
+                    onChange={(e) => setStagedPlasma((prev) => ({ ...prev, verticalSpeed: Number(e.target.value) }))}
+                    className="tuning-slider"
+                  />
+                  <div className="tuning-button-row">
+                    <button type="button" className="btn-tuning-step" onClick={() => setStagedPlasma((p) => ({ ...p, verticalSpeed: Math.max(10, p.verticalSpeed - 2) }))}>-2</button>
+                    <button type="button" className="btn-tuning-step" onClick={() => setStagedPlasma((p) => ({ ...p, verticalSpeed: Math.min(80, p.verticalSpeed + 2) }))}>+2</button>
+                    <button type="button" className="btn-tuning-reset" onClick={() => setStagedPlasma((p) => ({ ...p, verticalSpeed: 28 }))}>Reset to Baseline (28)</button>
+                  </div>
+                </div>
+              </div>
+
+              {/* PLASMA REVIEW LAB LAUNCH */}
+              <div className="settings-section">
+                <button
+                  type="button"
+                  className="btn-secondary w-full"
+                  onClick={() => {
+                    setProbeOn((p) => !p);
+                    setPlayMenu(false);
+                    engineRef.current?.setCalibrationFrozen(false);
+                  }}
+                >
+                  {probeOn ? 'Close Plasma Review Lab' : 'Open Plasma Review Lab'}
+                </button>
+              </div>
+
+              {/* AUDIO */}
+              <div className="settings-section">
+                <button
+                  type="button"
+                  className="btn-ghost w-full"
+                  onClick={() => setStagedMuted((m) => !m)}
+                >
+                  {stagedMuted ? 'Audio off (click to unmute)' : 'Audio on (click to mute)'}
+                </button>
+              </div>
+
+              {/* REVIEW / DEVELOPMENT */}
+              <div className="settings-section settings-review" data-ui="true">
+                <div className="ready-kicker">Review / development</div>
+                <button
+                  type="button"
+                  className="btn-secondary w-full"
+                  onClick={() => {
+                    if (reviewMode) {
+                      setReviewMode(false);
+                      setReviewList(false);
+                      return;
+                    }
+                    const levels = campaignReviewPlaylist();
+                    const currentId = playlist[levelIdx]?.id;
+                    const nextIndex = Math.max(0, levels.findIndex((level) => level.id === currentId));
+                    setPlaylist(levels);
+                    setLevelIdx(nextIndex === -1 ? 0 : nextIndex);
+                    setActiveSector(sectorForCampaignLevel(levels[nextIndex === -1 ? 0 : nextIndex].id));
+                    setReviewMode(true);
+                  }}
+                >
+                  Review Mode {reviewMode ? 'On' : 'Off'}
+                </button>
+                {reviewMode && (
+                  <div className="mt-2 flex flex-col gap-1">
+                    <div className="fine">{playlist[levelIdx]?.id} · {sectorForCampaignLevel(playlist[levelIdx]?.id ?? '')?.name}</div>
+                    <button type="button" className="btn-ghost" onClick={() => stepReview(-1)}>Previous Level</button>
+                    <button type="button" className="btn-ghost" onClick={() => stepReview(1)}>Next Level</button>
+                    <button type="button" className="btn-ghost" onClick={() => setReviewList(true)}>Level Select</button>
+                  </div>
+                )}
+              </div>
+
+              {/* TOOLS & ACTIONS */}
+              <div className="settings-section flex flex-col gap-2">
+                <button
+                  type="button"
+                  className="btn-secondary"
+                  data-calibrate="true"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setPlayMenu(false);
+                    enterCalibration();
+                  }}
+                >
+                  Visual calibration
+                </button>
+                <button
+                  type="button"
+                  className="btn-ghost text-red-400"
+                  onClick={() => {
+                    cancelSettings();
+                    engineRef.current?.cleanup();
+                    setScreen(activeSector ? 'campaign' : 'title');
+                  }}
+                >
+                  Leave level
+                </button>
+              </div>
+            </div>
+
+            {/* PERSISTENT FOOTER */}
+            <div className="play-menu-footer">
+              <button
+                type="button"
+                className="btn-ghost"
+                onClick={() => setStagedPlasma({ entranceDelaySeconds: 2.5, verticalSpeed: 28 })}
+              >
+                Reset
+              </button>
               <button
                 type="button"
                 className="btn-secondary"
-                onClick={() => {
-                  if (reviewMode) {
-                    setReviewMode(false);
-                    setReviewList(false);
-                    return;
-                  }
-                  const levels = campaignReviewPlaylist();
-                  const currentId = playlist[levelIdx]?.id;
-                  const nextIndex = Math.max(0, levels.findIndex((level) => level.id === currentId));
-                  setPlaylist(levels);
-                  setLevelIdx(nextIndex === -1 ? 0 : nextIndex);
-                  setActiveSector(sectorForCampaignLevel(levels[nextIndex === -1 ? 0 : nextIndex].id));
-                  setReviewMode(true);
-                }}
+                onClick={cancelSettings}
               >
-                Review Mode {reviewMode ? 'On' : 'Off'}
+                Cancel
               </button>
-              {reviewMode && (
-                <>
-                  <div className="fine">{playlist[levelIdx]?.id} · {sectorForCampaignLevel(playlist[levelIdx]?.id ?? '')?.name}</div>
-                  <button type="button" className="btn-ghost" onClick={() => stepReview(-1)}>Previous Level</button>
-                  <button type="button" className="btn-ghost" onClick={() => stepReview(1)}>Next Level</button>
-                  <button type="button" className="btn-ghost" onClick={() => setReviewList(true)}>Level Select</button>
-                </>
-              )}
+              <button
+                type="button"
+                className="btn-primary"
+                onClick={applySettings}
+              >
+                Apply
+              </button>
             </div>
-            <button
-              type="button"
-              className="btn-secondary"
-              data-calibrate="true"
-              onClick={(e) => {
-                e.stopPropagation();
-                setPlayMenu(false);
-                enterCalibration();
-              }}
-            >
-              Visual calibration
-            </button>
-            <button
-              type="button"
-              className="btn-ghost"
-              onClick={() => {
-                setPlayMenu(false);
-                engineRef.current?.setCalibrationFrozen(false);
-                engineRef.current?.cleanup();
-                setScreen(activeSector ? 'campaign' : 'title');
-              }}
-            >
-              Leave level
-            </button>
           </div>
         </div>
       )}

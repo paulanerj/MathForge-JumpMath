@@ -43,6 +43,9 @@ export interface PlatformConfig {
 export interface WaveConfig {
   spawnDistanceBehind: number;
   baseSpeed: number;
+  plasmaStartDistance: number;
+  plasmaVerticalSpeed: number;
+  plasmaEntranceDelaySeconds: number;
   proximityCollisionDist: number;
   warningDistance: number;
   warningHeightFactor: number;

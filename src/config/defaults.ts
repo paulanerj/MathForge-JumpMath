@@ -55,6 +55,9 @@ export const DEFAULT_ZYX_CONFIG: ZyxConfig = deepFreeze({
   wave: {
     spawnDistanceBehind: 900,
     baseSpeed: 28.0,
+    plasmaStartDistance: 900,
+    plasmaVerticalSpeed: 28.0,
+    plasmaEntranceDelaySeconds: 2.5,
     proximityCollisionDist: 26,
     warningDistance: 520,
     warningHeightFactor: 300,

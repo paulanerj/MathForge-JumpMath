@@ -4,11 +4,11 @@
   "version": "2.0.0",
   "type": "module",
   "scripts": {
-    "dev": "node ./scripts/run-vite.mjs --port=8080 --host=0.0.0.0",
-    "build": "node ./scripts/run-vite.mjs build",
-    "preview": "node ./scripts/run-vite.mjs preview",
+    "dev": "vite --port 3000 --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview --port 3000 --host 0.0.0.0",
     "clean": "rm -rf dist",
-    "lint": "node ./node_modules/typescript/bin/tsc --noEmit",
+    "lint": "tsc --noEmit",
     "test": "node ./scripts/run-tests.mjs",
     "test:plasma": "node ./scripts/run-tests.mjs --only=architecture"
   },

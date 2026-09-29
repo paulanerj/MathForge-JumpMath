@@ -614,7 +614,7 @@ export class Renderer {
           playerY: engine.state.zyx.y,
           cameraY: camY,
           viewportHeight: height,
-          spawnDistance: this.config.wave.spawnDistanceBehind,
+          spawnDistance: this.config.wave.plasmaStartDistance ?? this.config.wave.spawnDistanceBehind,
           collisionDistance: this.config.wave.proximityCollisionDist,
           warningDistance: this.config.wave.warningDistance,
         })
@@ -747,6 +747,15 @@ export class Renderer {
     const y = plasma.physical.screenY;
     const t2 = t * 0.004;
     ctx.globalAlpha = 1;
+
+    // Ambient heat haze extending behind the leading shock front
+    const haze = ctx.createLinearGradient(0, y, 0, y + look.body);
+    haze.addColorStop(0, look.haze);
+    haze.addColorStop(0.4, look.hazeMid);
+    haze.addColorStop(1, look.hazeEnd);
+    ctx.fillStyle = haze;
+    ctx.fillRect(-20, y, width + 40, look.body);
+
     ctx.beginPath();
     ctx.moveTo(-20, y + 50);
     for (let x = -20; x <= width + 20; x += 14) {

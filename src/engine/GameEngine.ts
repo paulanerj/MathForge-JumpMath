@@ -1,5 +1,5 @@
 import { GameState, LevelSchema, Platform } from '../types';
-import { ZyxConfig, DEFAULT_ZYX_CONFIG } from '../config';
+import { ZyxConfig, DEFAULT_ZYX_CONFIG, WaveConfig } from '../config';
 import { PlatformManager } from './PlatformManager';
 import { Camera } from './Camera';
 import { Renderer } from './Renderer';
@@ -130,7 +130,7 @@ export class GameEngine {
       this.noteSpawned(item.challenge, item.rowIdx, 'initial-burst');
     }
     this.state.timeLeft = this.config.gameplay.turnTimeLimit;
-    this.ensureWave();
+    this.initializePlasmaForNewLevel();
     this.captureSafePose();
   }
 
@@ -165,7 +165,7 @@ export class GameEngine {
     if (!this.state.wave) return;
     this.state.wave.y = y;
     this.state.wave.hit = false;
-    this.state.wave.speed = this.config.wave.baseSpeed;
+    this.state.wave.speed = this.config.wave.plasmaVerticalSpeed ?? this.config.wave.baseSpeed;
   }
 
   private syncPursuitPresentation(): void {
@@ -176,22 +176,26 @@ export class GameEngine {
 
   plasmaPresentation(): PlasmaPresentation | null {
     if (!this.state.wave) return null;
+    const spawnDist = this.config.wave.plasmaStartDistance ?? this.config.wave.spawnDistanceBehind;
     return derivePlasmaPresentation({
       waveY: this.state.wave.y,
       playerY: this.state.zyx.y,
       cameraY: this.camera.y,
       viewportHeight: this.canvas.height,
-      spawnDistance: this.config.wave.spawnDistanceBehind,
+      spawnDistance: spawnDist,
       collisionDistance: this.config.wave.proximityCollisionDist,
       warningDistance: this.config.wave.warningDistance,
     });
   }
 
   /** Lab placement. Not a gameplay writer. Refused outside the probe. */
-  inspectPlasma(state: PlasmaLabState): void {
+  inspectPlasma(stateOrGap: PlasmaLabState | number): void {
     if (!this.plasmaProbe || !this.state.wave) return;
     this.plasmaFrozen = true;
-    this.placeWave(this.state.zyx.y + PLASMA_LAB_GAPS[state]);
+    const gap = typeof stateOrGap === 'number'
+      ? stateOrGap
+      : (PLASMA_LAB_GAPS[stateOrGap] ?? (this.config.wave.plasmaStartDistance ?? this.config.wave.spawnDistanceBehind));
+    this.placeWave(this.state.zyx.y + gap);
     this.state.status = 'playing';
     this.syncPursuitPresentation();
   }
@@ -208,8 +212,18 @@ export class GameEngine {
     this.state.zyx.x = 0;
     this.camera.y = -this.config.camera.targetOffsetY;
     this.camera.x = 0;
-    this.placeWave(this.config.wave.spawnDistanceBehind);
-    this.syncPursuitPresentation();
+    this.initializePlasmaForNewLevel();
+  }
+
+  testNewLevelEntrance(): void {
+    if (!this.plasmaProbe) return;
+    this.state.zyx.y = 0;
+    this.state.zyx.x = 0;
+    this.camera.y = -this.config.camera.targetOffsetY;
+    this.camera.x = 0;
+    this.initializePlasmaForNewLevel();
+    this.plasmaFrozen = false;
+    this.state.status = 'playing';
   }
 
   freezePlasmaTime(): void {
@@ -236,12 +250,51 @@ export class GameEngine {
     this.plasmaStep = false;
   }
 
-  private ensureWave(): void {
-    this.state.wave = {
-      y: this.state.zyx.y + this.config.wave.spawnDistanceBehind,
-      speed: this.config.wave.baseSpeed,
-      hit: false,
+  updateWaveConfig(waveOverrides: Partial<WaveConfig>): void {
+    this.config = {
+      ...this.config,
+      wave: {
+        ...this.config.wave,
+        ...waveOverrides,
+      },
     };
+    if (this.state.wave) {
+      if (waveOverrides.plasmaVerticalSpeed !== undefined) {
+        this.state.wave.speed = waveOverrides.plasmaVerticalSpeed;
+      } else if (waveOverrides.baseSpeed !== undefined) {
+        this.state.wave.speed = waveOverrides.baseSpeed;
+      }
+    }
+  }
+
+  calculateNewLevelEntranceY(): number {
+    const delay = this.config.wave.plasmaEntranceDelaySeconds ?? 2.5;
+    const speed = this.config.wave.plasmaVerticalSpeed ?? this.config.wave.baseSpeed;
+    const viewportHeight = this.canvas?.height || 800;
+    const initialCameraY = -this.config.camera.targetOffsetY;
+    return (viewportHeight / 2) + initialCameraY + (speed * delay);
+  }
+
+  initializePlasmaForNewLevel(): void {
+    const initialWaveY = this.calculateNewLevelEntranceY();
+    const speed = this.config.wave.plasmaVerticalSpeed ?? this.config.wave.baseSpeed;
+    if (!this.state.wave) {
+      this.state.wave = {
+        y: initialWaveY,
+        speed,
+        hit: false,
+      };
+    } else {
+      this.placeWave(initialWaveY);
+    }
+    this.syncPursuitPresentation();
+  }
+
+  recoverPlasmaAfterPlayerDeath(): void {
+    if (this.state.wave) {
+      const spawnDist = this.config.wave.plasmaStartDistance ?? this.config.wave.spawnDistanceBehind;
+      this.placeWave(this.state.zyx.y + spawnDist);
+    }
     this.syncPursuitPresentation();
   }
 
@@ -328,8 +381,7 @@ export class GameEngine {
     this.state.chromaSplit = 0;
     this.state.shake = 0;
     this.state.timeScale = 1.0;
-    if (this.state.wave) this.placeWave(this.state.zyx.y + this.config.wave.spawnDistanceBehind);
-    this.syncPursuitPresentation();
+    this.recoverPlasmaAfterPlayerDeath();
   }
 
   restart() {
@@ -369,6 +421,7 @@ export class GameEngine {
       this.noteSpawned(item.challenge, item.rowIdx, 'initial-burst');
     }
     this.clearDeathStates();
+    this.initializePlasmaForNewLevel();
     this.camera.x = 0;
     this.camera.y = 0;
     this.completionPosted = false;

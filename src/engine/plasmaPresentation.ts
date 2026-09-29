@@ -62,6 +62,8 @@ export interface PlasmaPresentation {
     visible: boolean;
     bodyTop: number;
     bodyBottom: number;
+    viewportBottom: number;
+    distBelowViewport: number;
   };
   atmosphere: {
     threat01: number;
@@ -93,6 +95,7 @@ export function derivePlasmaPresentation(input: PlasmaPresentationInput): Plasma
   const bodyTop = screenY;
   const bodyBottom = screenY + body;
   const visible = bodyBottom > 0 && bodyTop < input.viewportHeight;
+  const distBelowViewport = screenY - input.viewportHeight;
   return {
     physicalGap: gap,
     distance100: Math.max(0, Math.min(100, (gap / spawn) * 100)),
@@ -102,6 +105,8 @@ export function derivePlasmaPresentation(input: PlasmaPresentationInput): Plasma
       visible,
       bodyTop,
       bodyBottom,
+      viewportBottom: input.viewportHeight,
+      distBelowViewport,
     },
     atmosphere: {
       threat01,

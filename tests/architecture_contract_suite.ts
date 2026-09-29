@@ -15,6 +15,8 @@ import { describeLevelObjective } from '../src/math/objectivePresentation.ts';
 import { DEFAULT_REALM_ID, REALMS, isRealmId, realmForLevel } from '../src/visual/realms.ts';
 import { DEFAULT_ZYX_CONFIG } from '../src/config/defaults.ts';
 import { DEFAULT_ZYX_CONFIG as barrelDefault } from '../src/config/index.ts';
+import { createZyxConfig } from '../src/config/zyxConfig.ts';
+import { DeepPartial, ZyxConfig } from '../src/config/configTypes.ts';
 import { LevelSchema } from '../src/types.ts';
 import { campaignReviewPlaylist, reviewIndexForLevel, reviewLaunchFromSearch } from '../src/review/reviewMode.ts';
 import { sceneFromLevel, sceneInventory, validateVisualScene } from '../src/studio/VisualScene.ts';
@@ -125,9 +127,10 @@ function proveCorrectLanding(engine: GameEngine): { beforeCommitted: unknown; af
   return { beforeCommitted, afterCommitted: engine.mathEngine.getCommittedState() };
 }
 
-function freshEngine(schema = LEVEL_DATABASE[0]): GameEngine {
+function freshEngine(schema = LEVEL_DATABASE[0], configOverrides?: DeepPartial<ZyxConfig>): GameEngine {
   const canvas = new env.MockCanvas() as HTMLCanvasElement;
-  return new GameEngine(canvas, schema);
+  const config = configOverrides ? createZyxConfig(configOverrides) : DEFAULT_ZYX_CONFIG;
+  return new GameEngine(canvas, schema, config);
 }
 
 function contractACampaign(): void {
@@ -972,10 +975,10 @@ function contractABPlasmaTemporalIndependence(): void {
   assert(writers.length === 1, `expected one life-start wave placement, found ${writers.length}`);
   assert(ticks.length === 1, `expected one time-based wave advancement, found ${ticks.length}`);
   assert(engineSrc.includes('this.state.wave.y -= this.state.wave.speed * effectiveDt'), 'time is not the advancement writer');
-  assert(engineSrc.includes('this.placeWave(this.state.zyx.y + this.config.wave.spawnDistanceBehind)'), 'a new life no longer places the front');
+  assert(engineSrc.includes('this.placeWave(this.state.zyx.y + spawnDist)'), 'a new life no longer places the front');
   assert(!engineSrc.includes('nudgeWaveByMeter'), 'answer displacement writer remains');
 
-  const speed = DEFAULT_ZYX_CONFIG.wave.baseSpeed;
+  const speed = DEFAULT_ZYX_CONFIG.wave.plasmaVerticalSpeed ?? DEFAULT_ZYX_CONFIG.wave.baseSpeed;
   const step = 1 / 60;
   const close = (actual: number, expected: number, label: string) => {
     assert(Math.abs(actual - expected) < 1e-6, `${label}: wave moved ${actual}, expected ${expected}`);
@@ -1035,6 +1038,140 @@ function contractABPlasmaTemporalIndependence(): void {
   assert(diagonal.state.wave!.y !== diagonal.state.zyx.y, 'the wave was rebased onto the player');
 
   console.log('  [PASS] AB plasma world position advances only with simulation time');
+}
+
+function contractPlasmaLockdownR1(): void {
+  // P1: Exactly one physical wave object
+  const engineSrc = sourceText.get(path.join(srcRoot, 'engine/GameEngine.ts')) || '';
+  const waveAssignments = engineSrc.match(/this\.state\.wave\s*=/g) || [];
+  assert(waveAssignments.length === 1, `P1: expected exactly one wave creation, found ${waveAssignments.length}`);
+  const waveTicks = engineSrc.match(/this\.state\.wave\.y\s*-=/g) || [];
+  assert(waveTicks.length === 1, `P1: expected exactly one wave movement tick, found ${waveTicks.length}`);
+  const waveDirectWrites = engineSrc.match(/this\.state\.wave\.y\s*=(?!=)/g) || [];
+  assert(waveDirectWrites.length === 1, `P1: expected exactly one wave placement writer (placeWave), found ${waveDirectWrites.length}`);
+
+  // P2: Physical wave movement equals configuredPlasmaVerticalSpeed * effectiveDt across multiple speeds
+  for (const testSpeed of [14, 28, 45, 70]) {
+    const engine = freshEngine();
+    engine.updateWaveConfig({ plasmaVerticalSpeed: testSpeed });
+    assert(engine.state.wave!.speed === testSpeed, 'P2: updateWaveConfig did not set speed');
+    const startY = engine.state.wave!.y;
+    const dt = 0.05;
+    engine.update(dt);
+    const moved = startY - engine.state.wave!.y;
+    assert(Math.abs(moved - testSpeed * dt) < 1e-5, `P2: wave moved ${moved}, expected ${testSpeed * dt}`);
+  }
+
+  // P3-P7: No repositioning from correct answer, wrong answer, landing, row change, platform recycling
+  const straight = LEVEL_DATABASE.find((level) => level.id === 'f1_sum10')!;
+  const testEngine = freshEngine(straight);
+  const correctPlat = testEngine.platformManager.platforms.find((p) => p.rowIdx === 1 && p.isCorrect)!;
+  const beforeJumpWave = testEngine.state.wave!.y;
+  testEngine.executeJump(correctPlat);
+  assert(testEngine.state.wave!.y === beforeJumpWave, 'P3: starting jump repositioned wave');
+
+  const jumpSpeed = testEngine.state.wave!.speed;
+  let jumpElapsed = 0;
+  while (testEngine.state.zyx.jumping) {
+    testEngine.update(1 / 60);
+    jumpElapsed += 1 / 60;
+  }
+  const expectedWaveY = beforeJumpWave - jumpSpeed * jumpElapsed;
+  assert(Math.abs(testEngine.state.wave!.y - expectedWaveY) < 1e-4, 'P5/P6: landing or row change repositioned wave');
+
+  const wrongPlat = testEngine.platformManager.platforms.find((p) => p.rowIdx === 2 && !p.isCorrect)!;
+  const beforeWrongWave = testEngine.state.wave!.y;
+  testEngine.executeJump(wrongPlat);
+  assert(testEngine.state.wave!.y === beforeWrongWave, 'P4: wrong answer launch repositioned wave');
+  let bounceElapsed = 0;
+  while (testEngine.state.zyx.bouncing || testEngine.state.zyx.jumping) {
+    testEngine.update(1 / 60);
+    bounceElapsed += 1 / 60;
+  }
+  const expectedWrongWave = beforeWrongWave - jumpSpeed * bounceElapsed;
+  assert(Math.abs(testEngine.state.wave!.y - expectedWrongWave) < 1e-4, 'P4: wrong answer recovery repositioned wave');
+
+  // P8 & P9: Player movement & camera movement at frozen time do NOT reposition physical wave
+  testEngine.plasmaProbe = true;
+  testEngine.freezePlasmaTime();
+  const waveBeforePlayerMove = testEngine.state.wave!.y;
+  testEngine.moveLabPlayer(1);
+  assert(testEngine.state.wave!.y === waveBeforePlayerMove, 'P8: player move repositioned wave');
+  testEngine.moveLabPlayer(-1);
+  assert(testEngine.state.wave!.y === waveBeforePlayerMove, 'P8: player move repositioned wave');
+  testEngine.moveLabCamera(1);
+  assert(testEngine.state.wave!.y === waveBeforePlayerMove, 'P9: camera move repositioned wave');
+  testEngine.moveLabCamera(-1);
+  assert(testEngine.state.wave!.y === waveBeforePlayerMove, 'P9: camera move repositioned wave');
+
+  // P10 & P11: No synthetic player-relative or fixed-screen shockwave
+  const presSrc = sourceText.get(path.join(srcRoot, 'engine/plasmaPresentation.ts')) || '';
+  const rendSrc = sourceText.get(path.join(srcRoot, 'engine/Renderer.ts')) || '';
+  assert(!presSrc.includes('playerScreen'), 'P10: presentation anchors to player screen');
+  assert(!rendSrc.includes('playerScreen +'), 'P10: renderer anchors to player screen');
+  assert(!presSrc.includes('visualFrontScreenY'), 'P11: synthetic screen front in presentation');
+  assert(!rendSrc.includes('viewportHeight - '), 'P11: fixed-screen shockwave in renderer');
+
+  // P12: Physical wave new-life placement uses configured plasmaStartDistance
+  for (const customStart of [300, 600, 900, 1100]) {
+    const customEngine = freshEngine(straight, { wave: { plasmaStartDistance: customStart, spawnDistanceBehind: customStart } });
+    const expectedInitialWaveY = customEngine.state.zyx.y + customStart;
+    assert(Math.abs(customEngine.state.wave!.y - expectedInitialWaveY) < 1e-4, `P12: wave placed at ${customEngine.state.wave!.y}, expected ${expectedInitialWaveY}`);
+
+    // Death recovery placement
+    customEngine.state.wave!.y = customEngine.state.zyx.y + 10;
+    customEngine.update(0.01);
+    customEngine.restart();
+    assert(Math.abs(customEngine.state.wave!.y - expectedInitialWaveY) < 1e-4, 'P12: restart placement did not use configured plasmaStartDistance');
+  }
+
+  // P13: Changing Start Distance affects initial placement but does not alter movement equation
+  const startDistEngine = freshEngine();
+  startDistEngine.updateWaveConfig({ plasmaStartDistance: 500 });
+  const w1 = startDistEngine.state.wave!.y;
+  startDistEngine.update(0.1);
+  const movement = w1 - startDistEngine.state.wave!.y;
+  const expectedMove = (startDistEngine.config.wave.plasmaVerticalSpeed ?? 28) * 0.1;
+  assert(Math.abs(movement - expectedMove) < 1e-4, 'P13: Start Distance altered movement equation');
+
+  // P14: Changing Vertical Speed affects time progression but does not teleport wave
+  const speedEngine = freshEngine();
+  const preChangeY = speedEngine.state.wave!.y;
+  speedEngine.updateWaveConfig({ plasmaVerticalSpeed: 60 });
+  assert(speedEngine.state.wave!.y === preChangeY, 'P14: Changing Vertical Speed teleported the wave');
+  speedEngine.update(0.1);
+  assert(Math.abs((preChangeY - speedEngine.state.wave!.y) - 6.0) < 1e-4, 'P14: Speed change did not scale movement');
+
+  // P15: Changing presentation-only parameters cannot alter physical state
+  const presEngine = freshEngine();
+  const physicalYBefore = presEngine.state.wave!.y;
+  presEngine.plasmaPresentation();
+  presEngine.draw();
+  assert(presEngine.state.wave!.y === physicalYBefore, 'P15: presentation or draw altered physical wave state');
+
+  // Configuration-isolation contracts
+  // 1. Neither setting creates player-relative or camera-relative wave authority
+  const isoEngine = freshEngine();
+  isoEngine.updateWaveConfig({ plasmaStartDistance: 450, plasmaVerticalSpeed: 35 });
+  isoEngine.state.zyx.y += 100;
+  assert(isoEngine.state.wave!.y === physicalYBefore, 'Isolation: Player movement modified wave authority');
+  isoEngine.camera.y += 200;
+  assert(isoEngine.state.wave!.y === physicalYBefore, 'Isolation: Camera movement modified wave authority');
+
+  // 2. Settings Apply commits values, Cancel restores prior values
+  let committedSettings = { startDistance: 900, verticalSpeed: 28 };
+  let stagedSettings = { ...committedSettings };
+  stagedSettings.startDistance = 400;
+  stagedSettings.verticalSpeed = 50;
+  assert(committedSettings.startDistance === 900, 'Isolation: Staging leaked into committed');
+  stagedSettings = { ...committedSettings };
+  assert(stagedSettings.startDistance === 900 && stagedSettings.verticalSpeed === 28, 'Isolation: Cancel failed to restore prior');
+  stagedSettings.startDistance = 650;
+  stagedSettings.verticalSpeed = 42;
+  committedSettings = { ...stagedSettings };
+  assert(committedSettings.startDistance === 650 && committedSettings.verticalSpeed === 42, 'Isolation: Apply failed to commit values');
+
+  console.log('  [PASS] P1-P15 Plasma Lockdown R1 physical authority & configuration isolation');
 }
 
 function contractACDiagonalCamera(): void {
@@ -1212,6 +1349,7 @@ function main(): void {
   contractAQCameraIndependence();
   contractARJumpTrace();
   contractASNoSyntheticAnchor();
+  contractPlasmaLockdownR1();
   contractACDiagonalCamera();
   contractADAmbientTransparency();
   contractAEReviewIsolation();

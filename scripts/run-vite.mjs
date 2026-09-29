@@ -2,7 +2,7 @@
  * Project-local Vite entry.
  * npm run build/dev/preview must not resolve a parent-workspace Vite.
  */
-import { spawnSync } from 'child_process';
+import { spawn, spawnSync } from 'child_process';
 import path from 'path';
 import { ensureEsbuild, localPackage, root } from './project-toolchain.mjs';
 
@@ -13,17 +13,17 @@ const esbuildBin = ensureEsbuild(esbuildPkg.pkg.version);
 const viteBin = path.join(vite.root, 'bin', 'vite.js');
 const args = process.argv.slice(2);
 
-const child = spawnSync(process.execPath, [viteBin, ...args], {
-  cwd: root,
-  env: { ...process.env, ESBUILD_BINARY_PATH: esbuildBin },
-  encoding: 'utf8',
-});
-
-process.stdout.write(child.stdout || '');
-process.stderr.write(child.stderr || '');
-if (child.status !== 0) process.exit(child.status ?? 1);
-
 if (args[0] === 'build') {
+  const child = spawnSync(process.execPath, [viteBin, ...args], {
+    cwd: root,
+    env: { ...process.env, ESBUILD_BINARY_PATH: esbuildBin },
+    encoding: 'utf8',
+  });
+
+  process.stdout.write(child.stdout || '');
+  process.stderr.write(child.stderr || '');
+  if (child.status !== 0) process.exit(child.status ?? 1);
+
   const output = `${child.stdout || ''}${child.stderr || ''}`;
   const modules = output.match(/(\d+)\s+modules transformed/);
   const js = output.match(/dist\/assets\/(index-[^.\s]+\.js)/);
@@ -35,4 +35,14 @@ if (args[0] === 'build') {
   console.log(`js: ${js ? js[1] : 'unknown'}`);
   console.log(`css: ${css ? css[1] : 'unknown'}`);
   console.log(`esbuild: ${path.relative(root, esbuildBin)}`);
+} else {
+  const child = spawn(process.execPath, [viteBin, ...args], {
+    cwd: root,
+    env: { ...process.env, ESBUILD_BINARY_PATH: esbuildBin },
+    stdio: 'inherit',
+  });
+
+  child.on('exit', (code) => {
+    process.exit(code ?? 0);
+  });
 }
