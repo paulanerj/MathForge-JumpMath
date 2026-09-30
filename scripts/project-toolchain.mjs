@@ -59,6 +59,17 @@ function runnableCopy(bin) {
 }
 
 export function ensureEsbuild(expectedVersion) {
+  const directCandidates = [
+    path.join(localModules, '@esbuild', 'linux-x64', 'bin', 'esbuild'),
+    path.join(localModules, 'esbuild', 'bin', 'esbuild'),
+  ];
+  for (const bin of directCandidates) {
+    const runnable = runnableCopy(bin);
+    if (!runnable) continue;
+    const probe = spawnSync(runnable, ['--version'], { encoding: 'utf8' });
+    const version = (probe.stdout || '').trim();
+    if (!expectedVersion || version === expectedVersion) return runnable;
+  }
   const matches = [];
   for (const bin of candidateBins()) {
     const runnable = runnableCopy(bin);

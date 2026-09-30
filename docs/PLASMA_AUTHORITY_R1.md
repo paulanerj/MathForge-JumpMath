@@ -51,7 +51,13 @@ The player may change the gap and therefore threat, heat, and warning. The playe
 
 ## Lifecycle
 
-Spawn and plasma-death recovery place the front one spawn distance behind the player. That is a new life, not pursuit. Pursuit after that is time only.
+- **New Level Entrance**: Viewport-relative entrance initialization places the wave off-screen such that the physical crest enters the viewport after `plasmaEntranceDelaySeconds` (default 2.5s) at configured vertical pursuit speed:
+  `initialWaveY = (viewportHeight / 2) + initialCameraY + (speed * delay)`.
+- **Plasma Death Recovery**: Intentional recovery places the wave behind the player's respawn platform pose (`safePose`) by the viewport-relative entrance offset:
+  `wave.y = safePose.y + (viewportHeight / 2) - camera.targetOffsetY + (speed * delay)`.
+  Player receives a 1.25s plasma shield before pursuit resumes.
+- **Restart**: Resets to row 0 and re-runs new level entrance initialization.
+- **Plasma Lab**: Manual placement is strictly probe-only (`plasmaProbe === true`) and cannot affect production gameplay.
 
 ## Tests
 
@@ -68,6 +74,7 @@ Spawn and plasma-death recovery place the front one spawn distance behind the pl
 | AQ | Moving the camera at frozen time does not move the front. |
 | AR | A level 6 jump moves the front only with the timed wave. |
 | AS | No crest anchored to the player or to a fixed viewport line. |
+| PV1-PV8 | Physical authority, viewport-relative entrance timing, pursuit competitiveness, death recovery, restart, and lab isolation. |
 
 `npm run test:plasma` runs this contract file with the existing toolchain.
 

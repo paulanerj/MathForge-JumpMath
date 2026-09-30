@@ -292,7 +292,10 @@ export class GameEngine {
 
   recoverPlasmaAfterPlayerDeath(): void {
     if (this.state.wave) {
-      const spawnDist = this.config.wave.plasmaStartDistance ?? this.config.wave.spawnDistanceBehind;
+      const delay = this.config.wave.plasmaEntranceDelaySeconds ?? 2.5;
+      const speed = this.config.wave.plasmaVerticalSpeed ?? this.config.wave.baseSpeed;
+      const viewportHeight = this.canvas?.height || 800;
+      const spawnDist = (viewportHeight / 2) - this.config.camera.targetOffsetY + (speed * delay);
       this.placeWave(this.state.zyx.y + spawnDist);
     }
     this.syncPursuitPresentation();

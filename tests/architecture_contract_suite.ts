@@ -1112,66 +1112,123 @@ function contractPlasmaLockdownR1(): void {
   assert(!presSrc.includes('visualFrontScreenY'), 'P11: synthetic screen front in presentation');
   assert(!rendSrc.includes('viewportHeight - '), 'P11: fixed-screen shockwave in renderer');
 
-  // P12: Physical wave new-life placement uses configured plasmaStartDistance
-  for (const customStart of [300, 600, 900, 1100]) {
-    const customEngine = freshEngine(straight, { wave: { plasmaStartDistance: customStart, spawnDistanceBehind: customStart } });
-    const expectedInitialWaveY = customEngine.state.zyx.y + customStart;
-    assert(Math.abs(customEngine.state.wave!.y - expectedInitialWaveY) < 1e-4, `P12: wave placed at ${customEngine.state.wave!.y}, expected ${expectedInitialWaveY}`);
+  // PV1 — EARLY SUCCESSFUL-PLAY VISIBILITY
+  const pv1Engine = freshEngine(straight);
+  pv1Engine.camera.y = -pv1Engine.config.camera.targetOffsetY;
+  const pv1PresentationInitial = pv1Engine.plasmaPresentation();
+  assert(pv1PresentationInitial !== null, 'PV1: presentation must be derived');
+  assert(!pv1PresentationInitial.physical.visible, 'PV1: crest should start offscreen before entrance window');
+  let elapsed = 0;
+  let enteredViewportAt: number | null = null;
+  while (elapsed <= 3.0) {
+    pv1Engine.update(1 / 60);
+    elapsed += 1 / 60;
+    const view = pv1Engine.plasmaPresentation();
+    if (view && view.physical.visible && enteredViewportAt === null) {
+      enteredViewportAt = elapsed;
+    }
+  }
+  assert(enteredViewportAt !== null && enteredViewportAt <= 3.0, `PV1: crest did not intersect viewport within 3s (entered at ${enteredViewportAt})`);
 
-    // Death recovery placement
-    customEngine.state.wave!.y = customEngine.state.zyx.y + 10;
-    customEngine.update(0.01);
-    customEngine.restart();
-    assert(Math.abs(customEngine.state.wave!.y - expectedInitialWaveY) < 1e-4, 'P12: restart placement did not use configured plasmaStartDistance');
+  // PV2 — PURSUIT COMPETITIVENESS
+  const pv2Engine = freshEngine(straight);
+  const pSpeed = pv2Engine.state.wave!.speed;
+  const initialGap = pv2Engine.state.wave!.y - pv2Engine.state.zyx.y;
+  pv2Engine.update(1.0);
+  const waveAdvancement = (initialGap - (pv2Engine.state.wave!.y - pv2Engine.state.zyx.y));
+  assert(Math.abs(waveAdvancement - pSpeed * 1.0) < 1e-4, 'PV2: pursuit wave does not advance deterministically over time');
+
+  // PV3 — PHYSICAL CREST AUTHORITY
+  const pv3Engine = freshEngine(straight);
+  pv3Engine.camera.y = -150;
+  const pres = pv3Engine.plasmaPresentation()!;
+  const expectedShockWorldY = pv3Engine.state.wave!.y + SHOCK_FRONT_WORLD_OFFSET;
+  assert(pres.physical.worldY === expectedShockWorldY, 'PV3: shock front world Y does not match wave world Y + offset');
+  const expectedScreenY = worldToScreenY(expectedShockWorldY, pv3Engine.camera.y, 800);
+  assert(Math.abs(pres.physical.screenY - expectedScreenY) < 1e-4, 'PV3: physical screen Y does not derive canonical worldToScreenY');
+
+  // PV4 — NEW-LEVEL INITIALIZATION
+  for (const customDelay of [1.0, 2.0, 2.5, 3.5]) {
+    const customEngine = freshEngine(straight, { wave: { plasmaEntranceDelaySeconds: customDelay } });
+    const expectedEntranceY = (800 / 2) + (-customEngine.config.camera.targetOffsetY) + (customEngine.state.wave!.speed * customDelay);
+    assert(Math.abs(customEngine.state.wave!.y - expectedEntranceY) < 1e-4, `PV4: wave placed at ${customEngine.state.wave!.y}, expected ${expectedEntranceY}`);
   }
 
-  // P13: Changing Start Distance affects initial placement but does not alter movement equation
-  const startDistEngine = freshEngine();
-  startDistEngine.updateWaveConfig({ plasmaStartDistance: 500 });
-  const w1 = startDistEngine.state.wave!.y;
-  startDistEngine.update(0.1);
-  const movement = w1 - startDistEngine.state.wave!.y;
-  const expectedMove = (startDistEngine.config.wave.plasmaVerticalSpeed ?? 28) * 0.1;
-  assert(Math.abs(movement - expectedMove) < 1e-4, 'P13: Start Distance altered movement equation');
+  // PV5 — CONTINUITY
+  const pv5Engine = freshEngine(straight);
+  const plat = pv5Engine.platformManager.platforms.find((p) => p.rowIdx === 1 && p.isCorrect)!;
+  const preJumpY = pv5Engine.state.wave!.y;
+  pv5Engine.executeJump(plat);
+  assert(pv5Engine.state.wave!.y === preJumpY, 'PV5: jump initiation modified wave.y');
+  while (pv5Engine.state.zyx.jumping) pv5Engine.update(1 / 60);
+  assert(!pv5Engine.state.zyx.jumping, 'PV5: jump did not complete');
 
-  // P14: Changing Vertical Speed affects time progression but does not teleport wave
+  // PV6 — DEATH RECOVERY SEMANTICS
+  const pv6Engine = freshEngine(straight);
+  pv6Engine.state.wave!.y = pv6Engine.state.zyx.y + 26;
+  pv6Engine.update(1 / 60); // triggers wave death
+  assert(pv6Engine.state.status === 'DYING', 'PV6: wave death not triggered');
+  while (pv6Engine.state.status === 'DYING') pv6Engine.update(1 / 60);
+  assert(pv6Engine.state.status === 'playing', 'PV6: did not resume playing after death');
+  const expectedRecoveryGap = (800 / 2) - pv6Engine.config.camera.targetOffsetY + (pv6Engine.state.wave!.speed * (pv6Engine.config.wave.plasmaEntranceDelaySeconds ?? 2.5));
+  const actualRecoveryGap = pv6Engine.state.wave!.y - pv6Engine.state.zyx.y;
+  assert(Math.abs(actualRecoveryGap - expectedRecoveryGap) < 1e-4, `PV6: recovery gap ${actualRecoveryGap}, expected ${expectedRecoveryGap}`);
+  assert(pv6Engine.plasmaShield > 0, 'PV6: player not granted plasma shield after recovery');
+
+  // PV7 — RESTART SEMANTICS
+  const pv7Engine = freshEngine(straight);
+  pv7Engine.state.wave!.y = 100;
+  pv7Engine.state.zyx.y = -440;
+  pv7Engine.restart();
+  const expectedRestartY = (800 / 2) + (-pv7Engine.config.camera.targetOffsetY) + (pv7Engine.state.wave!.speed * (pv7Engine.config.wave.plasmaEntranceDelaySeconds ?? 2.5));
+  assert(Math.abs(pv7Engine.state.wave!.y - expectedRestartY) < 1e-4, 'PV7: restart did not place wave at new-level entrance Y');
+  assert(pv7Engine.state.zyx.y === 0, 'PV7: restart did not place player at row 0');
+
+  // PV8 — LAB ISOLATION
+  const pv8Engine = freshEngine(straight);
+  pv8Engine.plasmaProbe = false;
+  const normalY = pv8Engine.state.wave!.y;
+  pv8Engine.inspectPlasma(500);
+  assert(pv8Engine.state.wave!.y === normalY, 'PV8: inspectPlasma changed wave without plasmaProbe active');
+  pv8Engine.freezePlasmaTime();
+  assert(!pv8Engine.plasmaFrozen, 'PV8: freezePlasmaTime operated without plasmaProbe active');
+
+  // Speed tuning & presentation isolation
   const speedEngine = freshEngine();
   const preChangeY = speedEngine.state.wave!.y;
   speedEngine.updateWaveConfig({ plasmaVerticalSpeed: 60 });
-  assert(speedEngine.state.wave!.y === preChangeY, 'P14: Changing Vertical Speed teleported the wave');
+  assert(speedEngine.state.wave!.y === preChangeY, 'Speed update teleported the wave');
   speedEngine.update(0.1);
-  assert(Math.abs((preChangeY - speedEngine.state.wave!.y) - 6.0) < 1e-4, 'P14: Speed change did not scale movement');
+  assert(Math.abs((preChangeY - speedEngine.state.wave!.y) - 6.0) < 1e-4, 'Speed change did not scale movement');
 
-  // P15: Changing presentation-only parameters cannot alter physical state
   const presEngine = freshEngine();
   const physicalYBefore = presEngine.state.wave!.y;
   presEngine.plasmaPresentation();
   presEngine.draw();
-  assert(presEngine.state.wave!.y === physicalYBefore, 'P15: presentation or draw altered physical wave state');
+  assert(presEngine.state.wave!.y === physicalYBefore, 'Presentation/draw altered physical wave state');
 
   // Configuration-isolation contracts
-  // 1. Neither setting creates player-relative or camera-relative wave authority
   const isoEngine = freshEngine();
-  isoEngine.updateWaveConfig({ plasmaStartDistance: 450, plasmaVerticalSpeed: 35 });
+  isoEngine.updateWaveConfig({ plasmaVerticalSpeed: 35 });
   isoEngine.state.zyx.y += 100;
   assert(isoEngine.state.wave!.y === physicalYBefore, 'Isolation: Player movement modified wave authority');
   isoEngine.camera.y += 200;
   assert(isoEngine.state.wave!.y === physicalYBefore, 'Isolation: Camera movement modified wave authority');
 
-  // 2. Settings Apply commits values, Cancel restores prior values
-  let committedSettings = { startDistance: 900, verticalSpeed: 28 };
+  // Settings Apply commits values, Cancel restores prior values
+  let committedSettings = { entranceDelay: 2.5, verticalSpeed: 28 };
   let stagedSettings = { ...committedSettings };
-  stagedSettings.startDistance = 400;
+  stagedSettings.entranceDelay = 1.5;
   stagedSettings.verticalSpeed = 50;
-  assert(committedSettings.startDistance === 900, 'Isolation: Staging leaked into committed');
+  assert(committedSettings.entranceDelay === 2.5, 'Isolation: Staging leaked into committed');
   stagedSettings = { ...committedSettings };
-  assert(stagedSettings.startDistance === 900 && stagedSettings.verticalSpeed === 28, 'Isolation: Cancel failed to restore prior');
-  stagedSettings.startDistance = 650;
+  assert(stagedSettings.entranceDelay === 2.5 && stagedSettings.verticalSpeed === 28, 'Isolation: Cancel failed to restore prior');
+  stagedSettings.entranceDelay = 3.0;
   stagedSettings.verticalSpeed = 42;
   committedSettings = { ...stagedSettings };
-  assert(committedSettings.startDistance === 650 && committedSettings.verticalSpeed === 42, 'Isolation: Apply failed to commit values');
+  assert(committedSettings.entranceDelay === 3.0 && committedSettings.verticalSpeed === 42, 'Isolation: Apply failed to commit values');
 
-  console.log('  [PASS] P1-P15 Plasma Lockdown R1 physical authority & configuration isolation');
+  console.log('  [PASS] PV1-PV8 Plasma Lockdown R1 physical authority, entrance timing & configuration isolation');
 }
 
 function contractACDiagonalCamera(): void {
@@ -1195,14 +1252,14 @@ function contractACDiagonalCamera(): void {
       engine.update(step);
       frames++;
     }
-    return frames * step;
+    return { elapsed: frames * step, before };
   };
 
   const orbital = freshEngine(LEVEL_DATABASE.find((level) => level.id === 'f3_sum15')!);
-  const orbitalElapsed = land(orbital);
+  const orbitalLand = land(orbital);
   const orbitalFrame = rowCenter(orbital, orbital.state.zyx.currentRow);
   assert(Math.abs(orbital.camera.x - orbitalFrame) < 0.01, 'orbital landing camera missed the destination row');
-  assert(Math.abs((orbital.state.wave!.y) - (900 - orbital.config.wave.baseSpeed * orbitalElapsed)) < 0.05, 'orbital jump retuned the plasma');
+  assert(Math.abs((orbital.state.wave!.y) - (orbitalLand.before - orbital.config.wave.baseSpeed * orbitalLand.elapsed)) < 0.05, 'orbital jump retuned the plasma');
   for (let i = 0; i < 30; i++) orbital.update(step);
   assert(Math.abs(orbital.camera.x - orbitalFrame) < 0.01, 'orbital landing started a second horizontal move');
 
