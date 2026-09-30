@@ -1,6 +1,6 @@
 {
   "name": "jumpmath",
-  "description": "jumppigame",
+  "description": "Solve arithmetic under pressure. Jump between platforms, build combos, and outrun the Plasma Wave in this interstellar math arcade.",
   "requestFramePermissions": [],
   "majorCapabilities": []
 }

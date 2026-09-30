@@ -4,9 +4,14 @@
 import { readFileSync } from 'fs';
 import { spawnSync } from 'child_process';
 import path from 'path';
-import { ensureEsbuild, root } from './project-toolchain.mjs';
+import { ensureEsbuild, localPackage, root } from './project-toolchain.mjs';
 
-const tsxEsbuild = JSON.parse(readFileSync(path.join(root, 'node_modules/tsx/node_modules/esbuild/package.json'), 'utf8'));
+let tsxEsbuild;
+try {
+  tsxEsbuild = JSON.parse(readFileSync(path.join(root, 'node_modules/tsx/node_modules/esbuild/package.json'), 'utf8'));
+} catch {
+  tsxEsbuild = localPackage('esbuild').pkg;
+}
 const esbuildBin = ensureEsbuild(tsxEsbuild.version);
 const tsx = path.join(root, 'node_modules', 'tsx', 'dist', 'cli.mjs');
 const suites = [
