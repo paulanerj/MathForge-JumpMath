@@ -18,7 +18,15 @@ import { DEFAULT_ZYX_CONFIG as barrelDefault } from '../src/config/index.ts';
 import { createZyxConfig } from '../src/config/zyxConfig.ts';
 import { DeepPartial, ZyxConfig } from '../src/config/configTypes.ts';
 import { LevelSchema } from '../src/types.ts';
-import { campaignReviewPlaylist, reviewIndexForLevel, reviewLaunchFromSearch } from '../src/review/reviewMode.ts';
+import {
+  campaignReviewPlaylist,
+  canSelectCampaignLevel,
+  canSelectCampaignSector,
+  isLevelNormallyUnlocked,
+  isSectorNormallyUnlocked,
+  reviewIndexForLevel,
+  reviewLaunchFromSearch,
+} from '../src/review/reviewMode.ts';
 import { sceneFromLevel, sceneInventory, validateVisualScene } from '../src/studio/VisualScene.ts';
 import { derivePlasmaPresentation, PLASMA_LAB_GAPS, PLASMA_PRESENTATION, SHOCK_FRONT_WORLD_OFFSET, worldToScreenY } from '../src/engine/plasmaPresentation.ts';
 
@@ -1130,7 +1138,8 @@ function contractPlasmaLockdownR1(): void {
   }
   assert(enteredViewportAt !== null && enteredViewportAt <= 3.0, `PV1: crest did not intersect viewport within 3s (entered at ${enteredViewportAt})`);
 
-  // PV2 — PURSUIT COMPETITIVENESS
+  // PV2 — PURSUIT ADVANCEMENT
+  // During active play the physical wave advances continuously and deterministically at its configured vertical speed.
   const pv2Engine = freshEngine(straight);
   const pSpeed = pv2Engine.state.wave!.speed;
   const initialGap = pv2Engine.state.wave!.y - pv2Engine.state.zyx.y;
@@ -1229,6 +1238,253 @@ function contractPlasmaLockdownR1(): void {
   assert(committedSettings.entranceDelay === 3.0 && committedSettings.verticalSpeed === 42, 'Isolation: Apply failed to commit values');
 
   console.log('  [PASS] PV1-PV8 Plasma Lockdown R1 physical authority, entrance timing & configuration isolation');
+}
+
+function contractPlasmaPresentationFreezeR1(): void {
+  const straight = LEVEL_DATABASE.find((level) => level.id === 'f1_sum10')!;
+  const engine = freshEngine(straight);
+  const presSrc = sourceText.get(path.join(srcRoot, 'engine/plasmaPresentation.ts')) || '';
+  const rendSrc = sourceText.get(path.join(srcRoot, 'engine/Renderer.ts')) || '';
+
+  // PP1 — SINGLE PHYSICAL CREST AUTHORITY
+  assert(rendSrc.includes('private paintPlasmaWall'), 'PP1: missing canonical paintPlasmaWall');
+  const paintMatches = rendSrc.match(/paintPlasmaWall/g) || [];
+  assert(paintMatches.length >= 2, 'PP1: paintPlasmaWall not invoked from main draw pipeline');
+  assert(!rendSrc.includes('paintSecondaryPlasma') && !rendSrc.includes('paintSecondCrest'), 'PP1: secondary crest found');
+
+  // PP2 — CANONICAL PROJECTION
+  engine.camera.y = -120;
+  engine.state.wave!.y = 200;
+  const p2 = engine.plasmaPresentation()!;
+  const canonicalY = worldToScreenY(p2.physical.worldY, engine.camera.y, 800);
+  assert(Math.abs(p2.physical.screenY - canonicalY) < 1e-4, 'PP2: screenY does not match canonical worldToScreenY');
+
+  // PP3 — OFFSCREEN DISCIPLINE
+  engine.state.wave!.y = 1200; // far offscreen
+  engine.camera.y = -150;
+  engine.draw();
+  assert(engine.renderer.lastPlasma?.shock.executed === false, 'PP3: crest drawn when physical.visible was false');
+  assert(engine.renderer.lastPlasma?.order[1] === 'crest-offscreen', 'PP3: render order did not record crest-offscreen');
+
+  // PP4 — ENTRANCE CONTINUITY
+  const testEngine = freshEngine(straight);
+  testEngine.camera.y = -150;
+  testEngine.state.wave!.y = 270; // near viewport bottom
+  let prevScreenY = testEngine.plasmaPresentation()!.physical.screenY;
+  for (let i = 0; i < 30; i++) {
+    testEngine.update(1 / 60);
+    const currScreenY = testEngine.plasmaPresentation()!.physical.screenY;
+    const delta = prevScreenY - currScreenY;
+    const expectedDelta = testEngine.state.wave!.speed * (1 / 60);
+    assert(Math.abs(delta - expectedDelta) < 1e-4, 'PP4: entrance projection discontinuous');
+    prevScreenY = currScreenY;
+  }
+
+  // PP5 — CAMERA INDEPENDENCE
+  const p5Before = testEngine.state.wave!.y;
+  testEngine.plasmaProbe = true;
+  testEngine.freezePlasmaTime();
+  testEngine.moveLabCamera(1);
+  assert(testEngine.state.wave!.y === p5Before, 'PP5: camera motion mutated wave world Y');
+  testEngine.moveLabCamera(-1);
+  assert(testEngine.state.wave!.y === p5Before, 'PP5: camera motion mutated wave world Y');
+
+  // PP6 — PLAYER INDEPENDENCE
+  const p6Before = testEngine.state.wave!.y;
+  testEngine.moveLabPlayer(1);
+  assert(testEngine.state.wave!.y === p6Before, 'PP6: player motion mutated wave world Y');
+  testEngine.moveLabPlayer(-1);
+  assert(testEngine.state.wave!.y === p6Before, 'PP6: player motion mutated wave world Y');
+
+  // PP7 — RECOVERY CLEANUP
+  const p7Engine = freshEngine(straight);
+  p7Engine.state.wave!.y = p7Engine.state.zyx.y + 26;
+  p7Engine.update(1 / 60); // triggers wave death
+  while (p7Engine.state.status === 'DYING') p7Engine.update(1 / 60);
+  assert(p7Engine.state.status === 'playing', 'PP7: recovery did not resume playing');
+  p7Engine.draw();
+  assert(p7Engine.state.wave!.y > p7Engine.state.zyx.y + 100, 'PP7: wave remained at death collision location');
+
+  // PP8 — PRESENTATION CANNOT OWN PHYSICS
+  assert(!presSrc.includes('state.wave.y =') && !presSrc.includes('state.wave.y -='), 'PP8: presentation modifies wave.y');
+  assert(!rendSrc.includes('engine.state.wave.y =') && !rendSrc.includes('engine.state.wave.y -='), 'PP8: renderer modifies wave.y');
+
+  // PP9 — MOBILE GEOMETRY
+  for (const [w, h] of [[390, 844], [393, 852], [430, 932], [500, 800]]) {
+    const input = {
+      waveY: 300,
+      playerY: 0,
+      cameraY: -150,
+      viewportHeight: h,
+      spawnDistance: 900,
+      collisionDistance: 26,
+      warningDistance: 520,
+    };
+    const pres = derivePlasmaPresentation(input);
+    assert(Number.isFinite(pres.physical.screenY), `PP9: non-finite screenY for ${w}x${h}`);
+    assert(Number.isFinite(pres.atmosphere.viewportCoverage), `PP9: non-finite coverage for ${w}x${h}`);
+    assert(pres.physical.bodyTop < pres.physical.bodyBottom, `PP9: inverted body bounds for ${w}x${h}`);
+  }
+
+  // PP10 — SIGNATURE CONSTANT AUTHORITY
+  assert(PLASMA_PRESENTATION.crest.edgeWidth === 3.5, 'PP10: signature edgeWidth drifted');
+  assert(PLASMA_PRESENTATION.crest.glowBlur === 26, 'PP10: signature glowBlur drifted');
+  assert(PLASMA_PRESENTATION.crest.body === 260, 'PP10: signature body depth drifted');
+  assert(PLASMA_PRESENTATION.crest.rollA === 9 && PLASMA_PRESENTATION.crest.rollB === 5, 'PP10: signature harmonics drifted');
+  assert(PLASMA_PRESENTATION.heat.orange === 'rgba(255, 120, 0, 0.85)', 'PP10: signature heat orange drifted');
+
+  console.log('  [PASS] PP1-PP10 Plasma Presentation Freeze R1 visual authority & integrity');
+}
+
+function contractCampaignIntegrationR1(): void {
+  // CI1 — CAMPAIGN ENUMERATION
+  assert(LEVEL_DATABASE.length === 30, `CI1: expected 30 levels, got ${LEVEL_DATABASE.length}`);
+  assert(CAMPAIGN_SECTORS.length === 6, `CI1: expected 6 sectors, got ${CAMPAIGN_SECTORS.length}`);
+  for (const sector of CAMPAIGN_SECTORS) {
+    assert(sector.levels.length === 5, `CI1: sector ${sector.id} has ${sector.levels.length} levels, expected 5`);
+  }
+
+  // CI2 — MODE AUTHORITY
+  const allowedModes = new Set(['SUM_TO', 'SKIP_COUNT', 'MULTIPLY', 'DIFFERENCE']);
+  for (const level of LEVEL_DATABASE) {
+    assert(allowedModes.has(level.mathConfig.mode), `CI2: unknown mode ${level.mathConfig.mode} on ${level.id}`);
+  }
+
+  // CI3 — CHALLENGE VALIDITY
+  for (let i = 0; i < LEVEL_DATABASE.length; i++) {
+    const level = LEVEL_DATABASE[i];
+    const rng = new SeedableMathRng(2000 + i);
+    const mathEngine = new MathChallengeEngine({ rng });
+    mathEngine.initializeSession(level, 10);
+    for (let r = 1; r <= 10; r++) {
+      const challenge = mathEngine.generateChallengeForRow(level, r);
+      const correct = challenge.options.filter((o) => o.isCorrect);
+      assert(correct.length === 1, `CI3: ${level.id} row ${r} has ${correct.length} correct options, expected 1`);
+      assert(challenge.options.length >= 3, `CI3: ${level.id} row ${r} has fewer than 3 options`);
+    }
+  }
+
+  // CI4 — SUCCESSFUL PATH EXISTS
+  for (const level of LEVEL_DATABASE) {
+    const engine = freshEngine(level);
+    engine.init();
+    for (let r = 1; r <= 10; r++) {
+      const platform = engine.platformManager.platforms.find((p) => p.rowIdx === r && p.isCorrect);
+      assert(!!platform, `CI4: ${level.id} row ${r} missing correct platform`);
+      assert(Number.isFinite(platform.x) && Number.isFinite(platform.y), `CI4: ${level.id} row ${r} non-finite platform coordinates`);
+    }
+  }
+
+  // CI5 — COMPLETION REACHABILITY
+  for (const level of LEVEL_DATABASE) {
+    const engine = freshEngine(level);
+    let won = false;
+    engine.onLevelComplete = () => { won = true; };
+    engine.init();
+    for (let r = 1; r <= 10; r++) {
+      const p = engine.platformManager.platforms.find((item) => item.rowIdx === r && item.isCorrect)!;
+      engine.executeJump(p);
+      while (engine.state.zyx.jumping) engine.update(1 / 60);
+    }
+    assert(won && engine.state.status === 'level_complete', `CI5: ${level.id} did not reach level_complete`);
+  }
+
+  // CI6 — FAILURE RECOVERY
+  const auditLevels = [LEVEL_DATABASE[0], LEVEL_DATABASE[12], LEVEL_DATABASE[25]];
+  for (const level of auditLevels) {
+    // Wrong answer bounce recovery
+    const engine = freshEngine(level);
+    let won = false;
+    engine.onLevelComplete = () => { won = true; };
+    engine.init();
+    const p1 = engine.platformManager.platforms.find((p) => p.rowIdx === 1 && p.isCorrect)!;
+    engine.executeJump(p1);
+    while (engine.state.zyx.jumping) engine.update(1 / 60);
+
+    const wrong = engine.platformManager.platforms.find((p) => p.rowIdx === 2 && !p.isCorrect)!;
+    engine.executeJump(wrong);
+    while (engine.state.zyx.jumping || engine.state.zyx.bouncing) engine.update(1 / 60);
+    assert(engine.state.zyx.currentRow === 1, `CI6: wrong answer did not bounce back to row 1 on ${level.id}`);
+
+    // Complete remaining rows
+    for (let r = 2; r <= 10; r++) {
+      const p = engine.platformManager.platforms.find((item) => item.rowIdx === r && item.isCorrect)!;
+      engine.executeJump(p);
+      while (engine.state.zyx.jumping) engine.update(1 / 60);
+    }
+    assert(won, `CI6: could not complete ${level.id} after wrong-choice recovery`);
+  }
+
+  // CI7 — PLASMA AUTHORITY PRESERVED
+  for (const level of LEVEL_DATABASE) {
+    const engine = freshEngine(level);
+    assert(engine.config.wave.plasmaVerticalSpeed === 28.0, `CI7: plasma speed altered on ${level.id}`);
+    assert(engine.config.wave.plasmaEntranceDelaySeconds === 2.5, `CI7: entrance delay altered on ${level.id}`);
+  }
+
+  // CI8 — PRESENTATION FREEZE PRESERVED
+  assert(PLASMA_PRESENTATION.crest.edge === '#ffffff', 'CI8: presentation edge drifted');
+  assert(PLASMA_PRESENTATION.crest.edgeWidth === 3.5, 'CI8: presentation edgeWidth drifted');
+  assert(PLASMA_PRESENTATION.crest.glowBlur === 26, 'CI8: presentation glowBlur drifted');
+
+  // CI9 — CONFIGURATION FINITENESS
+  for (const level of LEVEL_DATABASE) {
+    const pv = level.progressionVector;
+    assert(Number.isFinite(pv.x) && Number.isFinite(pv.y), `CI9: non-finite vector on ${level.id}`);
+    assert(Math.hypot(pv.x, pv.y) > 0, `CI9: zero vector on ${level.id}`);
+    for (const [k, v] of Object.entries(level.mathConfig)) {
+      if (typeof v === 'number') {
+        assert(Number.isFinite(v), `CI9: non-finite math property ${k} on ${level.id}`);
+      }
+    }
+  }
+
+  // CI10 — CAMPAIGN ORDER INTEGRITY
+  const engine = freshEngine(LEVEL_DATABASE[0]);
+  engine.init();
+  for (let i = 0; i < LEVEL_DATABASE.length; i++) {
+    assert(engine.levelIndex === i, `CI10: expected level index ${i}, got ${engine.levelIndex}`);
+    assert(engine.state.schema.id === LEVEL_DATABASE[i].id, `CI10: schema mismatch at index ${i}`);
+    for (let r = 1; r <= 10; r++) {
+      const p = engine.platformManager.platforms.find((item) => item.rowIdx === r && item.isCorrect)!;
+      engine.executeJump(p);
+      while (engine.state.zyx.jumping) engine.update(1 / 60);
+    }
+  }
+  assert(engine.levelIndex === 0, 'CI10: campaign did not loop back to index 0 after completion');
+
+  // CI11 — DETERMINISTIC AUDITABILITY
+  const rngA = new SeedableMathRng(42);
+  const rngB = new SeedableMathRng(42);
+  const mathA = new MathChallengeEngine({ rng: rngA });
+  const mathB = new MathChallengeEngine({ rng: rngB });
+  const sessA = mathA.initializeSession(LEVEL_DATABASE[0], 5);
+  const sessB = mathB.initializeSession(LEVEL_DATABASE[0], 5);
+  assert(sessA.initialZyxVal === sessB.initialZyxVal, 'CI11: non-deterministic initial session val');
+  for (let i = 0; i < 5; i++) {
+    assert(sessA.initialChallenges[i].challenge.correctAnswer === sessB.initialChallenges[i].challenge.correctAnswer, `CI11: non-deterministic challenge at row ${i + 1}`);
+  }
+
+  // CI12 — COMPLETE CAMPAIGN SMOKE
+  const smokeEngine = freshEngine(LEVEL_DATABASE[0]);
+  smokeEngine.init();
+  let levelsCompleted = 0;
+  smokeEngine.onLevelComplete = () => {
+    levelsCompleted++;
+    smokeEngine.levelIndex = (smokeEngine.levelIndex + 1) % LEVEL_DATABASE.length;
+    smokeEngine.loadSchema(LEVEL_DATABASE[smokeEngine.levelIndex]);
+  };
+  for (let l = 0; l < 30; l++) {
+    for (let r = 1; r <= 10; r++) {
+      const p = smokeEngine.platformManager.platforms.find((item) => item.rowIdx === r && item.isCorrect)!;
+      smokeEngine.executeJump(p);
+      while (smokeEngine.state.zyx.jumping) smokeEngine.update(1 / 60);
+    }
+  }
+  assert(levelsCompleted === 30, `CI12: expected 30 completed levels, got ${levelsCompleted}`);
+  assert(smokeEngine.state.status === 'playing', 'CI12: smoke traversal left engine in invalid status');
+
+  console.log('  [PASS] CI1-CI12 Campaign Difficulty & Pursuit Integration R1 authoritative contracts');
 }
 
 function contractACDiagonalCamera(): void {
@@ -1331,6 +1587,77 @@ function contractAEReviewIsolation(): void {
   console.log('  [PASS] AE review mode reaches the 30 campaign schemas without owning progress');
 }
 
+function contractReviewAccessPatch(): void {
+  const appSrc = sourceText.get(path.join(srcRoot, 'App.tsx')) || '';
+
+  // RA1 — NORMAL LOCK PRESERVATION
+  // With review override OFF, locked campaign levels remain inaccessible exactly as before.
+  const emptyCleared: string[] = [];
+  assert(canSelectCampaignLevel('f1_sum10', emptyCleared, false, false) === true, 'RA1: Sector 1 Level 1 should be normally unlocked');
+  assert(canSelectCampaignLevel('f3_sum15', emptyCleared, false, false) === false, 'RA1: Level 6 (Sector 2) must be locked when 0 sectors cleared');
+  assert(canSelectCampaignLevel('d3_mult2', emptyCleared, false, false) === false, 'RA1: Level 13 (Sector 3) must be locked when 0 sectors cleared');
+  assert(canSelectCampaignLevel('q4_mult7', emptyCleared, false, false) === false, 'RA1: Level 27 (Sector 6) must be locked when 0 sectors cleared');
+  assert(canSelectCampaignSector(CAMPAIGN_SECTORS[0], emptyCleared, false, false) === true, 'RA1: Sector 1 should be normally unlocked');
+  assert(canSelectCampaignSector(CAMPAIGN_SECTORS[1], emptyCleared, false, false) === false, 'RA1: Sector 2 must be locked when 0 sectors cleared');
+
+  // RA2 — REVIEW ACCESS
+  // With Review Mode + unlock override ON, every one of the 30 production levels is selectable.
+  for (const level of LEVEL_DATABASE) {
+    assert(
+      canSelectCampaignLevel(level.id, emptyCleared, true, true) === true,
+      `RA2: level ${level.id} was not selectable under Review Mode + unlock override`
+    );
+  }
+  for (const sector of CAMPAIGN_SECTORS) {
+    assert(
+      canSelectCampaignSector(sector, emptyCleared, true, true) === true,
+      `RA2: sector ${sector.id} was not selectable under Review Mode + unlock override`
+    );
+  }
+
+  // RA3 — NO PROGRESSION MUTATION
+  // Launching a normally locked level through review access does not mutate genuine campaign unlock state.
+  const sampleProgress = { sectorsCleared: ['sector_lattice'], highScore: 500 };
+  const beforeCleared = [...sampleProgress.sectorsCleared];
+  const canSelectL27 = canSelectCampaignLevel('q4_mult7', sampleProgress.sectorsCleared, true, true);
+  assert(canSelectL27 === true, 'RA3: review access failed to select L27');
+  assert(sampleProgress.sectorsCleared.length === beforeCleared.length, 'RA3: progress sectorsCleared mutated during check');
+  assert(sampleProgress.sectorsCleared[0] === beforeCleared[0], 'RA3: progress state corrupted');
+
+  // RA4 — RESTORATION
+  // After disabling the override, legitimate campaign lock state is restored immediately.
+  assert(canSelectCampaignLevel('q4_mult7', emptyCleared, true, false) === false, 'RA4: L27 still selectable with override OFF');
+  assert(canSelectCampaignLevel('d3_mult2', emptyCleared, false, false) === false, 'RA4: L13 still selectable with review OFF');
+  assert(canSelectCampaignSector(CAMPAIGN_SECTORS[5], emptyCleared, true, false) === false, 'RA4: Sector 6 still selectable with override OFF');
+
+  // RA5 — DIRECT REVIEW URL
+  // Review-mode direct level selection can launch requested production schema without requiring sequential campaign completion.
+  const directReview = reviewLaunchFromSearch('?reviewMode=1&level=q4_mult7');
+  assert(directReview.enabled === true, 'RA5: direct review URL failed to enable review mode');
+  assert(directReview.levelId === 'q4_mult7', 'RA5: direct review URL lost levelId');
+  const directUnlock = reviewLaunchFromSearch('?reviewMode=1&level=q4_mult7&reviewUnlock=1');
+  assert(directUnlock.reviewUnlockAllLevels === true, 'RA5: reviewUnlock query parameter did not enable unlock override');
+
+  // RA6 — PRODUCTION URL SAFETY
+  // Equivalent direct access without authorized Review Mode cannot bypass normal campaign locks.
+  const prodDirect = reviewLaunchFromSearch('?level=q4_mult7');
+  assert(prodDirect.enabled === false, 'RA6: non-review URL bypassed reviewMode check');
+  assert(prodDirect.reviewUnlockAllLevels === false, 'RA6: non-review URL enabled unlock override');
+
+  // RA7 — CAMPAIGN COMPLETION ISOLATION
+  // Completing a review-accessed locked level cannot silently promote normal campaign progress.
+  assert(appSrc.includes('if (reviewMode) {'), 'RA7: missing reviewMode branch in proceedNext');
+  assert(appSrc.includes('Review never writes campaign progress'), 'RA7: missing review progress write guard');
+
+  // RA8 — EXISTING REVIEW AUTHORITY
+  // The implementation extends existing Review Mode authority rather than creating a parallel level/campaign database.
+  assert(appSrc.includes('reviewUnlockAllLevels'), 'RA8: reviewUnlockAllLevels authority missing from App');
+  assert(appSrc.includes('canSelectCampaignLevel'), 'RA8: canSelectCampaignLevel authority missing from App');
+  assert(appSrc.includes('Unlock all levels for review'), 'RA8: UI toggle missing from settings');
+
+  console.log('  [PASS] RA1-RA8 Review Mode Level Unlock Override authoritative contracts');
+}
+
 function contractAFStudioRenderer(): void {
   const studio = sourceText.get(path.join(srcRoot, 'studio/LevelStudio.tsx')) || '';
   const main = sourceText.get(path.join(srcRoot, 'main.tsx')) || '';
@@ -1407,9 +1734,12 @@ function main(): void {
   contractARJumpTrace();
   contractASNoSyntheticAnchor();
   contractPlasmaLockdownR1();
+  contractPlasmaPresentationFreezeR1();
+  contractCampaignIntegrationR1();
   contractACDiagonalCamera();
   contractADAmbientTransparency();
   contractAEReviewIsolation();
+  contractReviewAccessPatch();
   contractAFStudioRenderer();
   contractAGVisualScene();
   console.log('\nARCHITECTURE CONTRACTS PASSED');

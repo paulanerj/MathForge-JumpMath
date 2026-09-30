@@ -5,6 +5,10 @@ import { describeLevelObjective } from './math/objectivePresentation';
 import { CAMPAIGN_SECTORS, SectorDef } from './engine/LevelDatabase';
 import {
   campaignReviewPlaylist,
+  canSelectCampaignLevel,
+  canSelectCampaignSector,
+  isLevelNormallyUnlocked,
+  isSectorNormallyUnlocked,
   reviewIndexForLevel,
   reviewLaunchFromSearch,
   sectorForCampaignLevel,
@@ -116,6 +120,7 @@ export default function App() {
   });
 
   const [reviewMode, setReviewMode] = useState(initialReview.enabled);
+  const [reviewUnlockAllLevels, setReviewUnlockAllLevels] = useState(initialReview.reviewUnlockAllLevels);
   const [reviewList, setReviewList] = useState(false);
   const [screen, setScreen] = useState<Screen>(initialReview.enabled ? 'ready' : initialPlasmaLab ? 'playing' : 'title');
   const [progress, setProgress] = useState<PlayerProgress>(loadProgress);
@@ -617,8 +622,15 @@ export default function App() {
   };
 
   const isSectorUnlocked = (sector: SectorDef) => {
-    if (sector.unlockRequirement === 0) return true;
-    return progress.sectorsCleared.length >= sector.unlockRequirement;
+    return isSectorNormallyUnlocked(sector, progress.sectorsCleared);
+  };
+
+  const canSelectSector = (sector: SectorDef) => {
+    return canSelectCampaignSector(sector, progress.sectorsCleared, reviewMode, reviewUnlockAllLevels);
+  };
+
+  const canSelectLevel = (levelId: string) => {
+    return canSelectCampaignLevel(levelId, progress.sectorsCleared, reviewMode, reviewUnlockAllLevels);
   };
 
   // ── Render helpers ──────────────────────────────────────────────────────
@@ -764,29 +776,33 @@ export default function App() {
 
             <div>
               {CAMPAIGN_SECTORS.map((sector, idx) => {
-                const unlocked = isSectorUnlocked(sector);
+                const normallyUnlocked = isSectorUnlocked(sector);
+                const selectable = canSelectSector(sector);
                 const cleared = progress.sectorsCleared.includes(sector.id);
                 return (
                   <button
                     key={sector.id}
-                    disabled={!unlocked}
-                    onClick={() => unlocked && startSector(sector)}
-                    className={`sector-card ${unlocked ? '' : 'is-locked'}`}
+                    disabled={!selectable}
+                    onClick={() => selectable && startSector(sector)}
+                    className={`sector-card ${selectable ? '' : 'is-locked'}`}
                   >
                     <div className="flex items-start gap-4">
                       <div>
                         {sector.badge}
                       </div>
                       <div className="flex-1">
-                        <div className="flex">
-                          <span>
+                        <div className="flex items-center justify-between">
+                          <span className="flex items-center gap-2">
                             {sector.name}
+                            {!normallyUnlocked && selectable && (
+                              <span className="review-chip text-xs">REVIEW</span>
+                            )}
                           </span>
                           {cleared && <span>Cleared</span>}
                         </div>
                         <p>{sector.description}</p>
                         <div>
-                          {sector.levels.length} levels · {unlocked ? 'Ready' : `Clear ${sector.unlockRequirement} sector${sector.unlockRequirement > 1 ? 's' : ''} to unlock`}
+                          {sector.levels.length} levels · {normallyUnlocked ? 'Ready' : selectable ? 'Temporarily accessible via Review Mode' : `Clear ${sector.unlockRequirement} sector${sector.unlockRequirement > 1 ? 's' : ''} to unlock`}
                         </div>
                       </div>
                     </div>
@@ -961,7 +977,7 @@ export default function App() {
         </div>
       )}
 
-      {screen === 'ready' && (
+      {(screen === 'ready' || screen === 'title' || screen === 'campaign') && (
         <button
           type="button"
           className="settings-launch"
@@ -975,23 +991,49 @@ export default function App() {
       {reviewMode && reviewList && (
         <div className="menu-screen menu-scroll review-list absolute inset-0 z-50 overflow-y-auto" data-ui="true">
           <div className="max-w-md mx-auto px-5 py-8">
-            <div className="eyebrow">REVIEW MODE</div>
+            <button
+              onClick={() => setReviewList(false)}
+              className="menu-back mb-3"
+              type="button"
+            >
+              ← Back
+            </button>
+            <div className="flex items-center justify-between">
+              <div className="eyebrow">REVIEW MODE</div>
+              <span className="review-chip text-xs">
+                {reviewUnlockAllLevels ? 'ALL UNLOCKED' : 'NORMAL LOCKS'}
+              </span>
+            </div>
             <h2 className="menu-title">All 30 levels</h2>
             <p className="fine menu-intro">Inspection only. Campaign progress is not written.</p>
             {campaignReviewPlaylist().map((level, index) => {
               const sector = sectorForCampaignLevel(level.id);
+              const normallyUnlocked = isLevelNormallyUnlocked(level.id, progress.sectorsCleared);
+              const selectable = canSelectLevel(level.id);
               return (
                 <button
                   key={level.id}
                   type="button"
                   data-ui="true"
-                  className="sector-card"
+                  disabled={!selectable}
+                  className={`sector-card ${selectable ? '' : 'is-locked'}`}
                   onClick={(e) => {
                     e.stopPropagation();
+                    if (!selectable) return;
                     openReviewLevel(index);
                   }}
                 >
-                  {index + 1}. {sector?.name ?? 'Campaign'} · {level.id}
+                  <div className="flex items-center justify-between">
+                    <span>
+                      {index + 1}. {sector?.name ?? 'Campaign'} · {level.id}
+                    </span>
+                    {!normallyUnlocked && selectable && (
+                      <span className="review-chip text-xs">REVIEW</span>
+                    )}
+                    {!selectable && (
+                      <span className="text-xs text-slate-500">Locked</span>
+                    )}
+                  </div>
                 </button>
               );
             })}
@@ -1162,7 +1204,16 @@ export default function App() {
                   Review Mode {reviewMode ? 'On' : 'Off'}
                 </button>
                 {reviewMode && (
-                  <div className="mt-2 flex flex-col gap-1">
+                  <div className="mt-2 flex flex-col gap-2">
+                    <label className="flex items-center gap-2 cursor-pointer text-sm text-cyan-200 select-none py-1">
+                      <input
+                        type="checkbox"
+                        checked={reviewUnlockAllLevels}
+                        onChange={(e) => setReviewUnlockAllLevels(e.target.checked)}
+                        className="rounded border-cyan-500 text-cyan-400 focus:ring-0"
+                      />
+                      <span>Unlock all levels for review</span>
+                    </label>
                     <div className="fine">{playlist[levelIdx]?.id} · {sectorForCampaignLevel(playlist[levelIdx]?.id ?? '')?.name}</div>
                     <button type="button" className="btn-ghost" onClick={() => stepReview(-1)}>Previous Level</button>
                     <button type="button" className="btn-ghost" onClick={() => stepReview(1)}>Next Level</button>

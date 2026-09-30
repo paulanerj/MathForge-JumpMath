@@ -74,7 +74,8 @@ The player may change the gap and therefore threat, heat, and warning. The playe
 | AQ | Moving the camera at frozen time does not move the front. |
 | AR | A level 6 jump moves the front only with the timed wave. |
 | AS | No crest anchored to the player or to a fixed viewport line. |
-| PV1-PV8 | Physical authority, viewport-relative entrance timing, pursuit competitiveness, death recovery, restart, and lab isolation. |
+| PV1-PV8 | Physical authority, viewport-relative entrance timing, pursuit advancement, death recovery, restart, and lab isolation. |
+| PP1-PP10 | Presentation Freeze R1: single physical crest, canonical projection, offscreen discipline, entrance continuity, mobile geometry, and visual authority. |
 
 `npm run test:plasma` runs this contract file with the existing toolchain.
 
