@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "version": "1.0.0",
+  "policyName": "JUMPMATH_R2_KINEMATIC_TOLERANCE_POLICY",
+  "tolerances": [
+    {
+      "field": "player.x",
+      "value": 1.0,
+      "unit": "world_pixels",
+      "rationale": "Permits minor sub-pixel floating-point differences in horizontal quadratic easing without altering platform landing containment."
+    },
+    {
+      "field": "player.y",
+      "value": 1.0,
+      "unit": "world_pixels",
+      "rationale": "Permits sub-pixel vertical jump arc float variations without altering discrete row index transitions."
+    },
+    {
+      "field": "camera.x",
+      "value": 1.0,
+      "unit": "world_pixels",
+      "rationale": "Permits minor camera horizontal lerp integration step rounding across varied timing slices."
+    },
+    {
+      "field": "camera.y",
+      "value": 1.0,
+      "unit": "world_pixels",
+      "rationale": "Permits vertical lerp damping float differences without causing actionable-row text clipping."
+    },
+    {
+      "field": "plasma.waveY",
+      "value": 1.0,
+      "unit": "world_pixels",
+      "rationale": "Permits float-rounding in linear advancement (-speed * dt) without altering collision tick detection."
+    },
+    {
+      "field": "plasma.gapToPlayer",
+      "value": 1.0,
+      "unit": "world_pixels",
+      "rationale": "Derived from player.y and wave.y floating point difference."
+    },
+    {
+      "field": "plasma.speed",
+      "value": 0.1,
+      "unit": "pixels_per_second",
+      "rationale": "Guarantees exact pursuit rate while ignoring floating-point multiplication noise."
+    },
+    {
+      "field": "session.timeLeft",
+      "value": 0.05,
+      "unit": "seconds",
+      "rationale": "Allows +/-3 frame float timing jitter across browser frame-step boundaries."
+    },
+    {
+      "field": "framing.nextRowMinX",
+      "value": 2.0,
+      "unit": "screen_pixels",
+      "rationale": "Permits minor camera rounding when projecting row bounding extents into viewport coordinates."
+    },
+    {
+      "field": "framing.nextRowMaxX",
+      "value": 2.0,
+      "unit": "screen_pixels",
+      "rationale": "Permits minor camera rounding when projecting row bounding extents into viewport coordinates."
+    },
+    {
+      "field": "platform.worldX",
+      "value": 1.0,
+      "unit": "world_pixels",
+      "rationale": "Permits rounding differences in progression vector trigonometric projection."
+    },
+    {
+      "field": "platform.worldY",
+      "value": 1.0,
+      "unit": "world_pixels",
+      "rationale": "Permits rounding differences in row height offset accumulation."
+    },
+    {
+      "field": "safePose.x",
+      "value": 1.0,
+      "unit": "world_pixels",
+      "rationale": "Anchored landing snapshot coordinate precision."
+    },
+    {
+      "field": "safePose.y",
+      "value": 1.0,
+      "unit": "world_pixels",
+      "rationale": "Anchored landing snapshot coordinate precision."
+    }
+  ]
+}

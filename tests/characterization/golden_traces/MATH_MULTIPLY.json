@@ -1,0 +1,253 @@
+{
+  "schemaVersion": "1.0.0",
+  "baselineId": "JUMPMATH-R2-PHASE-4C-FROZEN",
+  "scenarioId": "MATH_MULTIPLY",
+  "levelId": "d3_mult2",
+  "seed": 303,
+  "viewport": {
+    "width": 500,
+    "height": 800,
+    "dpr": 1
+  },
+  "observations": [
+    {
+      "scenarioId": "MATH_MULTIPLY",
+      "stepIndex": 0,
+      "label": "mult_init",
+      "session": {
+        "status": "playing",
+        "score": 0,
+        "timeLeft": 10,
+        "levelIndex": 0,
+        "levelId": "d3_mult2"
+      },
+      "player": {
+        "currentRow": 0,
+        "x": 0,
+        "y": 0,
+        "jumping": false,
+        "bouncing": false,
+        "falling": false
+      },
+      "camera": {
+        "x": 0,
+        "y": 0
+      },
+      "plasma": {
+        "waveY": 320,
+        "speed": 28,
+        "gapToPlayer": -320,
+        "shieldActive": false
+      },
+      "activeChallenge": {
+        "id": "ch_mult_1_8232",
+        "prompt": {
+          "kind": "multiply",
+          "operands": [
+            2,
+            10
+          ],
+          "operator": "*",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "2 × 10",
+          "equation": "2 × 10 = ?",
+          "display": "2 × 10",
+          "displayText": "2 × 10 = ?",
+          "hintText": "What is 2 times 10?",
+          "metadata": {
+            "factor": 2,
+            "multiplier": 10
+          }
+        },
+        "correctAnswer": 20,
+        "optionCount": 3
+      },
+      "actionableRowPlatforms": [
+        {
+          "id": "r1_p0",
+          "rowIdx": 1,
+          "val": 22,
+          "isCorrect": false,
+          "shattered": false,
+          "worldX": -140,
+          "worldY": -220
+        },
+        {
+          "id": "r1_p1",
+          "rowIdx": 1,
+          "val": 20,
+          "isCorrect": true,
+          "shattered": false,
+          "worldX": 0,
+          "worldY": -220
+        },
+        {
+          "id": "r1_p2",
+          "rowIdx": 1,
+          "val": 12,
+          "isCorrect": false,
+          "shattered": false,
+          "worldX": 140,
+          "worldY": -220
+        }
+      ],
+      "framing": {
+        "isFramedCorrectly": true,
+        "nextRowMinX": 46,
+        "nextRowMaxX": 454
+      },
+      "safePose": {
+        "x": 0,
+        "y": 0,
+        "row": 0,
+        "val": 10
+      },
+      "travelPreview": null,
+      "recoveryState": {
+        "isRecovering": false,
+        "shieldRemaining": 0
+      },
+      "timerState": {
+        "timeLeft": 10,
+        "isExpired": false
+      },
+      "pendingTransition": null,
+      "domainEvents": [
+        {
+          "seq": 1,
+          "type": "SESSION_INITIALIZED",
+          "payload": {
+            "levelId": "d3_mult2",
+            "seed": 303
+          }
+        }
+      ]
+    },
+    {
+      "scenarioId": "MATH_MULTIPLY",
+      "stepIndex": 3,
+      "label": "mult_row1_resolved",
+      "session": {
+        "status": "playing",
+        "score": 0,
+        "timeLeft": 9.5,
+        "levelIndex": 0,
+        "levelId": "d3_mult2"
+      },
+      "player": {
+        "currentRow": 0,
+        "x": 0,
+        "y": -356.44,
+        "jumping": true,
+        "bouncing": false,
+        "falling": false
+      },
+      "camera": {
+        "x": 0,
+        "y": -229.76
+      },
+      "plasma": {
+        "waveY": 306,
+        "speed": 28,
+        "gapToPlayer": -662.44,
+        "shieldActive": false
+      },
+      "activeChallenge": {
+        "id": "ch_mult_1_8232",
+        "prompt": {
+          "kind": "multiply",
+          "operands": [
+            2,
+            10
+          ],
+          "operator": "*",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "2 × 10",
+          "equation": "2 × 10 = ?",
+          "display": "2 × 10",
+          "displayText": "2 × 10 = ?",
+          "hintText": "What is 2 times 10?",
+          "metadata": {
+            "factor": 2,
+            "multiplier": 10
+          }
+        },
+        "correctAnswer": 20,
+        "optionCount": 3
+      },
+      "actionableRowPlatforms": [
+        {
+          "id": "r1_p0",
+          "rowIdx": 1,
+          "val": 22,
+          "isCorrect": false,
+          "shattered": false,
+          "worldX": -140,
+          "worldY": -220
+        },
+        {
+          "id": "r1_p1",
+          "rowIdx": 1,
+          "val": 20,
+          "isCorrect": true,
+          "shattered": false,
+          "worldX": 0,
+          "worldY": -220
+        },
+        {
+          "id": "r1_p2",
+          "rowIdx": 1,
+          "val": 12,
+          "isCorrect": false,
+          "shattered": false,
+          "worldX": 140,
+          "worldY": -220
+        }
+      ],
+      "framing": {
+        "isFramedCorrectly": true,
+        "nextRowMinX": 46,
+        "nextRowMaxX": 454
+      },
+      "safePose": {
+        "x": 0,
+        "y": 0,
+        "row": 0,
+        "val": 10
+      },
+      "travelPreview": 10,
+      "recoveryState": {
+        "isRecovering": false,
+        "shieldRemaining": 0
+      },
+      "timerState": {
+        "timeLeft": 9.5,
+        "isExpired": false
+      },
+      "pendingTransition": null,
+      "domainEvents": [
+        {
+          "seq": 1,
+          "type": "SESSION_INITIALIZED",
+          "payload": {
+            "levelId": "d3_mult2",
+            "seed": 303
+          }
+        },
+        {
+          "seq": 2,
+          "type": "PLATFORM_SELECTED",
+          "payload": {
+            "rowIdx": 1,
+            "platformId": "r1_p1",
+            "val": 20,
+            "isCorrect": true
+          }
+        }
+      ]
+    }
+  ],
+  "finalOutcome": "COMPLETED"
+}

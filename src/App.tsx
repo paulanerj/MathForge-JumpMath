@@ -25,6 +25,7 @@ import {
   importVisualCalibrationJson,
   type VisualCalibrationConfig,
 } from './config/visualCalibration';
+import { telemetry } from './debug/DevelopmentTelemetry';
 
 // ─── Persistence ────────────────────────────────────────────────────────────
 const STORAGE_KEY = 'zyrxmath_progress_v2';
@@ -171,19 +172,60 @@ export default function App() {
   const [stagedPlasma, setStagedPlasma] = useState(() => ({ ...plasmaSettings }));
   const [stagedMuted, setStagedMuted] = useState(muted);
 
+  const [visualCal, setVisualCal] = useState<VisualCalibrationConfig>(() => getVisualCalibration());
+  const [calibrationMode, setCalibrationMode] = useState(false);
+  const [playMenu, setPlayMenu] = useState(false);
+  const [probeOn, setProbeOn] = useState(initialPlasmaLab);
+  const scoreEl = useRef<HTMLSpanElement>(null);
+  const comboEl = useRef<HTMLSpanElement>(null);
+  const timeEl = useRef<HTMLSpanElement>(null);
+  const plasmaReadoutRef = useRef<HTMLPreElement>(null);
+  const [calSessionSnapshot, setCalSessionSnapshot] = useState<VisualCalibrationConfig | null>(null);
+  const [calCollapsed, setCalCollapsed] = useState(false);
+  const [calDock, setCalDock] = useState<'bottom' | 'left' | 'right'>('bottom');
+  const [copyDone, setCopyDone] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
+  const [importText, setImportText] = useState('');
+
+  const [telemetryEnabled, setTelemetryEnabled] = useState(() => telemetry.isEnabled());
+  const [copyDiagSuccess, setCopyDiagSuccess] = useState(false);
+
   const openSettings = useCallback((e?: { stopPropagation: () => void }) => {
     if (e) e.stopPropagation();
+    telemetry.recordEvent('SETTINGS', 'settings_open_requested', { screen, previousPlayMenu: playMenu });
     setStagedPlasma({ ...plasmaSettings });
     setStagedMuted(muted);
     setPlayMenu(true);
     engineRef.current?.setCalibrationFrozen(true);
-  }, [plasmaSettings, muted]);
+    telemetry.recordEvent('SETTINGS', 'settings_opened', { screen });
+  }, [plasmaSettings, muted, screen, playMenu]);
 
   const cancelSettings = useCallback(() => {
+    telemetry.recordEvent('SETTINGS', 'settings_closed', { screen });
     setStagedPlasma({ ...plasmaSettings });
     setPlayMenu(false);
     engineRef.current?.setCalibrationFrozen(false);
-  }, [plasmaSettings]);
+  }, [plasmaSettings, screen]);
+
+  const handleCopyDiagnostics = async () => {
+    const success = await telemetry.copyReportToClipboard({
+      sectorsCleared: progress.sectorsCleared,
+      highScore: progress.highScore,
+      totalGames: progress.totalGames,
+    });
+    if (success) {
+      setCopyDiagSuccess(true);
+      setTimeout(() => setCopyDiagSuccess(false), 2000);
+    }
+  };
+
+  const handleDownloadDiagnostics = () => {
+    telemetry.downloadReportFile({
+      sectorsCleared: progress.sectorsCleared,
+      highScore: progress.highScore,
+      totalGames: progress.totalGames,
+    });
+  };
 
   const applySettings = useCallback(() => {
     setPlasmaSettings({ ...stagedPlasma });
@@ -205,21 +247,6 @@ export default function App() {
     }
     setPlayMenu(false);
   }, [stagedPlasma, stagedMuted, muted]);
-
-  const [visualCal, setVisualCal] = useState<VisualCalibrationConfig>(() => getVisualCalibration());
-  const [calibrationMode, setCalibrationMode] = useState(false);
-  const [playMenu, setPlayMenu] = useState(false);
-  const [probeOn, setProbeOn] = useState(initialPlasmaLab);
-  const scoreEl = useRef<HTMLSpanElement>(null);
-  const comboEl = useRef<HTMLSpanElement>(null);
-  const timeEl = useRef<HTMLSpanElement>(null);
-  const plasmaReadoutRef = useRef<HTMLPreElement>(null);
-  const [calSessionSnapshot, setCalSessionSnapshot] = useState<VisualCalibrationConfig | null>(null);
-  const [calCollapsed, setCalCollapsed] = useState(false);
-  const [calDock, setCalDock] = useState<'bottom' | 'left' | 'right'>('bottom');
-  const [copyDone, setCopyDone] = useState(false);
-  const [importOpen, setImportOpen] = useState(false);
-  const [importText, setImportText] = useState('');
 
   const syncVisualState = useCallback((cfg: VisualCalibrationConfig) => {
     setVisualCal({
@@ -486,6 +513,17 @@ export default function App() {
     }
   }, [screen, destroyEngine]);
 
+  // Sync state context into telemetry authority
+  useEffect(() => {
+    telemetry.setContext({
+      screen,
+      levelId: playlist[levelIdx]?.id ?? null,
+      sectorId: activeSector?.id ?? null,
+      reviewMode,
+      reviewUnlockAllLevels,
+    });
+  }, [screen, levelIdx, playlist, activeSector, reviewMode, reviewUnlockAllLevels]);
+
   // ── Actions ─────────────────────────────────────────────────────────────
   const startSector = (sector: SectorDef, levelIndex = 0) => {
     setActiveSector(sector);
@@ -751,6 +789,17 @@ export default function App() {
               >
                 Visual Calibration
               </button>
+              <button
+                type="button"
+                onClick={(e) => {
+                  telemetry.recordEvent('INPUT', 'settings_button_pressed', { screen, source: 'title_menu' });
+                  openSettings(e);
+                }}
+                className="btn-ghost"
+                data-ui="true"
+              >
+                Settings / Review
+              </button>
             </div>
 
             {progress.highScore > 0 && (
@@ -768,7 +817,13 @@ export default function App() {
       {screen === 'campaign' && (
         <div className="menu-screen menu-scroll absolute inset-0 z-50 overflow-y-auto">
           <div className="max-w-md mx-auto px-5 py-8">
-            <button onClick={() => setScreen('title')} className="menu-back">
+            <button
+              onClick={() => {
+                telemetry.recordEvent('NAVIGATION', 'back_to_title');
+                setScreen('title');
+              }}
+              className="menu-back"
+            >
               ← Back
             </button>
             <h2 className="menu-title">Sectors</h2>
@@ -783,7 +838,14 @@ export default function App() {
                   <button
                     key={sector.id}
                     disabled={!selectable}
-                    onClick={() => selectable && startSector(sector)}
+                    onClick={() => {
+                      if (!selectable) {
+                        telemetry.recordEvent('CAMPAIGN', 'sector_selection_blocked', { sectorId: sector.id });
+                        return;
+                      }
+                      telemetry.recordEvent('CAMPAIGN', 'sector_selected', { sectorId: sector.id, normallyUnlocked });
+                      startSector(sector);
+                    }}
                     className={`sector-card ${selectable ? '' : 'is-locked'}`}
                   >
                     <div className="flex items-start gap-4">
@@ -982,7 +1044,11 @@ export default function App() {
           type="button"
           className="settings-launch"
           data-ui="true"
-          onClick={openSettings}
+          onClick={(e) => {
+            e.stopPropagation();
+            telemetry.recordEvent('INPUT', 'settings_button_pressed', { screen, inputType: 'click' });
+            openSettings(e);
+          }}
         >
           Settings
         </button>
@@ -992,7 +1058,10 @@ export default function App() {
         <div className="menu-screen menu-scroll review-list absolute inset-0 z-50 overflow-y-auto" data-ui="true">
           <div className="max-w-md mx-auto px-5 py-8">
             <button
-              onClick={() => setReviewList(false)}
+              onClick={() => {
+                telemetry.recordEvent('REVIEW', 'level_select_closed');
+                setReviewList(false);
+              }}
               className="menu-back mb-3"
               type="button"
             >
@@ -1019,7 +1088,11 @@ export default function App() {
                   className={`sector-card ${selectable ? '' : 'is-locked'}`}
                   onClick={(e) => {
                     e.stopPropagation();
-                    if (!selectable) return;
+                    if (!selectable) {
+                      telemetry.recordEvent('REVIEW', 'level_selection_blocked', { levelId: level.id, index });
+                      return;
+                    }
+                    telemetry.recordEvent('REVIEW', 'level_selected', { levelId: level.id, index });
                     openReviewLevel(index);
                   }}
                 >
@@ -1077,15 +1150,15 @@ export default function App() {
         </div>
       )}
 
-      {(screen === 'playing' || screen === 'ready') && playMenu && !calibrationMode && (
-        <div className="play-menu" data-ui="true">
+      {playMenu && !calibrationMode && (
+        <div className="play-menu" data-ui="true" onClick={(e) => { if (e.target === e.currentTarget) cancelSettings(); }}>
           <div className="play-menu-modal" data-ui="true">
             {/* PERSISTENT HEADER */}
             <div className="play-menu-header">
               <div className="play-menu-title-block">
                 <span className="ready-kicker">Settings</span>
                 <span className="play-menu-subtitle">
-                  {reviewMode ? 'REVIEW MODE' : (activeSector ? activeSector.name : 'CUSTOM')} · L{levelIdx + 1}/{playlist.length || 1}
+                  {reviewMode ? 'REVIEW MODE' : (activeSector ? activeSector.name : (playlist[levelIdx] ? 'CUSTOM' : 'MAIN MENU'))} · {playlist[levelIdx] ? `L${levelIdx + 1}/${playlist.length || 1}` : 'STANDBY'}
                 </span>
               </div>
               <button
@@ -1188,10 +1261,12 @@ export default function App() {
                   className="btn-secondary w-full"
                   onClick={() => {
                     if (reviewMode) {
+                      telemetry.recordEvent('REVIEW', 'review_mode_changed', { enabled: false });
                       setReviewMode(false);
                       setReviewList(false);
                       return;
                     }
+                    telemetry.recordEvent('REVIEW', 'review_mode_changed', { enabled: true });
                     const levels = campaignReviewPlaylist();
                     const currentId = playlist[levelIdx]?.id;
                     const nextIndex = Math.max(0, levels.findIndex((level) => level.id === currentId));
@@ -1209,15 +1284,70 @@ export default function App() {
                       <input
                         type="checkbox"
                         checked={reviewUnlockAllLevels}
-                        onChange={(e) => setReviewUnlockAllLevels(e.target.checked)}
+                        onChange={(e) => {
+                          const val = e.target.checked;
+                          telemetry.recordEvent('REVIEW', 'review_unlock_changed', { enabled: val });
+                          setReviewUnlockAllLevels(val);
+                        }}
                         className="rounded border-cyan-500 text-cyan-400 focus:ring-0"
                       />
                       <span>Unlock all levels for review</span>
                     </label>
-                    <div className="fine">{playlist[levelIdx]?.id} · {sectorForCampaignLevel(playlist[levelIdx]?.id ?? '')?.name}</div>
+                    <div className="fine">{playlist[levelIdx]?.id ? (playlist[levelIdx].id + ' · ' + (sectorForCampaignLevel(playlist[levelIdx].id)?.name ?? '')) : 'Standby'}</div>
                     <button type="button" className="btn-ghost" onClick={() => stepReview(-1)}>Previous Level</button>
                     <button type="button" className="btn-ghost" onClick={() => stepReview(1)}>Next Level</button>
-                    <button type="button" className="btn-ghost" onClick={() => setReviewList(true)}>Level Select</button>
+                    <button
+                      type="button"
+                      className="btn-ghost"
+                      onClick={() => {
+                        telemetry.recordEvent('REVIEW', 'level_select_opened');
+                        setReviewList(true);
+                      }}
+                    >
+                      Level Select
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* DEVELOPMENT TELEMETRY */}
+              <div className="settings-section settings-telemetry" data-ui="true">
+                <div className="flex items-center justify-between">
+                  <div className="ready-kicker">Development Telemetry</div>
+                  <span className="text-xs font-mono text-cyan-300">#{telemetry.getSequence()}</span>
+                </div>
+                <label className="flex items-center gap-2 cursor-pointer text-sm text-cyan-200 select-none py-1 mt-1">
+                  <input
+                    type="checkbox"
+                    checked={telemetryEnabled}
+                    onChange={(e) => {
+                      const val = e.target.checked;
+                      setTelemetryEnabled(val);
+                      telemetry.setEnabled(val);
+                    }}
+                    className="rounded border-cyan-500 text-cyan-400 focus:ring-0"
+                  />
+                  <span>Development Telemetry: {telemetryEnabled ? 'ON' : 'OFF'}</span>
+                </label>
+                <div className="flex items-center gap-2 mt-2">
+                  <button
+                    type="button"
+                    className="btn-ghost flex-1 text-xs"
+                    onClick={handleCopyDiagnostics}
+                  >
+                    {copyDiagSuccess ? '✓ Copied JSON' : 'Copy Diagnostics'}
+                  </button>
+                  <button
+                    type="button"
+                    className="btn-ghost flex-1 text-xs"
+                    onClick={handleDownloadDiagnostics}
+                  >
+                    Download JSON
+                  </button>
+                </div>
+                {telemetry.getErrors().length > 0 && (
+                  <div className="text-xs text-rose-400 mt-1">
+                    Captured Errors: {telemetry.getErrors().length}
                   </div>
                 )}
               </div>

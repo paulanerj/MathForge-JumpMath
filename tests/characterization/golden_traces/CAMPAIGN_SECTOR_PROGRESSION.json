@@ -1,0 +1,129 @@
+{
+  "schemaVersion": "1.0.0",
+  "baselineId": "JUMPMATH-R2-PHASE-4C-FROZEN",
+  "scenarioId": "CAMPAIGN_SECTOR_PROGRESSION",
+  "levelId": "f1_sum10",
+  "seed": 1212,
+  "viewport": {
+    "width": 500,
+    "height": 800,
+    "dpr": 1
+  },
+  "observations": [
+    {
+      "scenarioId": "CAMPAIGN_SECTOR_PROGRESSION",
+      "stepIndex": 0,
+      "label": "campaign_s1_open",
+      "session": {
+        "status": "playing",
+        "score": 0,
+        "timeLeft": 10,
+        "levelIndex": 0,
+        "levelId": "f1_sum10"
+      },
+      "player": {
+        "currentRow": 0,
+        "x": 0,
+        "y": 0,
+        "jumping": false,
+        "bouncing": false,
+        "falling": false
+      },
+      "camera": {
+        "x": 0,
+        "y": 0
+      },
+      "plasma": {
+        "waveY": 320,
+        "speed": 28,
+        "gapToPlayer": -320,
+        "shieldActive": false
+      },
+      "activeChallenge": {
+        "id": "ch_sumto_1_4566",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            8,
+            10
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 10",
+          "equation": "8 + ? = 10",
+          "display": "Target: 10",
+          "displayText": "8 + ? = 10",
+          "hintText": "What number added to 8 makes 10?",
+          "metadata": {
+            "target": 10,
+            "currentVal": 8
+          }
+        },
+        "correctAnswer": 2,
+        "optionCount": 3
+      },
+      "actionableRowPlatforms": [
+        {
+          "id": "r1_p0",
+          "rowIdx": 1,
+          "val": 1,
+          "isCorrect": false,
+          "shattered": false,
+          "worldX": -140,
+          "worldY": -220
+        },
+        {
+          "id": "r1_p1",
+          "rowIdx": 1,
+          "val": 2,
+          "isCorrect": true,
+          "shattered": false,
+          "worldX": 0,
+          "worldY": -220
+        },
+        {
+          "id": "r1_p2",
+          "rowIdx": 1,
+          "val": 4,
+          "isCorrect": false,
+          "shattered": false,
+          "worldX": 140,
+          "worldY": -220
+        }
+      ],
+      "framing": {
+        "isFramedCorrectly": true,
+        "nextRowMinX": 46,
+        "nextRowMaxX": 454
+      },
+      "safePose": {
+        "x": 0,
+        "y": 0,
+        "row": 0,
+        "val": 8
+      },
+      "travelPreview": null,
+      "recoveryState": {
+        "isRecovering": false,
+        "shieldRemaining": 0
+      },
+      "timerState": {
+        "timeLeft": 10,
+        "isExpired": false
+      },
+      "pendingTransition": null,
+      "domainEvents": [
+        {
+          "seq": 1,
+          "type": "SESSION_INITIALIZED",
+          "payload": {
+            "levelId": "f1_sum10",
+            "seed": 1212
+          }
+        }
+      ]
+    }
+  ],
+  "finalOutcome": "COMPLETED"
+}

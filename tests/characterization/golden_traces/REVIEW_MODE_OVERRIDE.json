@@ -1,0 +1,133 @@
+{
+  "schemaVersion": "1.0.0",
+  "baselineId": "JUMPMATH-R2-PHASE-4C-FROZEN",
+  "scenarioId": "REVIEW_MODE_OVERRIDE",
+  "levelId": "q4_mult7",
+  "seed": 1313,
+  "viewport": {
+    "width": 500,
+    "height": 800,
+    "dpr": 1
+  },
+  "initialSettings": {
+    "reviewMode": true,
+    "reviewUnlockAllLevels": true
+  },
+  "observations": [
+    {
+      "scenarioId": "REVIEW_MODE_OVERRIDE",
+      "stepIndex": 0,
+      "label": "review_direct_launch",
+      "session": {
+        "status": "playing",
+        "score": 0,
+        "timeLeft": 10,
+        "levelIndex": 0,
+        "levelId": "q4_mult7"
+      },
+      "player": {
+        "currentRow": 0,
+        "x": 0,
+        "y": 0,
+        "jumping": false,
+        "bouncing": false,
+        "falling": false
+      },
+      "camera": {
+        "x": 0,
+        "y": 0
+      },
+      "plasma": {
+        "waveY": 320,
+        "speed": 28,
+        "gapToPlayer": -320,
+        "shieldActive": false
+      },
+      "activeChallenge": {
+        "id": "ch_mult_1_6661",
+        "prompt": {
+          "kind": "multiply",
+          "operands": [
+            7,
+            6
+          ],
+          "operator": "*",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "7 × 6",
+          "equation": "7 × 6 = ?",
+          "display": "7 × 6",
+          "displayText": "7 × 6 = ?",
+          "hintText": "What is 7 times 6?",
+          "metadata": {
+            "factor": 7,
+            "multiplier": 6
+          }
+        },
+        "correctAnswer": 42,
+        "optionCount": 3
+      },
+      "actionableRowPlatforms": [
+        {
+          "id": "r1_p0",
+          "rowIdx": 1,
+          "val": 49,
+          "isCorrect": false,
+          "shattered": false,
+          "worldX": -241.25,
+          "worldY": -99
+        },
+        {
+          "id": "r1_p1",
+          "rowIdx": 1,
+          "val": 35,
+          "isCorrect": false,
+          "shattered": false,
+          "worldX": -126.87,
+          "worldY": -179.73
+        },
+        {
+          "id": "r1_p2",
+          "rowIdx": 1,
+          "val": 42,
+          "isCorrect": true,
+          "shattered": false,
+          "worldX": -12.49,
+          "worldY": -260.47
+        }
+      ],
+      "framing": {
+        "isFramedCorrectly": false,
+        "nextRowMinX": -55.25,
+        "nextRowMaxX": 301.51
+      },
+      "safePose": {
+        "x": 0,
+        "y": 0,
+        "row": 0,
+        "val": 6
+      },
+      "travelPreview": null,
+      "recoveryState": {
+        "isRecovering": false,
+        "shieldRemaining": 0
+      },
+      "timerState": {
+        "timeLeft": 10,
+        "isExpired": false
+      },
+      "pendingTransition": null,
+      "domainEvents": [
+        {
+          "seq": 1,
+          "type": "SESSION_INITIALIZED",
+          "payload": {
+            "levelId": "q4_mult7",
+            "seed": 1313
+          }
+        }
+      ]
+    }
+  ],
+  "finalOutcome": "COMPLETED"
+}

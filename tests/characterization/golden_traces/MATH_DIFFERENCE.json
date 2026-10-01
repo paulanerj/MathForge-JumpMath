@@ -1,0 +1,253 @@
+{
+  "schemaVersion": "1.0.0",
+  "baselineId": "JUMPMATH-R2-PHASE-4C-FROZEN",
+  "scenarioId": "MATH_DIFFERENCE",
+  "levelId": "d4_diff15",
+  "seed": 202,
+  "viewport": {
+    "width": 500,
+    "height": 800,
+    "dpr": 1
+  },
+  "observations": [
+    {
+      "scenarioId": "MATH_DIFFERENCE",
+      "stepIndex": 0,
+      "label": "diff_init",
+      "session": {
+        "status": "playing",
+        "score": 0,
+        "timeLeft": 10,
+        "levelIndex": 0,
+        "levelId": "d4_diff15"
+      },
+      "player": {
+        "currentRow": 0,
+        "x": 0,
+        "y": 0,
+        "jumping": false,
+        "bouncing": false,
+        "falling": false
+      },
+      "camera": {
+        "x": 0,
+        "y": 0
+      },
+      "plasma": {
+        "waveY": 320,
+        "speed": 28,
+        "gapToPlayer": -320,
+        "shieldActive": false
+      },
+      "activeChallenge": {
+        "id": "ch_diff_1_2969",
+        "prompt": {
+          "kind": "difference",
+          "operands": [
+            6,
+            5
+          ],
+          "operator": "-",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "6 − ? = 5",
+          "equation": "6 − ? = 5",
+          "display": "6 − ? = 5",
+          "displayText": "6 − ? = 5",
+          "hintText": "What number subtracted from 6 gives 5?",
+          "metadata": {
+            "minuend": 6,
+            "difference": 5
+          }
+        },
+        "correctAnswer": 1,
+        "optionCount": 3
+      },
+      "actionableRowPlatforms": [
+        {
+          "id": "r1_p0",
+          "rowIdx": 1,
+          "val": 6,
+          "isCorrect": false,
+          "shattered": false,
+          "worldX": -204.82,
+          "worldY": -161.4
+        },
+        {
+          "id": "r1_p1",
+          "rowIdx": 1,
+          "val": 1,
+          "isCorrect": true,
+          "shattered": false,
+          "worldX": -72.68,
+          "worldY": -207.65
+        },
+        {
+          "id": "r1_p2",
+          "rowIdx": 1,
+          "val": 11,
+          "isCorrect": false,
+          "shattered": false,
+          "worldX": 59.46,
+          "worldY": -253.9
+        }
+      ],
+      "framing": {
+        "isFramedCorrectly": true,
+        "nextRowMinX": -18.82,
+        "nextRowMaxX": 373.46
+      },
+      "safePose": {
+        "x": 0,
+        "y": 0,
+        "row": 0,
+        "val": 6
+      },
+      "travelPreview": null,
+      "recoveryState": {
+        "isRecovering": false,
+        "shieldRemaining": 0
+      },
+      "timerState": {
+        "timeLeft": 10,
+        "isExpired": false
+      },
+      "pendingTransition": null,
+      "domainEvents": [
+        {
+          "seq": 1,
+          "type": "SESSION_INITIALIZED",
+          "payload": {
+            "levelId": "d4_diff15",
+            "seed": 202
+          }
+        }
+      ]
+    },
+    {
+      "scenarioId": "MATH_DIFFERENCE",
+      "stepIndex": 3,
+      "label": "diff_row1_resolved",
+      "session": {
+        "status": "playing",
+        "score": 0,
+        "timeLeft": 9.5,
+        "levelIndex": 0,
+        "levelId": "d4_diff15"
+      },
+      "player": {
+        "currentRow": 0,
+        "x": -45.42,
+        "y": -348.72,
+        "jumping": true,
+        "bouncing": false,
+        "falling": false
+      },
+      "camera": {
+        "x": -45.42,
+        "y": -224.67
+      },
+      "plasma": {
+        "waveY": 306,
+        "speed": 28,
+        "gapToPlayer": -654.72,
+        "shieldActive": false
+      },
+      "activeChallenge": {
+        "id": "ch_diff_1_2969",
+        "prompt": {
+          "kind": "difference",
+          "operands": [
+            6,
+            5
+          ],
+          "operator": "-",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "6 − ? = 5",
+          "equation": "6 − ? = 5",
+          "display": "6 − ? = 5",
+          "displayText": "6 − ? = 5",
+          "hintText": "What number subtracted from 6 gives 5?",
+          "metadata": {
+            "minuend": 6,
+            "difference": 5
+          }
+        },
+        "correctAnswer": 1,
+        "optionCount": 3
+      },
+      "actionableRowPlatforms": [
+        {
+          "id": "r1_p0",
+          "rowIdx": 1,
+          "val": 6,
+          "isCorrect": false,
+          "shattered": false,
+          "worldX": -204.82,
+          "worldY": -161.4
+        },
+        {
+          "id": "r1_p1",
+          "rowIdx": 1,
+          "val": 1,
+          "isCorrect": true,
+          "shattered": false,
+          "worldX": -72.68,
+          "worldY": -207.65
+        },
+        {
+          "id": "r1_p2",
+          "rowIdx": 1,
+          "val": 11,
+          "isCorrect": false,
+          "shattered": false,
+          "worldX": 59.46,
+          "worldY": -253.9
+        }
+      ],
+      "framing": {
+        "isFramedCorrectly": true,
+        "nextRowMinX": 26.61,
+        "nextRowMaxX": 418.89
+      },
+      "safePose": {
+        "x": 0,
+        "y": 0,
+        "row": 0,
+        "val": 6
+      },
+      "travelPreview": 6,
+      "recoveryState": {
+        "isRecovering": false,
+        "shieldRemaining": 0
+      },
+      "timerState": {
+        "timeLeft": 9.5,
+        "isExpired": false
+      },
+      "pendingTransition": null,
+      "domainEvents": [
+        {
+          "seq": 1,
+          "type": "SESSION_INITIALIZED",
+          "payload": {
+            "levelId": "d4_diff15",
+            "seed": 202
+          }
+        },
+        {
+          "seq": 2,
+          "type": "PLATFORM_SELECTED",
+          "payload": {
+            "rowIdx": 1,
+            "platformId": "r1_p1",
+            "val": 1,
+            "isCorrect": true
+          }
+        }
+      ]
+    }
+  ],
+  "finalOutcome": "COMPLETED"
+}

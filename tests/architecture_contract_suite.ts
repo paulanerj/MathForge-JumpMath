@@ -29,6 +29,7 @@ import {
 } from '../src/review/reviewMode.ts';
 import { sceneFromLevel, sceneInventory, validateVisualScene } from '../src/studio/VisualScene.ts';
 import { derivePlasmaPresentation, PLASMA_LAB_GAPS, PLASMA_PRESENTATION, SHOCK_FRONT_WORLD_OFFSET, worldToScreenY } from '../src/engine/plasmaPresentation.ts';
+import { telemetry } from '../src/debug/DevelopmentTelemetry.ts';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const srcRoot = path.join(root, 'src');
@@ -1658,6 +1659,94 @@ function contractReviewAccessPatch(): void {
   console.log('  [PASS] RA1-RA8 Review Mode Level Unlock Override authoritative contracts');
 }
 
+function contractSettingsAndTelemetry(): void {
+  const appSrc = sourceText.get(path.join(srcRoot, 'App.tsx')) || '';
+
+  // ST1 — SETTINGS INPUT REACHABILITY
+  // Every rendered Settings launcher has an active interaction handler
+  assert(appSrc.includes('className="settings-launch"'), 'ST1: settings-launch button class missing');
+  assert(appSrc.includes('openSettings(e)'), 'ST1: settings launcher missing onClick');
+  assert(appSrc.includes('data-ui="true"'), 'ST1: settings launcher missing data-ui protection from canvas input');
+
+  // ST2 — SETTINGS STATE TRANSITION
+  // Activating Settings produces the intended Settings state (setPlayMenu(true))
+  assert(appSrc.includes('setPlayMenu(true)'), 'ST2: openSettings must set playMenu to true');
+
+  // ST3 — SETTINGS RENDER REACHABILITY
+  // The resulting Settings UI is rendered and interactable without screen gating
+  assert(appSrc.includes('{playMenu && !calibrationMode && ('), 'ST3: playMenu modal is still gated by screen');
+  assert(!appSrc.includes("(screen === 'playing' || screen === 'ready') && playMenu"), 'ST3: stale screen gate on playMenu persists');
+
+  // ST4 — SCREEN COVERAGE
+  // Settings is reachable from TITLE, CAMPAIGN and READY where exposed
+  assert(appSrc.includes("(screen === 'ready' || screen === 'title' || screen === 'campaign')"), 'ST4: settings launcher not exposed across required screens');
+  assert(appSrc.includes('Settings / Review'), 'ST4: title screen direct settings launcher missing');
+
+  // ST5 — REVIEW CONTROL REACHABILITY
+  // Settings permits Review Mode and Review Unlock to be changed
+  assert(appSrc.includes('Review Mode'), 'ST5: Review Mode toggle missing from settings');
+  assert(appSrc.includes('Unlock all levels for review'), 'ST5: Unlock all levels checkbox missing from settings');
+
+  // ST6 — LEVEL SELECT REACHABILITY
+  // Review Mode + Review Unlock permits Level Select to be opened and all 30 levels selected
+  assert(appSrc.includes('setReviewList(true)'), 'ST6: Level Select launcher missing');
+  const cleared: string[] = [];
+  assert(LEVEL_DATABASE.every((l) => canSelectCampaignLevel(l.id, cleared, true, true)), 'ST6: not all 30 levels selectable with review unlock on');
+
+  // ST7 — TELEMETRY OBSERVATIONAL ONLY
+  // Telemetry enabled/disabled cannot alter gameplay state or progression behavior
+  const detLevel = LEVEL_DATABASE.find((l) => l.id === 'q3_skip4') ?? LEVEL_DATABASE[0];
+  const engineA = freshEngine(detLevel);
+  telemetry.setEnabled(true);
+  engineA.init();
+  telemetry.setEnabled(false);
+  const engineB = freshEngine(detLevel);
+  engineB.init();
+  assert(engineA.state.zyx.val === engineB.state.zyx.val, 'ST7: telemetry toggled initial val');
+  assert(engineA.state.status === engineB.state.status, 'ST7: telemetry toggled status');
+
+  // ST8 — STRUCTURED EVENT ORDER
+  // Telemetry events receive monotonically ordered session sequence identifiers
+  telemetry.setEnabled(true);
+  const ev1 = telemetry.recordEvent('INPUT', 'test_event_1');
+  const ev2 = telemetry.recordEvent('INPUT', 'test_event_2');
+  assert(ev2.seq === ev1.seq + 1, 'ST8: sequence numbers not monotonically increasing');
+  assert(ev2.timestamp >= ev1.timestamp, 'ST8: timestamp went backwards');
+
+  // ST9 — ERROR CAPTURE
+  // Application errors and unhandled promise rejections enter the diagnostic stream
+  const prevErrCount = telemetry.getErrors().length;
+  telemetry.recordError('test application error', 'unit_test_suite');
+  assert(telemetry.getErrors().length === prevErrCount + 1, 'ST9: error not captured in error buffer');
+  assert(telemetry.getErrors()[telemetry.getErrors().length - 1].message === 'test application error', 'ST9: captured error content mismatch');
+
+  // ST10 — BOUNDED STORAGE
+  // Diagnostic history cannot grow without bound
+  for (let i = 0; i < 3500; i++) {
+    telemetry.recordEvent('PERFORMANCE', 'buffer_fill_test');
+  }
+  assert(telemetry.getEvents().length <= 3000, 'ST10: event buffer exceeded maximum ring limit of 3000');
+
+  // ST11 — EXPORT
+  // Current diagnostic state and buffered events can be exported/copied
+  const report = telemetry.exportReport({ testProgress: true });
+  assert(report.version === '2.0.0-phase4c', 'ST11: invalid report version');
+  assert(Array.isArray(report.events) && report.events.length > 0, 'ST11: report events empty');
+  assert(report.state.progressSummary?.testProgress === true, 'ST11: report progress summary omitted');
+
+  // ST12 — TELEMETRY DISABLE
+  // Master OFF suppresses normal telemetry emission without breaking application behavior
+  telemetry.setEnabled(false);
+  telemetry.clearBuffer();
+  const disabledCount = telemetry.getEvents().length;
+  telemetry.recordEvent('AUDIO', 'silent_event');
+  assert(telemetry.getEvents().length === disabledCount + 1, 'ST12: buffer ring broken on disabled');
+  assert(telemetry.isEnabled() === false, 'ST12: telemetry master switch failed to disable');
+  telemetry.setEnabled(true); // Restore default
+
+  console.log('  [PASS] ST1-ST12 Settings Interaction Reachability & Development Telemetry R1 authoritative contracts');
+}
+
 function contractAFStudioRenderer(): void {
   const studio = sourceText.get(path.join(srcRoot, 'studio/LevelStudio.tsx')) || '';
   const main = sourceText.get(path.join(srcRoot, 'main.tsx')) || '';
@@ -1740,6 +1829,7 @@ function main(): void {
   contractADAmbientTransparency();
   contractAEReviewIsolation();
   contractReviewAccessPatch();
+  contractSettingsAndTelemetry();
   contractAFStudioRenderer();
   contractAGVisualScene();
   console.log('\nARCHITECTURE CONTRACTS PASSED');

@@ -1,0 +1,3884 @@
+[
+  {
+    "levelId": "f1_sum10",
+    "mode": "SUM_TO",
+    "initialZyxVal": 1,
+    "challenges": [
+      {
+        "rowIdx": 1,
+        "challengeId": "ch_sumto_1_3182",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            9,
+            10
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 10",
+          "equation": "9 + ? = 10",
+          "display": "Target: 10",
+          "displayText": "9 + ? = 10",
+          "hintText": "What number added to 9 makes 10?",
+          "metadata": {
+            "target": 10,
+            "currentVal": 9
+          }
+        },
+        "correctAnswer": 1,
+        "options": [
+          10,
+          1,
+          3
+        ],
+        "sequenceStateAfter": 6
+      },
+      {
+        "rowIdx": 2,
+        "challengeId": "ch_sumto_2_7394",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            6,
+            10
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 10",
+          "equation": "6 + ? = 10",
+          "display": "Target: 10",
+          "displayText": "6 + ? = 10",
+          "hintText": "What number added to 6 makes 10?",
+          "metadata": {
+            "target": 10,
+            "currentVal": 6
+          }
+        },
+        "correctAnswer": 4,
+        "options": [
+          5,
+          4,
+          16
+        ],
+        "sequenceStateAfter": 2
+      },
+      {
+        "rowIdx": 3,
+        "challengeId": "ch_sumto_3_7378",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            2,
+            10
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 10",
+          "equation": "2 + ? = 10",
+          "display": "Target: 10",
+          "displayText": "2 + ? = 10",
+          "hintText": "What number added to 2 makes 10?",
+          "metadata": {
+            "target": 10,
+            "currentVal": 2
+          }
+        },
+        "correctAnswer": 8,
+        "options": [
+          8,
+          6,
+          2
+        ],
+        "sequenceStateAfter": 7
+      },
+      {
+        "rowIdx": 4,
+        "challengeId": "ch_sumto_4_7981",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            7,
+            10
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 10",
+          "equation": "7 + ? = 10",
+          "display": "Target: 10",
+          "displayText": "7 + ? = 10",
+          "hintText": "What number added to 7 makes 10?",
+          "metadata": {
+            "target": 10,
+            "currentVal": 7
+          }
+        },
+        "correctAnswer": 3,
+        "options": [
+          5,
+          2,
+          3
+        ],
+        "sequenceStateAfter": 3
+      }
+    ]
+  },
+  {
+    "levelId": "f2_skip2",
+    "mode": "SKIP_COUNT",
+    "initialZyxVal": 2,
+    "challenges": [
+      {
+        "rowIdx": 1,
+        "challengeId": "ch_skip_up_1_4535",
+        "prompt": {
+          "kind": "skip_forward",
+          "operands": [
+            14,
+            2
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "Skip count by 2",
+          "equation": "14 + 2 = ?",
+          "display": "Step: +2",
+          "displayText": "14 + 2 = ?",
+          "hintText": "Count forward by 2 from 14",
+          "metadata": {
+            "step": 2,
+            "direction": 1,
+            "currentVal": 14,
+            "resolvedStart": 2
+          }
+        },
+        "correctAnswer": 16,
+        "options": [
+          12,
+          16,
+          14
+        ],
+        "sequenceStateAfter": 16
+      },
+      {
+        "rowIdx": 2,
+        "challengeId": "ch_skip_up_2_7824",
+        "prompt": {
+          "kind": "skip_forward",
+          "operands": [
+            16,
+            2
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "Skip count by 2",
+          "equation": "16 + 2 = ?",
+          "display": "Step: +2",
+          "displayText": "16 + 2 = ?",
+          "hintText": "Count forward by 2 from 16",
+          "metadata": {
+            "step": 2,
+            "direction": 1,
+            "currentVal": 16,
+            "resolvedStart": 2
+          }
+        },
+        "correctAnswer": 18,
+        "options": [
+          2,
+          18,
+          14
+        ],
+        "sequenceStateAfter": 18
+      },
+      {
+        "rowIdx": 3,
+        "challengeId": "ch_skip_up_3_2063",
+        "prompt": {
+          "kind": "skip_forward",
+          "operands": [
+            18,
+            2
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "Skip count by 2",
+          "equation": "18 + 2 = ?",
+          "display": "Step: +2",
+          "displayText": "18 + 2 = ?",
+          "hintText": "Count forward by 2 from 18",
+          "metadata": {
+            "step": 2,
+            "direction": 1,
+            "currentVal": 18,
+            "resolvedStart": 2
+          }
+        },
+        "correctAnswer": 20,
+        "options": [
+          20,
+          18,
+          2
+        ],
+        "sequenceStateAfter": 20
+      },
+      {
+        "rowIdx": 4,
+        "challengeId": "ch_skip_up_4_1101",
+        "prompt": {
+          "kind": "skip_forward",
+          "operands": [
+            20,
+            2
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "Skip count by 2",
+          "equation": "20 + 2 = ?",
+          "display": "Step: +2",
+          "displayText": "20 + 2 = ?",
+          "hintText": "Count forward by 2 from 20",
+          "metadata": {
+            "step": 2,
+            "direction": 1,
+            "currentVal": 20,
+            "resolvedStart": 2
+          }
+        },
+        "correctAnswer": 22,
+        "options": [
+          18,
+          22,
+          23
+        ],
+        "sequenceStateAfter": 22
+      }
+    ]
+  },
+  {
+    "levelId": "l3_sum12",
+    "mode": "SUM_TO",
+    "initialZyxVal": 5,
+    "challenges": [
+      {
+        "rowIdx": 1,
+        "challengeId": "ch_sumto_1_1797",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            11,
+            12
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 12",
+          "equation": "11 + ? = 12",
+          "display": "Target: 12",
+          "displayText": "11 + ? = 12",
+          "hintText": "What number added to 11 makes 12?",
+          "metadata": {
+            "target": 12,
+            "currentVal": 11
+          }
+        },
+        "correctAnswer": 1,
+        "options": [
+          1,
+          11,
+          3
+        ],
+        "sequenceStateAfter": 9
+      },
+      {
+        "rowIdx": 2,
+        "challengeId": "ch_sumto_2_8621",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            9,
+            12
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 12",
+          "equation": "9 + ? = 12",
+          "display": "Target: 12",
+          "displayText": "9 + ? = 12",
+          "hintText": "What number added to 9 makes 12?",
+          "metadata": {
+            "target": 12,
+            "currentVal": 9
+          }
+        },
+        "correctAnswer": 3,
+        "options": [
+          3,
+          2,
+          5
+        ],
+        "sequenceStateAfter": 2
+      },
+      {
+        "rowIdx": 3,
+        "challengeId": "ch_sumto_3_7107",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            2,
+            12
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 12",
+          "equation": "2 + ? = 12",
+          "display": "Target: 12",
+          "displayText": "2 + ? = 12",
+          "hintText": "What number added to 2 makes 12?",
+          "metadata": {
+            "target": 12,
+            "currentVal": 2
+          }
+        },
+        "correctAnswer": 10,
+        "options": [
+          10,
+          11,
+          9
+        ],
+        "sequenceStateAfter": 1
+      },
+      {
+        "rowIdx": 4,
+        "challengeId": "ch_sumto_4_2948",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            1,
+            12
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 12",
+          "equation": "1 + ? = 12",
+          "display": "Target: 12",
+          "displayText": "1 + ? = 12",
+          "hintText": "What number added to 1 makes 12?",
+          "metadata": {
+            "target": 12,
+            "currentVal": 1
+          }
+        },
+        "correctAnswer": 11,
+        "options": [
+          11,
+          1,
+          12
+        ],
+        "sequenceStateAfter": 7
+      }
+    ]
+  },
+  {
+    "levelId": "l4_skip2",
+    "mode": "SKIP_COUNT",
+    "initialZyxVal": 2,
+    "challenges": [
+      {
+        "rowIdx": 1,
+        "challengeId": "ch_skip_up_1_7031",
+        "prompt": {
+          "kind": "skip_forward",
+          "operands": [
+            14,
+            2
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "Skip count by 2",
+          "equation": "14 + 2 = ?",
+          "display": "Step: +2",
+          "displayText": "14 + 2 = ?",
+          "hintText": "Count forward by 2 from 14",
+          "metadata": {
+            "step": 2,
+            "direction": 1,
+            "currentVal": 14,
+            "resolvedStart": 2
+          }
+        },
+        "correctAnswer": 16,
+        "options": [
+          14,
+          15,
+          16
+        ],
+        "sequenceStateAfter": 16
+      },
+      {
+        "rowIdx": 2,
+        "challengeId": "ch_skip_up_2_9373",
+        "prompt": {
+          "kind": "skip_forward",
+          "operands": [
+            16,
+            2
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "Skip count by 2",
+          "equation": "16 + 2 = ?",
+          "display": "Step: +2",
+          "displayText": "16 + 2 = ?",
+          "hintText": "Count forward by 2 from 16",
+          "metadata": {
+            "step": 2,
+            "direction": 1,
+            "currentVal": 16,
+            "resolvedStart": 2
+          }
+        },
+        "correctAnswer": 18,
+        "options": [
+          17,
+          16,
+          18
+        ],
+        "sequenceStateAfter": 18
+      },
+      {
+        "rowIdx": 3,
+        "challengeId": "ch_skip_up_3_1855",
+        "prompt": {
+          "kind": "skip_forward",
+          "operands": [
+            18,
+            2
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "Skip count by 2",
+          "equation": "18 + 2 = ?",
+          "display": "Step: +2",
+          "displayText": "18 + 2 = ?",
+          "hintText": "Count forward by 2 from 18",
+          "metadata": {
+            "step": 2,
+            "direction": 1,
+            "currentVal": 18,
+            "resolvedStart": 2
+          }
+        },
+        "correctAnswer": 20,
+        "options": [
+          19,
+          21,
+          20
+        ],
+        "sequenceStateAfter": 20
+      },
+      {
+        "rowIdx": 4,
+        "challengeId": "ch_skip_up_4_2304",
+        "prompt": {
+          "kind": "skip_forward",
+          "operands": [
+            20,
+            2
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "Skip count by 2",
+          "equation": "20 + 2 = ?",
+          "display": "Step: +2",
+          "displayText": "20 + 2 = ?",
+          "hintText": "Count forward by 2 from 20",
+          "metadata": {
+            "step": 2,
+            "direction": 1,
+            "currentVal": 20,
+            "resolvedStart": 2
+          }
+        },
+        "correctAnswer": 22,
+        "options": [
+          20,
+          2,
+          22
+        ],
+        "sequenceStateAfter": 22
+      }
+    ]
+  },
+  {
+    "levelId": "l5_sum14",
+    "mode": "SUM_TO",
+    "initialZyxVal": 6,
+    "challenges": [
+      {
+        "rowIdx": 1,
+        "challengeId": "ch_sumto_1_3229",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            13,
+            14
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 14",
+          "equation": "13 + ? = 14",
+          "display": "Target: 14",
+          "displayText": "13 + ? = 14",
+          "hintText": "What number added to 13 makes 14?",
+          "metadata": {
+            "target": 14,
+            "currentVal": 13
+          }
+        },
+        "correctAnswer": 1,
+        "options": [
+          3,
+          2,
+          1
+        ],
+        "sequenceStateAfter": 11
+      },
+      {
+        "rowIdx": 2,
+        "challengeId": "ch_sumto_2_1635",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            11,
+            14
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 14",
+          "equation": "11 + ? = 14",
+          "display": "Target: 14",
+          "displayText": "11 + ? = 14",
+          "hintText": "What number added to 11 makes 14?",
+          "metadata": {
+            "target": 14,
+            "currentVal": 11
+          }
+        },
+        "correctAnswer": 3,
+        "options": [
+          3,
+          4,
+          2
+        ],
+        "sequenceStateAfter": 3
+      },
+      {
+        "rowIdx": 3,
+        "challengeId": "ch_sumto_3_3844",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            3,
+            14
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 14",
+          "equation": "3 + ? = 14",
+          "display": "Target: 14",
+          "displayText": "3 + ? = 14",
+          "hintText": "What number added to 3 makes 14?",
+          "metadata": {
+            "target": 14,
+            "currentVal": 3
+          }
+        },
+        "correctAnswer": 11,
+        "options": [
+          9,
+          11,
+          12
+        ],
+        "sequenceStateAfter": 5
+      },
+      {
+        "rowIdx": 4,
+        "challengeId": "ch_sumto_4_5922",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            5,
+            14
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 14",
+          "equation": "5 + ? = 14",
+          "display": "Target: 14",
+          "displayText": "5 + ? = 14",
+          "hintText": "What number added to 5 makes 14?",
+          "metadata": {
+            "target": 14,
+            "currentVal": 5
+          }
+        },
+        "correctAnswer": 9,
+        "options": [
+          11,
+          9,
+          7
+        ],
+        "sequenceStateAfter": 11
+      }
+    ]
+  },
+  {
+    "levelId": "f3_sum15",
+    "mode": "SUM_TO",
+    "initialZyxVal": 1,
+    "challenges": [
+      {
+        "rowIdx": 1,
+        "challengeId": "ch_sumto_1_2061",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            7,
+            15
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 15",
+          "equation": "7 + ? = 15",
+          "display": "Target: 15",
+          "displayText": "7 + ? = 15",
+          "hintText": "What number added to 7 makes 15?",
+          "metadata": {
+            "target": 15,
+            "currentVal": 7
+          }
+        },
+        "correctAnswer": 8,
+        "options": [
+          8,
+          7,
+          6
+        ],
+        "sequenceStateAfter": 4
+      },
+      {
+        "rowIdx": 2,
+        "challengeId": "ch_sumto_2_3041",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            4,
+            15
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 15",
+          "equation": "4 + ? = 15",
+          "display": "Target: 15",
+          "displayText": "4 + ? = 15",
+          "hintText": "What number added to 4 makes 15?",
+          "metadata": {
+            "target": 15,
+            "currentVal": 4
+          }
+        },
+        "correctAnswer": 11,
+        "options": [
+          9,
+          10,
+          11
+        ],
+        "sequenceStateAfter": 1
+      },
+      {
+        "rowIdx": 3,
+        "challengeId": "ch_sumto_3_5558",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            1,
+            15
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 15",
+          "equation": "1 + ? = 15",
+          "display": "Target: 15",
+          "displayText": "1 + ? = 15",
+          "hintText": "What number added to 1 makes 15?",
+          "metadata": {
+            "target": 15,
+            "currentVal": 1
+          }
+        },
+        "correctAnswer": 14,
+        "options": [
+          13,
+          14,
+          15
+        ],
+        "sequenceStateAfter": 1
+      },
+      {
+        "rowIdx": 4,
+        "challengeId": "ch_sumto_4_2895",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            1,
+            15
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 15",
+          "equation": "1 + ? = 15",
+          "display": "Target: 15",
+          "displayText": "1 + ? = 15",
+          "hintText": "What number added to 1 makes 15?",
+          "metadata": {
+            "target": 15,
+            "currentVal": 1
+          }
+        },
+        "correctAnswer": 14,
+        "options": [
+          16,
+          12,
+          14
+        ],
+        "sequenceStateAfter": 5
+      }
+    ]
+  },
+  {
+    "levelId": "f4_skip3",
+    "mode": "SKIP_COUNT",
+    "initialZyxVal": 3,
+    "challenges": [
+      {
+        "rowIdx": 1,
+        "challengeId": "ch_skip_up_1_4525",
+        "prompt": {
+          "kind": "skip_forward",
+          "operands": [
+            21,
+            3
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "Skip count by 3",
+          "equation": "21 + 3 = ?",
+          "display": "Step: +3",
+          "displayText": "21 + 3 = ?",
+          "hintText": "Count forward by 3 from 21",
+          "metadata": {
+            "step": 3,
+            "direction": 1,
+            "currentVal": 21,
+            "resolvedStart": 3
+          }
+        },
+        "correctAnswer": 24,
+        "options": [
+          23,
+          21,
+          24
+        ],
+        "sequenceStateAfter": 24
+      },
+      {
+        "rowIdx": 2,
+        "challengeId": "ch_skip_up_2_1411",
+        "prompt": {
+          "kind": "skip_forward",
+          "operands": [
+            24,
+            3
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "Skip count by 3",
+          "equation": "24 + 3 = ?",
+          "display": "Step: +3",
+          "displayText": "24 + 3 = ?",
+          "hintText": "Count forward by 3 from 24",
+          "metadata": {
+            "step": 3,
+            "direction": 1,
+            "currentVal": 24,
+            "resolvedStart": 3
+          }
+        },
+        "correctAnswer": 27,
+        "options": [
+          26,
+          3,
+          27
+        ],
+        "sequenceStateAfter": 27
+      },
+      {
+        "rowIdx": 3,
+        "challengeId": "ch_skip_up_3_9062",
+        "prompt": {
+          "kind": "skip_forward",
+          "operands": [
+            27,
+            3
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "Skip count by 3",
+          "equation": "27 + 3 = ?",
+          "display": "Step: +3",
+          "displayText": "27 + 3 = ?",
+          "hintText": "Count forward by 3 from 27",
+          "metadata": {
+            "step": 3,
+            "direction": 1,
+            "currentVal": 27,
+            "resolvedStart": 3
+          }
+        },
+        "correctAnswer": 30,
+        "options": [
+          24,
+          30,
+          33
+        ],
+        "sequenceStateAfter": 30
+      },
+      {
+        "rowIdx": 4,
+        "challengeId": "ch_skip_up_4_8257",
+        "prompt": {
+          "kind": "skip_forward",
+          "operands": [
+            30,
+            3
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "Skip count by 3",
+          "equation": "30 + 3 = ?",
+          "display": "Step: +3",
+          "displayText": "30 + 3 = ?",
+          "hintText": "Count forward by 3 from 30",
+          "metadata": {
+            "step": 3,
+            "direction": 1,
+            "currentVal": 30,
+            "resolvedStart": 3
+          }
+        },
+        "correctAnswer": 33,
+        "options": [
+          33,
+          30,
+          3
+        ],
+        "sequenceStateAfter": 33
+      }
+    ]
+  },
+  {
+    "levelId": "o3_sum18",
+    "mode": "SUM_TO",
+    "initialZyxVal": 16,
+    "challenges": [
+      {
+        "rowIdx": 1,
+        "challengeId": "ch_sumto_1_1952",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            11,
+            18
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 18",
+          "equation": "11 + ? = 18",
+          "display": "Target: 18",
+          "displayText": "11 + ? = 18",
+          "hintText": "What number added to 11 makes 18?",
+          "metadata": {
+            "target": 18,
+            "currentVal": 11
+          }
+        },
+        "correctAnswer": 7,
+        "options": [
+          7,
+          9,
+          5
+        ],
+        "sequenceStateAfter": 8
+      },
+      {
+        "rowIdx": 2,
+        "challengeId": "ch_sumto_2_5989",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            8,
+            18
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 18",
+          "equation": "8 + ? = 18",
+          "display": "Target: 18",
+          "displayText": "8 + ? = 18",
+          "hintText": "What number added to 8 makes 18?",
+          "metadata": {
+            "target": 18,
+            "currentVal": 8
+          }
+        },
+        "correctAnswer": 10,
+        "options": [
+          10,
+          12,
+          8
+        ],
+        "sequenceStateAfter": 7
+      },
+      {
+        "rowIdx": 3,
+        "challengeId": "ch_sumto_3_5446",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            7,
+            18
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 18",
+          "equation": "7 + ? = 18",
+          "display": "Target: 18",
+          "displayText": "7 + ? = 18",
+          "hintText": "What number added to 7 makes 18?",
+          "metadata": {
+            "target": 18,
+            "currentVal": 7
+          }
+        },
+        "correctAnswer": 11,
+        "options": [
+          25,
+          7,
+          11
+        ],
+        "sequenceStateAfter": 4
+      },
+      {
+        "rowIdx": 4,
+        "challengeId": "ch_sumto_4_6838",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            4,
+            18
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 18",
+          "equation": "4 + ? = 18",
+          "display": "Target: 18",
+          "displayText": "4 + ? = 18",
+          "hintText": "What number added to 4 makes 18?",
+          "metadata": {
+            "target": 18,
+            "currentVal": 4
+          }
+        },
+        "correctAnswer": 14,
+        "options": [
+          16,
+          14,
+          15
+        ],
+        "sequenceStateAfter": 16
+      }
+    ]
+  },
+  {
+    "levelId": "o4_skip4",
+    "mode": "SKIP_COUNT",
+    "initialZyxVal": 4,
+    "challenges": [
+      {
+        "rowIdx": 1,
+        "challengeId": "ch_skip_up_1_1961",
+        "prompt": {
+          "kind": "skip_forward",
+          "operands": [
+            28,
+            4
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "Skip count by 4",
+          "equation": "28 + 4 = ?",
+          "display": "Step: +4",
+          "displayText": "28 + 4 = ?",
+          "hintText": "Count forward by 4 from 28",
+          "metadata": {
+            "step": 4,
+            "direction": 1,
+            "currentVal": 28,
+            "resolvedStart": 4
+          }
+        },
+        "correctAnswer": 32,
+        "options": [
+          36,
+          32,
+          4
+        ],
+        "sequenceStateAfter": 32
+      },
+      {
+        "rowIdx": 2,
+        "challengeId": "ch_skip_up_2_7838",
+        "prompt": {
+          "kind": "skip_forward",
+          "operands": [
+            32,
+            4
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "Skip count by 4",
+          "equation": "32 + 4 = ?",
+          "display": "Step: +4",
+          "displayText": "32 + 4 = ?",
+          "hintText": "Count forward by 4 from 32",
+          "metadata": {
+            "step": 4,
+            "direction": 1,
+            "currentVal": 32,
+            "resolvedStart": 4
+          }
+        },
+        "correctAnswer": 36,
+        "options": [
+          36,
+          28,
+          37
+        ],
+        "sequenceStateAfter": 36
+      },
+      {
+        "rowIdx": 3,
+        "challengeId": "ch_skip_up_3_1060",
+        "prompt": {
+          "kind": "skip_forward",
+          "operands": [
+            36,
+            4
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "Skip count by 4",
+          "equation": "36 + 4 = ?",
+          "display": "Step: +4",
+          "displayText": "36 + 4 = ?",
+          "hintText": "Count forward by 4 from 36",
+          "metadata": {
+            "step": 4,
+            "direction": 1,
+            "currentVal": 36,
+            "resolvedStart": 4
+          }
+        },
+        "correctAnswer": 40,
+        "options": [
+          39,
+          40,
+          36
+        ],
+        "sequenceStateAfter": 40
+      },
+      {
+        "rowIdx": 4,
+        "challengeId": "ch_skip_up_4_7601",
+        "prompt": {
+          "kind": "skip_forward",
+          "operands": [
+            40,
+            4
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "Skip count by 4",
+          "equation": "40 + 4 = ?",
+          "display": "Step: +4",
+          "displayText": "40 + 4 = ?",
+          "hintText": "Count forward by 4 from 40",
+          "metadata": {
+            "step": 4,
+            "direction": 1,
+            "currentVal": 40,
+            "resolvedStart": 4
+          }
+        },
+        "correctAnswer": 44,
+        "options": [
+          45,
+          42,
+          44
+        ],
+        "sequenceStateAfter": 44
+      }
+    ]
+  },
+  {
+    "levelId": "o5_sum16",
+    "mode": "SUM_TO",
+    "initialZyxVal": 10,
+    "challenges": [
+      {
+        "rowIdx": 1,
+        "challengeId": "ch_sumto_1_2769",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            11,
+            16
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 16",
+          "equation": "11 + ? = 16",
+          "display": "Target: 16",
+          "displayText": "11 + ? = 16",
+          "hintText": "What number added to 11 makes 16?",
+          "metadata": {
+            "target": 16,
+            "currentVal": 11
+          }
+        },
+        "correctAnswer": 5,
+        "options": [
+          5,
+          16,
+          6
+        ],
+        "sequenceStateAfter": 4
+      },
+      {
+        "rowIdx": 2,
+        "challengeId": "ch_sumto_2_6079",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            4,
+            16
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 16",
+          "equation": "4 + ? = 16",
+          "display": "Target: 16",
+          "displayText": "4 + ? = 16",
+          "hintText": "What number added to 4 makes 16?",
+          "metadata": {
+            "target": 16,
+            "currentVal": 4
+          }
+        },
+        "correctAnswer": 12,
+        "options": [
+          11,
+          10,
+          12
+        ],
+        "sequenceStateAfter": 13
+      },
+      {
+        "rowIdx": 3,
+        "challengeId": "ch_sumto_3_2541",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            13,
+            16
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 16",
+          "equation": "13 + ? = 16",
+          "display": "Target: 16",
+          "displayText": "13 + ? = 16",
+          "hintText": "What number added to 13 makes 16?",
+          "metadata": {
+            "target": 16,
+            "currentVal": 13
+          }
+        },
+        "correctAnswer": 3,
+        "options": [
+          4,
+          2,
+          3
+        ],
+        "sequenceStateAfter": 10
+      },
+      {
+        "rowIdx": 4,
+        "challengeId": "ch_sumto_4_2489",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            10,
+            16
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 16",
+          "equation": "10 + ? = 16",
+          "display": "Target: 16",
+          "displayText": "10 + ? = 16",
+          "hintText": "What number added to 10 makes 16?",
+          "metadata": {
+            "target": 16,
+            "currentVal": 10
+          }
+        },
+        "correctAnswer": 6,
+        "options": [
+          6,
+          8,
+          26
+        ],
+        "sequenceStateAfter": 12
+      }
+    ]
+  },
+  {
+    "levelId": "d1_sum20",
+    "mode": "SUM_TO",
+    "initialZyxVal": 11,
+    "challenges": [
+      {
+        "rowIdx": 1,
+        "challengeId": "ch_sumto_1_5164",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            10,
+            20
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 20",
+          "equation": "10 + ? = 20",
+          "display": "Target: 20",
+          "displayText": "10 + ? = 20",
+          "hintText": "What number added to 10 makes 20?",
+          "metadata": {
+            "target": 20,
+            "currentVal": 10
+          }
+        },
+        "correctAnswer": 10,
+        "options": [
+          10,
+          12,
+          30
+        ],
+        "sequenceStateAfter": 4
+      },
+      {
+        "rowIdx": 2,
+        "challengeId": "ch_sumto_2_9833",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            4,
+            20
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 20",
+          "equation": "4 + ? = 20",
+          "display": "Target: 20",
+          "displayText": "4 + ? = 20",
+          "hintText": "What number added to 4 makes 20?",
+          "metadata": {
+            "target": 20,
+            "currentVal": 4
+          }
+        },
+        "correctAnswer": 16,
+        "options": [
+          4,
+          17,
+          16
+        ],
+        "sequenceStateAfter": 16
+      },
+      {
+        "rowIdx": 3,
+        "challengeId": "ch_sumto_3_6180",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            16,
+            20
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 20",
+          "equation": "16 + ? = 20",
+          "display": "Target: 20",
+          "displayText": "16 + ? = 20",
+          "hintText": "What number added to 16 makes 20?",
+          "metadata": {
+            "target": 20,
+            "currentVal": 16
+          }
+        },
+        "correctAnswer": 4,
+        "options": [
+          20,
+          4,
+          16
+        ],
+        "sequenceStateAfter": 3
+      },
+      {
+        "rowIdx": 4,
+        "challengeId": "ch_sumto_4_4179",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            3,
+            20
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 20",
+          "equation": "3 + ? = 20",
+          "display": "Target: 20",
+          "displayText": "3 + ? = 20",
+          "hintText": "What number added to 3 makes 20?",
+          "metadata": {
+            "target": 20,
+            "currentVal": 3
+          }
+        },
+        "correctAnswer": 17,
+        "options": [
+          16,
+          18,
+          17
+        ],
+        "sequenceStateAfter": 14
+      }
+    ]
+  },
+  {
+    "levelId": "d2_skip5",
+    "mode": "SKIP_COUNT",
+    "initialZyxVal": 5,
+    "challenges": [
+      {
+        "rowIdx": 1,
+        "challengeId": "ch_skip_up_1_6817",
+        "prompt": {
+          "kind": "skip_forward",
+          "operands": [
+            35,
+            5
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "Skip count by 5",
+          "equation": "35 + 5 = ?",
+          "display": "Step: +5",
+          "displayText": "35 + 5 = ?",
+          "hintText": "Count forward by 5 from 35",
+          "metadata": {
+            "step": 5,
+            "direction": 1,
+            "currentVal": 35,
+            "resolvedStart": 5
+          }
+        },
+        "correctAnswer": 40,
+        "options": [
+          35,
+          38,
+          40
+        ],
+        "sequenceStateAfter": 40
+      },
+      {
+        "rowIdx": 2,
+        "challengeId": "ch_skip_up_2_6660",
+        "prompt": {
+          "kind": "skip_forward",
+          "operands": [
+            40,
+            5
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "Skip count by 5",
+          "equation": "40 + 5 = ?",
+          "display": "Step: +5",
+          "displayText": "40 + 5 = ?",
+          "hintText": "Count forward by 5 from 40",
+          "metadata": {
+            "step": 5,
+            "direction": 1,
+            "currentVal": 40,
+            "resolvedStart": 5
+          }
+        },
+        "correctAnswer": 45,
+        "options": [
+          45,
+          40,
+          44
+        ],
+        "sequenceStateAfter": 45
+      },
+      {
+        "rowIdx": 3,
+        "challengeId": "ch_skip_up_3_4690",
+        "prompt": {
+          "kind": "skip_forward",
+          "operands": [
+            45,
+            5
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "Skip count by 5",
+          "equation": "45 + 5 = ?",
+          "display": "Step: +5",
+          "displayText": "45 + 5 = ?",
+          "hintText": "Count forward by 5 from 45",
+          "metadata": {
+            "step": 5,
+            "direction": 1,
+            "currentVal": 45,
+            "resolvedStart": 5
+          }
+        },
+        "correctAnswer": 50,
+        "options": [
+          40,
+          5,
+          50
+        ],
+        "sequenceStateAfter": 50
+      },
+      {
+        "rowIdx": 4,
+        "challengeId": "ch_skip_up_4_8173",
+        "prompt": {
+          "kind": "skip_forward",
+          "operands": [
+            50,
+            5
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "Skip count by 5",
+          "equation": "50 + 5 = ?",
+          "display": "Step: +5",
+          "displayText": "50 + 5 = ?",
+          "hintText": "Count forward by 5 from 50",
+          "metadata": {
+            "step": 5,
+            "direction": 1,
+            "currentVal": 50,
+            "resolvedStart": 5
+          }
+        },
+        "correctAnswer": 55,
+        "options": [
+          56,
+          55,
+          54
+        ],
+        "sequenceStateAfter": 55
+      }
+    ]
+  },
+  {
+    "levelId": "d3_mult2",
+    "mode": "MULTIPLY",
+    "initialZyxVal": 8,
+    "challenges": [
+      {
+        "rowIdx": 1,
+        "challengeId": "ch_mult_1_9856",
+        "prompt": {
+          "kind": "multiply",
+          "operands": [
+            2,
+            10
+          ],
+          "operator": "*",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "2 × 10",
+          "equation": "2 × 10 = ?",
+          "display": "2 × 10",
+          "displayText": "2 × 10 = ?",
+          "hintText": "What is 2 times 10?",
+          "metadata": {
+            "factor": 2,
+            "multiplier": 10
+          }
+        },
+        "correctAnswer": 20,
+        "options": [
+          20,
+          18,
+          4
+        ],
+        "sequenceStateAfter": 2
+      },
+      {
+        "rowIdx": 2,
+        "challengeId": "ch_mult_2_5626",
+        "prompt": {
+          "kind": "multiply",
+          "operands": [
+            2,
+            2
+          ],
+          "operator": "*",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "2 × 2",
+          "equation": "2 × 2 = ?",
+          "display": "2 × 2",
+          "displayText": "2 × 2 = ?",
+          "hintText": "What is 2 times 2?",
+          "metadata": {
+            "factor": 2,
+            "multiplier": 2
+          }
+        },
+        "correctAnswer": 4,
+        "options": [
+          4,
+          2,
+          6
+        ],
+        "sequenceStateAfter": 10
+      },
+      {
+        "rowIdx": 3,
+        "challengeId": "ch_mult_3_3873",
+        "prompt": {
+          "kind": "multiply",
+          "operands": [
+            2,
+            10
+          ],
+          "operator": "*",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "2 × 10",
+          "equation": "2 × 10 = ?",
+          "display": "2 × 10",
+          "displayText": "2 × 10 = ?",
+          "hintText": "What is 2 times 10?",
+          "metadata": {
+            "factor": 2,
+            "multiplier": 10
+          }
+        },
+        "correctAnswer": 20,
+        "options": [
+          10,
+          30,
+          20
+        ],
+        "sequenceStateAfter": 10
+      },
+      {
+        "rowIdx": 4,
+        "challengeId": "ch_mult_4_3569",
+        "prompt": {
+          "kind": "multiply",
+          "operands": [
+            2,
+            10
+          ],
+          "operator": "*",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "2 × 10",
+          "equation": "2 × 10 = ?",
+          "display": "2 × 10",
+          "displayText": "2 × 10 = ?",
+          "hintText": "What is 2 times 10?",
+          "metadata": {
+            "factor": 2,
+            "multiplier": 10
+          }
+        },
+        "correctAnswer": 20,
+        "options": [
+          4,
+          20,
+          22
+        ],
+        "sequenceStateAfter": 4
+      }
+    ]
+  },
+  {
+    "levelId": "d4_diff15",
+    "mode": "DIFFERENCE",
+    "initialZyxVal": 14,
+    "challenges": [
+      {
+        "rowIdx": 1,
+        "challengeId": "ch_diff_1_3858",
+        "prompt": {
+          "kind": "difference",
+          "operands": [
+            15,
+            6
+          ],
+          "operator": "-",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "15 − ? = 6",
+          "equation": "15 − ? = 6",
+          "display": "15 − ? = 6",
+          "displayText": "15 − ? = 6",
+          "hintText": "What number subtracted from 15 gives 6?",
+          "metadata": {
+            "minuend": 15,
+            "difference": 6
+          }
+        },
+        "correctAnswer": 9,
+        "options": [
+          15,
+          10,
+          9
+        ],
+        "sequenceStateAfter": 7
+      },
+      {
+        "rowIdx": 2,
+        "challengeId": "ch_diff_2_8244",
+        "prompt": {
+          "kind": "difference",
+          "operands": [
+            7,
+            2
+          ],
+          "operator": "-",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "7 − ? = 2",
+          "equation": "7 − ? = 2",
+          "display": "7 − ? = 2",
+          "displayText": "7 − ? = 2",
+          "hintText": "What number subtracted from 7 gives 2?",
+          "metadata": {
+            "minuend": 7,
+            "difference": 2
+          }
+        },
+        "correctAnswer": 5,
+        "options": [
+          3,
+          4,
+          5
+        ],
+        "sequenceStateAfter": 9
+      },
+      {
+        "rowIdx": 3,
+        "challengeId": "ch_diff_3_4857",
+        "prompt": {
+          "kind": "difference",
+          "operands": [
+            9,
+            4
+          ],
+          "operator": "-",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "9 − ? = 4",
+          "equation": "9 − ? = 4",
+          "display": "9 − ? = 4",
+          "displayText": "9 − ? = 4",
+          "hintText": "What number subtracted from 9 gives 4?",
+          "metadata": {
+            "minuend": 9,
+            "difference": 4
+          }
+        },
+        "correctAnswer": 5,
+        "options": [
+          3,
+          5,
+          6
+        ],
+        "sequenceStateAfter": 12
+      },
+      {
+        "rowIdx": 4,
+        "challengeId": "ch_diff_4_1867",
+        "prompt": {
+          "kind": "difference",
+          "operands": [
+            12,
+            1
+          ],
+          "operator": "-",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "12 − ? = 1",
+          "equation": "12 − ? = 1",
+          "display": "12 − ? = 1",
+          "displayText": "12 − ? = 1",
+          "hintText": "What number subtracted from 12 gives 1?",
+          "metadata": {
+            "minuend": 12,
+            "difference": 1
+          }
+        },
+        "correctAnswer": 11,
+        "options": [
+          11,
+          10,
+          13
+        ],
+        "sequenceStateAfter": 7
+      }
+    ]
+  },
+  {
+    "levelId": "f5_sum22",
+    "mode": "SUM_TO",
+    "initialZyxVal": 8,
+    "challenges": [
+      {
+        "rowIdx": 1,
+        "challengeId": "ch_sumto_1_2193",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            9,
+            22
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 22",
+          "equation": "9 + ? = 22",
+          "display": "Target: 22",
+          "displayText": "9 + ? = 22",
+          "hintText": "What number added to 9 makes 22?",
+          "metadata": {
+            "target": 22,
+            "currentVal": 9
+          }
+        },
+        "correctAnswer": 13,
+        "options": [
+          12,
+          9,
+          13
+        ],
+        "sequenceStateAfter": 1
+      },
+      {
+        "rowIdx": 2,
+        "challengeId": "ch_sumto_2_5720",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            1,
+            22
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 22",
+          "equation": "1 + ? = 22",
+          "display": "Target: 22",
+          "displayText": "1 + ? = 22",
+          "hintText": "What number added to 1 makes 22?",
+          "metadata": {
+            "target": 22,
+            "currentVal": 1
+          }
+        },
+        "correctAnswer": 21,
+        "options": [
+          1,
+          21,
+          22
+        ],
+        "sequenceStateAfter": 20
+      },
+      {
+        "rowIdx": 3,
+        "challengeId": "ch_sumto_3_1403",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            20,
+            22
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 22",
+          "equation": "20 + ? = 22",
+          "display": "Target: 22",
+          "displayText": "20 + ? = 22",
+          "hintText": "What number added to 20 makes 22?",
+          "metadata": {
+            "target": 22,
+            "currentVal": 20
+          }
+        },
+        "correctAnswer": 2,
+        "options": [
+          2,
+          3,
+          4
+        ],
+        "sequenceStateAfter": 6
+      },
+      {
+        "rowIdx": 4,
+        "challengeId": "ch_sumto_4_7172",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            6,
+            22
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 22",
+          "equation": "6 + ? = 22",
+          "display": "Target: 22",
+          "displayText": "6 + ? = 22",
+          "hintText": "What number added to 6 makes 22?",
+          "metadata": {
+            "target": 22,
+            "currentVal": 6
+          }
+        },
+        "correctAnswer": 16,
+        "options": [
+          15,
+          16,
+          28
+        ],
+        "sequenceStateAfter": 7
+      }
+    ]
+  },
+  {
+    "levelId": "v1_sum25",
+    "mode": "SUM_TO",
+    "initialZyxVal": 16,
+    "challenges": [
+      {
+        "rowIdx": 1,
+        "challengeId": "ch_sumto_1_1082",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            5,
+            25
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 25",
+          "equation": "5 + ? = 25",
+          "display": "Target: 25",
+          "displayText": "5 + ? = 25",
+          "hintText": "What number added to 5 makes 25?",
+          "metadata": {
+            "target": 25,
+            "currentVal": 5
+          }
+        },
+        "correctAnswer": 20,
+        "options": [
+          20,
+          5,
+          22
+        ],
+        "sequenceStateAfter": 5
+      },
+      {
+        "rowIdx": 2,
+        "challengeId": "ch_sumto_2_3542",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            5,
+            25
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 25",
+          "equation": "5 + ? = 25",
+          "display": "Target: 25",
+          "displayText": "5 + ? = 25",
+          "hintText": "What number added to 5 makes 25?",
+          "metadata": {
+            "target": 25,
+            "currentVal": 5
+          }
+        },
+        "correctAnswer": 20,
+        "options": [
+          20,
+          30,
+          18
+        ],
+        "sequenceStateAfter": 23
+      },
+      {
+        "rowIdx": 3,
+        "challengeId": "ch_sumto_3_4439",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            23,
+            25
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 25",
+          "equation": "23 + ? = 25",
+          "display": "Target: 25",
+          "displayText": "23 + ? = 25",
+          "hintText": "What number added to 23 makes 25?",
+          "metadata": {
+            "target": 25,
+            "currentVal": 23
+          }
+        },
+        "correctAnswer": 2,
+        "options": [
+          1,
+          3,
+          2
+        ],
+        "sequenceStateAfter": 24
+      },
+      {
+        "rowIdx": 4,
+        "challengeId": "ch_sumto_4_2199",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            24,
+            25
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 25",
+          "equation": "24 + ? = 25",
+          "display": "Target: 25",
+          "displayText": "24 + ? = 25",
+          "hintText": "What number added to 24 makes 25?",
+          "metadata": {
+            "target": 25,
+            "currentVal": 24
+          }
+        },
+        "correctAnswer": 1,
+        "options": [
+          1,
+          2,
+          25
+        ],
+        "sequenceStateAfter": 20
+      }
+    ]
+  },
+  {
+    "levelId": "v2_skip7",
+    "mode": "SKIP_COUNT",
+    "initialZyxVal": 7,
+    "challenges": [
+      {
+        "rowIdx": 1,
+        "challengeId": "ch_skip_up_1_2107",
+        "prompt": {
+          "kind": "skip_forward",
+          "operands": [
+            49,
+            7
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "Skip count by 7",
+          "equation": "49 + 7 = ?",
+          "display": "Step: +7",
+          "displayText": "49 + 7 = ?",
+          "hintText": "Count forward by 7 from 49",
+          "metadata": {
+            "step": 7,
+            "direction": 1,
+            "currentVal": 49,
+            "resolvedStart": 7
+          }
+        },
+        "correctAnswer": 56,
+        "options": [
+          63,
+          7,
+          56
+        ],
+        "sequenceStateAfter": 56
+      },
+      {
+        "rowIdx": 2,
+        "challengeId": "ch_skip_up_2_1023",
+        "prompt": {
+          "kind": "skip_forward",
+          "operands": [
+            56,
+            7
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "Skip count by 7",
+          "equation": "56 + 7 = ?",
+          "display": "Step: +7",
+          "displayText": "56 + 7 = ?",
+          "hintText": "Count forward by 7 from 56",
+          "metadata": {
+            "step": 7,
+            "direction": 1,
+            "currentVal": 56,
+            "resolvedStart": 7
+          }
+        },
+        "correctAnswer": 63,
+        "options": [
+          7,
+          62,
+          63
+        ],
+        "sequenceStateAfter": 63
+      },
+      {
+        "rowIdx": 3,
+        "challengeId": "ch_skip_up_3_7466",
+        "prompt": {
+          "kind": "skip_forward",
+          "operands": [
+            63,
+            7
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "Skip count by 7",
+          "equation": "63 + 7 = ?",
+          "display": "Step: +7",
+          "displayText": "63 + 7 = ?",
+          "hintText": "Count forward by 7 from 63",
+          "metadata": {
+            "step": 7,
+            "direction": 1,
+            "currentVal": 63,
+            "resolvedStart": 7
+          }
+        },
+        "correctAnswer": 70,
+        "options": [
+          71,
+          77,
+          70
+        ],
+        "sequenceStateAfter": 70
+      },
+      {
+        "rowIdx": 4,
+        "challengeId": "ch_skip_up_4_7705",
+        "prompt": {
+          "kind": "skip_forward",
+          "operands": [
+            70,
+            7
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "Skip count by 7",
+          "equation": "70 + 7 = ?",
+          "display": "Step: +7",
+          "displayText": "70 + 7 = ?",
+          "hintText": "Count forward by 7 from 70",
+          "metadata": {
+            "step": 7,
+            "direction": 1,
+            "currentVal": 70,
+            "resolvedStart": 7
+          }
+        },
+        "correctAnswer": 77,
+        "options": [
+          84,
+          77,
+          70
+        ],
+        "sequenceStateAfter": 77
+      }
+    ]
+  },
+  {
+    "levelId": "v3_mult3",
+    "mode": "MULTIPLY",
+    "initialZyxVal": 2,
+    "challenges": [
+      {
+        "rowIdx": 1,
+        "challengeId": "ch_mult_1_4589",
+        "prompt": {
+          "kind": "multiply",
+          "operands": [
+            3,
+            12
+          ],
+          "operator": "*",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "3 × 12",
+          "equation": "3 × 12 = ?",
+          "display": "3 × 12",
+          "displayText": "3 × 12 = ?",
+          "hintText": "What is 3 times 12?",
+          "metadata": {
+            "factor": 3,
+            "multiplier": 12
+          }
+        },
+        "correctAnswer": 36,
+        "options": [
+          24,
+          33,
+          36
+        ],
+        "sequenceStateAfter": 1
+      },
+      {
+        "rowIdx": 2,
+        "challengeId": "ch_mult_2_6961",
+        "prompt": {
+          "kind": "multiply",
+          "operands": [
+            3,
+            1
+          ],
+          "operator": "*",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "3 × 1",
+          "equation": "3 × 1 = ?",
+          "display": "3 × 1",
+          "displayText": "3 × 1 = ?",
+          "hintText": "What is 3 times 1?",
+          "metadata": {
+            "factor": 3,
+            "multiplier": 1
+          }
+        },
+        "correctAnswer": 3,
+        "options": [
+          6,
+          3,
+          9
+        ],
+        "sequenceStateAfter": 8
+      },
+      {
+        "rowIdx": 3,
+        "challengeId": "ch_mult_3_6896",
+        "prompt": {
+          "kind": "multiply",
+          "operands": [
+            3,
+            8
+          ],
+          "operator": "*",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "3 × 8",
+          "equation": "3 × 8 = ?",
+          "display": "3 × 8",
+          "displayText": "3 × 8 = ?",
+          "hintText": "What is 3 times 8?",
+          "metadata": {
+            "factor": 3,
+            "multiplier": 8
+          }
+        },
+        "correctAnswer": 24,
+        "options": [
+          27,
+          24,
+          21
+        ],
+        "sequenceStateAfter": 4
+      },
+      {
+        "rowIdx": 4,
+        "challengeId": "ch_mult_4_1141",
+        "prompt": {
+          "kind": "multiply",
+          "operands": [
+            3,
+            4
+          ],
+          "operator": "*",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "3 × 4",
+          "equation": "3 × 4 = ?",
+          "display": "3 × 4",
+          "displayText": "3 × 4 = ?",
+          "hintText": "What is 3 times 4?",
+          "metadata": {
+            "factor": 3,
+            "multiplier": 4
+          }
+        },
+        "correctAnswer": 12,
+        "options": [
+          16,
+          7,
+          12
+        ],
+        "sequenceStateAfter": 3
+      }
+    ]
+  },
+  {
+    "levelId": "v4_diff25",
+    "mode": "DIFFERENCE",
+    "initialZyxVal": 25,
+    "challenges": [
+      {
+        "rowIdx": 1,
+        "challengeId": "ch_diff_1_6316",
+        "prompt": {
+          "kind": "difference",
+          "operands": [
+            5,
+            4
+          ],
+          "operator": "-",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "5 − ? = 4",
+          "equation": "5 − ? = 4",
+          "display": "5 − ? = 4",
+          "displayText": "5 − ? = 4",
+          "hintText": "What number subtracted from 5 gives 4?",
+          "metadata": {
+            "minuend": 5,
+            "difference": 4
+          }
+        },
+        "correctAnswer": 1,
+        "options": [
+          0,
+          1,
+          9
+        ],
+        "sequenceStateAfter": 12
+      },
+      {
+        "rowIdx": 2,
+        "challengeId": "ch_diff_2_9690",
+        "prompt": {
+          "kind": "difference",
+          "operands": [
+            12,
+            5
+          ],
+          "operator": "-",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "12 − ? = 5",
+          "equation": "12 − ? = 5",
+          "display": "12 − ? = 5",
+          "displayText": "12 − ? = 5",
+          "hintText": "What number subtracted from 12 gives 5?",
+          "metadata": {
+            "minuend": 12,
+            "difference": 5
+          }
+        },
+        "correctAnswer": 7,
+        "options": [
+          8,
+          12,
+          7
+        ],
+        "sequenceStateAfter": 13
+      },
+      {
+        "rowIdx": 3,
+        "challengeId": "ch_diff_3_6024",
+        "prompt": {
+          "kind": "difference",
+          "operands": [
+            13,
+            3
+          ],
+          "operator": "-",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "13 − ? = 3",
+          "equation": "13 − ? = 3",
+          "display": "13 − ? = 3",
+          "displayText": "13 − ? = 3",
+          "hintText": "What number subtracted from 13 gives 3?",
+          "metadata": {
+            "minuend": 13,
+            "difference": 3
+          }
+        },
+        "correctAnswer": 10,
+        "options": [
+          10,
+          13,
+          16
+        ],
+        "sequenceStateAfter": 5
+      },
+      {
+        "rowIdx": 4,
+        "challengeId": "ch_diff_4_8159",
+        "prompt": {
+          "kind": "difference",
+          "operands": [
+            5,
+            2
+          ],
+          "operator": "-",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "5 − ? = 2",
+          "equation": "5 − ? = 2",
+          "display": "5 − ? = 2",
+          "displayText": "5 − ? = 2",
+          "hintText": "What number subtracted from 5 gives 2?",
+          "metadata": {
+            "minuend": 5,
+            "difference": 2
+          }
+        },
+        "correctAnswer": 3,
+        "options": [
+          4,
+          3,
+          7
+        ],
+        "sequenceStateAfter": 11
+      }
+    ]
+  },
+  {
+    "levelId": "s5_skip6",
+    "mode": "SKIP_COUNT",
+    "initialZyxVal": 6,
+    "challenges": [
+      {
+        "rowIdx": 1,
+        "challengeId": "ch_skip_up_1_3488",
+        "prompt": {
+          "kind": "skip_forward",
+          "operands": [
+            42,
+            6
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "Skip count by 6",
+          "equation": "42 + 6 = ?",
+          "display": "Step: +6",
+          "displayText": "42 + 6 = ?",
+          "hintText": "Count forward by 6 from 42",
+          "metadata": {
+            "step": 6,
+            "direction": 1,
+            "currentVal": 42,
+            "resolvedStart": 6
+          }
+        },
+        "correctAnswer": 48,
+        "options": [
+          49,
+          36,
+          48
+        ],
+        "sequenceStateAfter": 48
+      },
+      {
+        "rowIdx": 2,
+        "challengeId": "ch_skip_up_2_8005",
+        "prompt": {
+          "kind": "skip_forward",
+          "operands": [
+            48,
+            6
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "Skip count by 6",
+          "equation": "48 + 6 = ?",
+          "display": "Step: +6",
+          "displayText": "48 + 6 = ?",
+          "hintText": "Count forward by 6 from 48",
+          "metadata": {
+            "step": 6,
+            "direction": 1,
+            "currentVal": 48,
+            "resolvedStart": 6
+          }
+        },
+        "correctAnswer": 54,
+        "options": [
+          54,
+          42,
+          55
+        ],
+        "sequenceStateAfter": 54
+      },
+      {
+        "rowIdx": 3,
+        "challengeId": "ch_skip_up_3_6306",
+        "prompt": {
+          "kind": "skip_forward",
+          "operands": [
+            54,
+            6
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "Skip count by 6",
+          "equation": "54 + 6 = ?",
+          "display": "Step: +6",
+          "displayText": "54 + 6 = ?",
+          "hintText": "Count forward by 6 from 54",
+          "metadata": {
+            "step": 6,
+            "direction": 1,
+            "currentVal": 54,
+            "resolvedStart": 6
+          }
+        },
+        "correctAnswer": 60,
+        "options": [
+          48,
+          57,
+          60
+        ],
+        "sequenceStateAfter": 60
+      },
+      {
+        "rowIdx": 4,
+        "challengeId": "ch_skip_up_4_8976",
+        "prompt": {
+          "kind": "skip_forward",
+          "operands": [
+            60,
+            6
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "Skip count by 6",
+          "equation": "60 + 6 = ?",
+          "display": "Step: +6",
+          "displayText": "60 + 6 = ?",
+          "hintText": "Count forward by 6 from 60",
+          "metadata": {
+            "step": 6,
+            "direction": 1,
+            "currentVal": 60,
+            "resolvedStart": 6
+          }
+        },
+        "correctAnswer": 66,
+        "options": [
+          54,
+          66,
+          67
+        ],
+        "sequenceStateAfter": 66
+      }
+    ]
+  },
+  {
+    "levelId": "q1_sum30",
+    "mode": "SUM_TO",
+    "initialZyxVal": 21,
+    "challenges": [
+      {
+        "rowIdx": 1,
+        "challengeId": "ch_sumto_1_6794",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            27,
+            30
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 30",
+          "equation": "27 + ? = 30",
+          "display": "Target: 30",
+          "displayText": "27 + ? = 30",
+          "hintText": "What number added to 27 makes 30?",
+          "metadata": {
+            "target": 30,
+            "currentVal": 27
+          }
+        },
+        "correctAnswer": 3,
+        "options": [
+          3,
+          30,
+          1
+        ],
+        "sequenceStateAfter": 15
+      },
+      {
+        "rowIdx": 2,
+        "challengeId": "ch_sumto_2_2390",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            15,
+            30
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 30",
+          "equation": "15 + ? = 30",
+          "display": "Target: 30",
+          "displayText": "15 + ? = 30",
+          "hintText": "What number added to 15 makes 30?",
+          "metadata": {
+            "target": 30,
+            "currentVal": 15
+          }
+        },
+        "correctAnswer": 15,
+        "options": [
+          15,
+          13,
+          30
+        ],
+        "sequenceStateAfter": 23
+      },
+      {
+        "rowIdx": 3,
+        "challengeId": "ch_sumto_3_1114",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            23,
+            30
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 30",
+          "equation": "23 + ? = 30",
+          "display": "Target: 30",
+          "displayText": "23 + ? = 30",
+          "hintText": "What number added to 23 makes 30?",
+          "metadata": {
+            "target": 30,
+            "currentVal": 23
+          }
+        },
+        "correctAnswer": 7,
+        "options": [
+          9,
+          8,
+          7
+        ],
+        "sequenceStateAfter": 3
+      },
+      {
+        "rowIdx": 4,
+        "challengeId": "ch_sumto_4_9046",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            3,
+            30
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 30",
+          "equation": "3 + ? = 30",
+          "display": "Target: 30",
+          "displayText": "3 + ? = 30",
+          "hintText": "What number added to 3 makes 30?",
+          "metadata": {
+            "target": 30,
+            "currentVal": 3
+          }
+        },
+        "correctAnswer": 27,
+        "options": [
+          30,
+          28,
+          27
+        ],
+        "sequenceStateAfter": 9
+      }
+    ]
+  },
+  {
+    "levelId": "q2_mult5",
+    "mode": "MULTIPLY",
+    "initialZyxVal": 8,
+    "challenges": [
+      {
+        "rowIdx": 1,
+        "challengeId": "ch_mult_1_6669",
+        "prompt": {
+          "kind": "multiply",
+          "operands": [
+            5,
+            7
+          ],
+          "operator": "*",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "5 × 7",
+          "equation": "5 × 7 = ?",
+          "display": "5 × 7",
+          "displayText": "5 × 7 = ?",
+          "hintText": "What is 5 times 7?",
+          "metadata": {
+            "factor": 5,
+            "multiplier": 7
+          }
+        },
+        "correctAnswer": 35,
+        "options": [
+          35,
+          42,
+          12
+        ],
+        "sequenceStateAfter": 2
+      },
+      {
+        "rowIdx": 2,
+        "challengeId": "ch_mult_2_9989",
+        "prompt": {
+          "kind": "multiply",
+          "operands": [
+            5,
+            2
+          ],
+          "operator": "*",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "5 × 2",
+          "equation": "5 × 2 = ?",
+          "display": "5 × 2",
+          "displayText": "5 × 2 = ?",
+          "hintText": "What is 5 times 2?",
+          "metadata": {
+            "factor": 5,
+            "multiplier": 2
+          }
+        },
+        "correctAnswer": 10,
+        "options": [
+          8,
+          5,
+          10
+        ],
+        "sequenceStateAfter": 3
+      },
+      {
+        "rowIdx": 3,
+        "challengeId": "ch_mult_3_3520",
+        "prompt": {
+          "kind": "multiply",
+          "operands": [
+            5,
+            3
+          ],
+          "operator": "*",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "5 × 3",
+          "equation": "5 × 3 = ?",
+          "display": "5 × 3",
+          "displayText": "5 × 3 = ?",
+          "hintText": "What is 5 times 3?",
+          "metadata": {
+            "factor": 5,
+            "multiplier": 3
+          }
+        },
+        "correctAnswer": 15,
+        "options": [
+          25,
+          15,
+          18
+        ],
+        "sequenceStateAfter": 5
+      },
+      {
+        "rowIdx": 4,
+        "challengeId": "ch_mult_4_8212",
+        "prompt": {
+          "kind": "multiply",
+          "operands": [
+            5,
+            5
+          ],
+          "operator": "*",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "5 × 5",
+          "equation": "5 × 5 = ?",
+          "display": "5 × 5",
+          "displayText": "5 × 5 = ?",
+          "hintText": "What is 5 times 5?",
+          "metadata": {
+            "factor": 5,
+            "multiplier": 5
+          }
+        },
+        "correctAnswer": 25,
+        "options": [
+          25,
+          10,
+          30
+        ],
+        "sequenceStateAfter": 7
+      }
+    ]
+  },
+  {
+    "levelId": "p3_sum28",
+    "mode": "SUM_TO",
+    "initialZyxVal": 1,
+    "challenges": [
+      {
+        "rowIdx": 1,
+        "challengeId": "ch_sumto_1_7680",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            23,
+            28
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 28",
+          "equation": "23 + ? = 28",
+          "display": "Target: 28",
+          "displayText": "23 + ? = 28",
+          "hintText": "What number added to 23 makes 28?",
+          "metadata": {
+            "target": 28,
+            "currentVal": 23
+          }
+        },
+        "correctAnswer": 5,
+        "options": [
+          23,
+          4,
+          5
+        ],
+        "sequenceStateAfter": 7
+      },
+      {
+        "rowIdx": 2,
+        "challengeId": "ch_sumto_2_2948",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            7,
+            28
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 28",
+          "equation": "7 + ? = 28",
+          "display": "Target: 28",
+          "displayText": "7 + ? = 28",
+          "hintText": "What number added to 7 makes 28?",
+          "metadata": {
+            "target": 28,
+            "currentVal": 7
+          }
+        },
+        "correctAnswer": 21,
+        "options": [
+          21,
+          35,
+          19
+        ],
+        "sequenceStateAfter": 18
+      },
+      {
+        "rowIdx": 3,
+        "challengeId": "ch_sumto_3_5555",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            18,
+            28
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 28",
+          "equation": "18 + ? = 28",
+          "display": "Target: 28",
+          "displayText": "18 + ? = 28",
+          "hintText": "What number added to 18 makes 28?",
+          "metadata": {
+            "target": 28,
+            "currentVal": 18
+          }
+        },
+        "correctAnswer": 10,
+        "options": [
+          18,
+          10,
+          8
+        ],
+        "sequenceStateAfter": 5
+      },
+      {
+        "rowIdx": 4,
+        "challengeId": "ch_sumto_4_2391",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            5,
+            28
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 28",
+          "equation": "5 + ? = 28",
+          "display": "Target: 28",
+          "displayText": "5 + ? = 28",
+          "hintText": "What number added to 5 makes 28?",
+          "metadata": {
+            "target": 28,
+            "currentVal": 5
+          }
+        },
+        "correctAnswer": 23,
+        "options": [
+          22,
+          23,
+          28
+        ],
+        "sequenceStateAfter": 26
+      }
+    ]
+  },
+  {
+    "levelId": "p4_diff20",
+    "mode": "DIFFERENCE",
+    "initialZyxVal": 17,
+    "challenges": [
+      {
+        "rowIdx": 1,
+        "challengeId": "ch_diff_1_4453",
+        "prompt": {
+          "kind": "difference",
+          "operands": [
+            9,
+            7
+          ],
+          "operator": "-",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "9 − ? = 7",
+          "equation": "9 − ? = 7",
+          "display": "9 − ? = 7",
+          "displayText": "9 − ? = 7",
+          "hintText": "What number subtracted from 9 gives 7?",
+          "metadata": {
+            "minuend": 9,
+            "difference": 7
+          }
+        },
+        "correctAnswer": 2,
+        "options": [
+          9,
+          2,
+          1
+        ],
+        "sequenceStateAfter": 13
+      },
+      {
+        "rowIdx": 2,
+        "challengeId": "ch_diff_2_4609",
+        "prompt": {
+          "kind": "difference",
+          "operands": [
+            13,
+            4
+          ],
+          "operator": "-",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "13 − ? = 4",
+          "equation": "13 − ? = 4",
+          "display": "13 − ? = 4",
+          "displayText": "13 − ? = 4",
+          "hintText": "What number subtracted from 13 gives 4?",
+          "metadata": {
+            "minuend": 13,
+            "difference": 4
+          }
+        },
+        "correctAnswer": 9,
+        "options": [
+          7,
+          9,
+          13
+        ],
+        "sequenceStateAfter": 8
+      },
+      {
+        "rowIdx": 3,
+        "challengeId": "ch_diff_3_3795",
+        "prompt": {
+          "kind": "difference",
+          "operands": [
+            8,
+            1
+          ],
+          "operator": "-",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "8 − ? = 1",
+          "equation": "8 − ? = 1",
+          "display": "8 − ? = 1",
+          "displayText": "8 − ? = 1",
+          "hintText": "What number subtracted from 8 gives 1?",
+          "metadata": {
+            "minuend": 8,
+            "difference": 1
+          }
+        },
+        "correctAnswer": 7,
+        "options": [
+          7,
+          9,
+          5
+        ],
+        "sequenceStateAfter": 6
+      },
+      {
+        "rowIdx": 4,
+        "challengeId": "ch_diff_4_3915",
+        "prompt": {
+          "kind": "difference",
+          "operands": [
+            6,
+            4
+          ],
+          "operator": "-",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "6 − ? = 4",
+          "equation": "6 − ? = 4",
+          "display": "6 − ? = 4",
+          "displayText": "6 − ? = 4",
+          "hintText": "What number subtracted from 6 gives 4?",
+          "metadata": {
+            "minuend": 6,
+            "difference": 4
+          }
+        },
+        "correctAnswer": 2,
+        "options": [
+          2,
+          3,
+          0
+        ],
+        "sequenceStateAfter": 8
+      }
+    ]
+  },
+  {
+    "levelId": "p5_skip8",
+    "mode": "SKIP_COUNT",
+    "initialZyxVal": 8,
+    "challenges": [
+      {
+        "rowIdx": 1,
+        "challengeId": "ch_skip_up_1_3968",
+        "prompt": {
+          "kind": "skip_forward",
+          "operands": [
+            56,
+            8
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "Skip count by 8",
+          "equation": "56 + 8 = ?",
+          "display": "Step: +8",
+          "displayText": "56 + 8 = ?",
+          "hintText": "Count forward by 8 from 56",
+          "metadata": {
+            "step": 8,
+            "direction": 1,
+            "currentVal": 56,
+            "resolvedStart": 8
+          }
+        },
+        "correctAnswer": 64,
+        "options": [
+          72,
+          56,
+          64
+        ],
+        "sequenceStateAfter": 64
+      },
+      {
+        "rowIdx": 2,
+        "challengeId": "ch_skip_up_2_1415",
+        "prompt": {
+          "kind": "skip_forward",
+          "operands": [
+            64,
+            8
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "Skip count by 8",
+          "equation": "64 + 8 = ?",
+          "display": "Step: +8",
+          "displayText": "64 + 8 = ?",
+          "hintText": "Count forward by 8 from 64",
+          "metadata": {
+            "step": 8,
+            "direction": 1,
+            "currentVal": 64,
+            "resolvedStart": 8
+          }
+        },
+        "correctAnswer": 72,
+        "options": [
+          56,
+          72,
+          64
+        ],
+        "sequenceStateAfter": 72
+      },
+      {
+        "rowIdx": 3,
+        "challengeId": "ch_skip_up_3_8177",
+        "prompt": {
+          "kind": "skip_forward",
+          "operands": [
+            72,
+            8
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "Skip count by 8",
+          "equation": "72 + 8 = ?",
+          "display": "Step: +8",
+          "displayText": "72 + 8 = ?",
+          "hintText": "Count forward by 8 from 72",
+          "metadata": {
+            "step": 8,
+            "direction": 1,
+            "currentVal": 72,
+            "resolvedStart": 8
+          }
+        },
+        "correctAnswer": 80,
+        "options": [
+          76,
+          80,
+          79
+        ],
+        "sequenceStateAfter": 80
+      },
+      {
+        "rowIdx": 4,
+        "challengeId": "ch_skip_up_4_8360",
+        "prompt": {
+          "kind": "skip_forward",
+          "operands": [
+            80,
+            8
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "Skip count by 8",
+          "equation": "80 + 8 = ?",
+          "display": "Step: +8",
+          "displayText": "80 + 8 = ?",
+          "hintText": "Count forward by 8 from 80",
+          "metadata": {
+            "step": 8,
+            "direction": 1,
+            "currentVal": 80,
+            "resolvedStart": 8
+          }
+        },
+        "correctAnswer": 88,
+        "options": [
+          88,
+          87,
+          8
+        ],
+        "sequenceStateAfter": 88
+      }
+    ]
+  },
+  {
+    "levelId": "q3_skip4",
+    "mode": "SKIP_COUNT",
+    "initialZyxVal": 40,
+    "challenges": [
+      {
+        "rowIdx": 1,
+        "challengeId": "ch_skip_dn_1_7519",
+        "prompt": {
+          "kind": "skip_backward",
+          "operands": [
+            16,
+            4
+          ],
+          "operator": "-",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "Skip down by 4",
+          "equation": "16 - 4 = ?",
+          "display": "Step: -4",
+          "displayText": "16 - 4 = ?",
+          "hintText": "Count backward by 4 from 16",
+          "metadata": {
+            "step": 4,
+            "direction": -1,
+            "currentVal": 16,
+            "resolvedStart": 40
+          }
+        },
+        "correctAnswer": 12,
+        "options": [
+          12,
+          16,
+          14
+        ],
+        "sequenceStateAfter": 12
+      },
+      {
+        "rowIdx": 2,
+        "challengeId": "ch_skip_dn_2_7796",
+        "prompt": {
+          "kind": "skip_backward",
+          "operands": [
+            12,
+            4
+          ],
+          "operator": "-",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "Skip down by 4",
+          "equation": "12 - 4 = ?",
+          "display": "Step: -4",
+          "displayText": "12 - 4 = ?",
+          "hintText": "Count backward by 4 from 12",
+          "metadata": {
+            "step": 4,
+            "direction": -1,
+            "currentVal": 12,
+            "resolvedStart": 40
+          }
+        },
+        "correctAnswer": 8,
+        "options": [
+          8,
+          16,
+          10
+        ],
+        "sequenceStateAfter": 8
+      },
+      {
+        "rowIdx": 3,
+        "challengeId": "ch_skip_dn_3_2993",
+        "prompt": {
+          "kind": "skip_backward",
+          "operands": [
+            8,
+            4
+          ],
+          "operator": "-",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "Skip down by 4",
+          "equation": "8 - 4 = ?",
+          "display": "Step: -4",
+          "displayText": "8 - 4 = ?",
+          "hintText": "Count backward by 4 from 8",
+          "metadata": {
+            "step": 4,
+            "direction": -1,
+            "currentVal": 8,
+            "resolvedStart": 40
+          }
+        },
+        "correctAnswer": 4,
+        "options": [
+          5,
+          4,
+          8
+        ],
+        "sequenceStateAfter": 4
+      },
+      {
+        "rowIdx": 4,
+        "challengeId": "ch_skip_dn_4_1969",
+        "prompt": {
+          "kind": "skip_backward",
+          "operands": [
+            4,
+            4
+          ],
+          "operator": "-",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "Skip down by 4",
+          "equation": "4 - 4 = ?",
+          "display": "Step: -4",
+          "displayText": "4 - 4 = ?",
+          "hintText": "Count backward by 4 from 4",
+          "metadata": {
+            "step": 4,
+            "direction": -1,
+            "currentVal": 4,
+            "resolvedStart": 40
+          }
+        },
+        "correctAnswer": 0,
+        "options": [
+          4,
+          0,
+          8
+        ],
+        "sequenceStateAfter": 0
+      }
+    ]
+  },
+  {
+    "levelId": "q4_mult7",
+    "mode": "MULTIPLY",
+    "initialZyxVal": 7,
+    "challenges": [
+      {
+        "rowIdx": 1,
+        "challengeId": "ch_mult_1_1037",
+        "prompt": {
+          "kind": "multiply",
+          "operands": [
+            7,
+            6
+          ],
+          "operator": "*",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "7 × 6",
+          "equation": "7 × 6 = ?",
+          "display": "7 × 6",
+          "displayText": "7 × 6 = ?",
+          "hintText": "What is 7 times 6?",
+          "metadata": {
+            "factor": 7,
+            "multiplier": 6
+          }
+        },
+        "correctAnswer": 42,
+        "options": [
+          42,
+          13,
+          49
+        ],
+        "sequenceStateAfter": 6
+      },
+      {
+        "rowIdx": 2,
+        "challengeId": "ch_mult_2_5889",
+        "prompt": {
+          "kind": "multiply",
+          "operands": [
+            7,
+            6
+          ],
+          "operator": "*",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "7 × 6",
+          "equation": "7 × 6 = ?",
+          "display": "7 × 6",
+          "displayText": "7 × 6 = ?",
+          "hintText": "What is 7 times 6?",
+          "metadata": {
+            "factor": 7,
+            "multiplier": 6
+          }
+        },
+        "correctAnswer": 42,
+        "options": [
+          42,
+          48,
+          35
+        ],
+        "sequenceStateAfter": 9
+      },
+      {
+        "rowIdx": 3,
+        "challengeId": "ch_mult_3_1784",
+        "prompt": {
+          "kind": "multiply",
+          "operands": [
+            7,
+            9
+          ],
+          "operator": "*",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "7 × 9",
+          "equation": "7 × 9 = ?",
+          "display": "7 × 9",
+          "displayText": "7 × 9 = ?",
+          "hintText": "What is 7 times 9?",
+          "metadata": {
+            "factor": 7,
+            "multiplier": 9
+          }
+        },
+        "correctAnswer": 63,
+        "options": [
+          56,
+          63,
+          16
+        ],
+        "sequenceStateAfter": 6
+      },
+      {
+        "rowIdx": 4,
+        "challengeId": "ch_mult_4_2263",
+        "prompt": {
+          "kind": "multiply",
+          "operands": [
+            7,
+            6
+          ],
+          "operator": "*",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "7 × 6",
+          "equation": "7 × 6 = ?",
+          "display": "7 × 6",
+          "displayText": "7 × 6 = ?",
+          "hintText": "What is 7 times 6?",
+          "metadata": {
+            "factor": 7,
+            "multiplier": 6
+          }
+        },
+        "correctAnswer": 42,
+        "options": [
+          48,
+          42,
+          49
+        ],
+        "sequenceStateAfter": 2
+      }
+    ]
+  },
+  {
+    "levelId": "q5_sum40",
+    "mode": "SUM_TO",
+    "initialZyxVal": 23,
+    "challenges": [
+      {
+        "rowIdx": 1,
+        "challengeId": "ch_sumto_1_7026",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            23,
+            40
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 40",
+          "equation": "23 + ? = 40",
+          "display": "Target: 40",
+          "displayText": "23 + ? = 40",
+          "hintText": "What number added to 23 makes 40?",
+          "metadata": {
+            "target": 40,
+            "currentVal": 23
+          }
+        },
+        "correctAnswer": 17,
+        "options": [
+          40,
+          17,
+          16
+        ],
+        "sequenceStateAfter": 33
+      },
+      {
+        "rowIdx": 2,
+        "challengeId": "ch_sumto_2_7833",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            33,
+            40
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 40",
+          "equation": "33 + ? = 40",
+          "display": "Target: 40",
+          "displayText": "33 + ? = 40",
+          "hintText": "What number added to 33 makes 40?",
+          "metadata": {
+            "target": 40,
+            "currentVal": 33
+          }
+        },
+        "correctAnswer": 7,
+        "options": [
+          7,
+          33,
+          6
+        ],
+        "sequenceStateAfter": 8
+      },
+      {
+        "rowIdx": 3,
+        "challengeId": "ch_sumto_3_9837",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            8,
+            40
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 40",
+          "equation": "8 + ? = 40",
+          "display": "Target: 40",
+          "displayText": "8 + ? = 40",
+          "hintText": "What number added to 8 makes 40?",
+          "metadata": {
+            "target": 40,
+            "currentVal": 8
+          }
+        },
+        "correctAnswer": 32,
+        "options": [
+          34,
+          31,
+          32
+        ],
+        "sequenceStateAfter": 10
+      },
+      {
+        "rowIdx": 4,
+        "challengeId": "ch_sumto_4_4379",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            10,
+            40
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 40",
+          "equation": "10 + ? = 40",
+          "display": "Target: 40",
+          "displayText": "10 + ? = 40",
+          "hintText": "What number added to 10 makes 40?",
+          "metadata": {
+            "target": 40,
+            "currentVal": 10
+          }
+        },
+        "correctAnswer": 30,
+        "options": [
+          40,
+          30,
+          28
+        ],
+        "sequenceStateAfter": 32
+      }
+    ]
+  },
+  {
+    "levelId": "u4_sum35",
+    "mode": "SUM_TO",
+    "initialZyxVal": 16,
+    "challenges": [
+      {
+        "rowIdx": 1,
+        "challengeId": "ch_sumto_1_4821",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            7,
+            35
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 35",
+          "equation": "7 + ? = 35",
+          "display": "Target: 35",
+          "displayText": "7 + ? = 35",
+          "hintText": "What number added to 7 makes 35?",
+          "metadata": {
+            "target": 35,
+            "currentVal": 7
+          }
+        },
+        "correctAnswer": 28,
+        "options": [
+          28,
+          29,
+          35
+        ],
+        "sequenceStateAfter": 27
+      },
+      {
+        "rowIdx": 2,
+        "challengeId": "ch_sumto_2_4357",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            27,
+            35
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 35",
+          "equation": "27 + ? = 35",
+          "display": "Target: 35",
+          "displayText": "27 + ? = 35",
+          "hintText": "What number added to 27 makes 35?",
+          "metadata": {
+            "target": 35,
+            "currentVal": 27
+          }
+        },
+        "correctAnswer": 8,
+        "options": [
+          6,
+          8,
+          62
+        ],
+        "sequenceStateAfter": 34
+      },
+      {
+        "rowIdx": 3,
+        "challengeId": "ch_sumto_3_1036",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            34,
+            35
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 35",
+          "equation": "34 + ? = 35",
+          "display": "Target: 35",
+          "displayText": "34 + ? = 35",
+          "hintText": "What number added to 34 makes 35?",
+          "metadata": {
+            "target": 35,
+            "currentVal": 34
+          }
+        },
+        "correctAnswer": 1,
+        "options": [
+          2,
+          1,
+          69
+        ],
+        "sequenceStateAfter": 22
+      },
+      {
+        "rowIdx": 4,
+        "challengeId": "ch_sumto_4_5724",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            22,
+            35
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 35",
+          "equation": "22 + ? = 35",
+          "display": "Target: 35",
+          "displayText": "22 + ? = 35",
+          "hintText": "What number added to 22 makes 35?",
+          "metadata": {
+            "target": 35,
+            "currentVal": 22
+          }
+        },
+        "correctAnswer": 13,
+        "options": [
+          13,
+          12,
+          57
+        ],
+        "sequenceStateAfter": 8
+      }
+    ]
+  },
+  {
+    "levelId": "u5_diff30",
+    "mode": "DIFFERENCE",
+    "initialZyxVal": 9,
+    "challenges": [
+      {
+        "rowIdx": 1,
+        "challengeId": "ch_diff_1_1663",
+        "prompt": {
+          "kind": "difference",
+          "operands": [
+            23,
+            11
+          ],
+          "operator": "-",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "23 − ? = 11",
+          "equation": "23 − ? = 11",
+          "display": "23 − ? = 11",
+          "displayText": "23 − ? = 11",
+          "hintText": "What number subtracted from 23 gives 11?",
+          "metadata": {
+            "minuend": 23,
+            "difference": 11
+          }
+        },
+        "correctAnswer": 12,
+        "options": [
+          12,
+          10,
+          23
+        ],
+        "sequenceStateAfter": 10
+      },
+      {
+        "rowIdx": 2,
+        "challengeId": "ch_diff_2_5771",
+        "prompt": {
+          "kind": "difference",
+          "operands": [
+            10,
+            1
+          ],
+          "operator": "-",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "10 − ? = 1",
+          "equation": "10 − ? = 1",
+          "display": "10 − ? = 1",
+          "displayText": "10 − ? = 1",
+          "hintText": "What number subtracted from 10 gives 1?",
+          "metadata": {
+            "minuend": 10,
+            "difference": 1
+          }
+        },
+        "correctAnswer": 9,
+        "options": [
+          9,
+          11,
+          7
+        ],
+        "sequenceStateAfter": 28
+      },
+      {
+        "rowIdx": 3,
+        "challengeId": "ch_diff_3_2680",
+        "prompt": {
+          "kind": "difference",
+          "operands": [
+            28,
+            9
+          ],
+          "operator": "-",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "28 − ? = 9",
+          "equation": "28 − ? = 9",
+          "display": "28 − ? = 9",
+          "displayText": "28 − ? = 9",
+          "hintText": "What number subtracted from 28 gives 9?",
+          "metadata": {
+            "minuend": 28,
+            "difference": 9
+          }
+        },
+        "correctAnswer": 19,
+        "options": [
+          37,
+          19,
+          18
+        ],
+        "sequenceStateAfter": 22
+      },
+      {
+        "rowIdx": 4,
+        "challengeId": "ch_diff_4_8894",
+        "prompt": {
+          "kind": "difference",
+          "operands": [
+            22,
+            9
+          ],
+          "operator": "-",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "22 − ? = 9",
+          "equation": "22 − ? = 9",
+          "display": "22 − ? = 9",
+          "displayText": "22 − ? = 9",
+          "hintText": "What number subtracted from 22 gives 9?",
+          "metadata": {
+            "minuend": 22,
+            "difference": 9
+          }
+        },
+        "correctAnswer": 13,
+        "options": [
+          13,
+          14,
+          11
+        ],
+        "sequenceStateAfter": 17
+      }
+    ]
+  }
+]

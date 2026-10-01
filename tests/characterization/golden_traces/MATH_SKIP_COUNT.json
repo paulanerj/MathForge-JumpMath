@@ -1,0 +1,257 @@
+{
+  "schemaVersion": "1.0.0",
+  "baselineId": "JUMPMATH-R2-PHASE-4C-FROZEN",
+  "scenarioId": "MATH_SKIP_COUNT",
+  "levelId": "d2_skip5",
+  "seed": 404,
+  "viewport": {
+    "width": 500,
+    "height": 800,
+    "dpr": 1
+  },
+  "observations": [
+    {
+      "scenarioId": "MATH_SKIP_COUNT",
+      "stepIndex": 0,
+      "label": "skip_init",
+      "session": {
+        "status": "playing",
+        "score": 0,
+        "timeLeft": 10,
+        "levelIndex": 0,
+        "levelId": "d2_skip5"
+      },
+      "player": {
+        "currentRow": 0,
+        "x": 0,
+        "y": 0,
+        "jumping": false,
+        "bouncing": false,
+        "falling": false
+      },
+      "camera": {
+        "x": 0,
+        "y": 0
+      },
+      "plasma": {
+        "waveY": 320,
+        "speed": 28,
+        "gapToPlayer": -320,
+        "shieldActive": false
+      },
+      "activeChallenge": {
+        "id": "ch_skip_up_1_4179",
+        "prompt": {
+          "kind": "skip_forward",
+          "operands": [
+            5,
+            5
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "Skip count by 5",
+          "equation": "5 + 5 = ?",
+          "display": "Step: +5",
+          "displayText": "5 + 5 = ?",
+          "hintText": "Count forward by 5 from 5",
+          "metadata": {
+            "step": 5,
+            "direction": 1,
+            "currentVal": 5,
+            "resolvedStart": 5
+          }
+        },
+        "correctAnswer": 10,
+        "optionCount": 3
+      },
+      "actionableRowPlatforms": [
+        {
+          "id": "r1_p0",
+          "rowIdx": 1,
+          "val": 10,
+          "isCorrect": true,
+          "shattered": false,
+          "worldX": -241.25,
+          "worldY": -99
+        },
+        {
+          "id": "r1_p1",
+          "rowIdx": 1,
+          "val": 15,
+          "isCorrect": false,
+          "shattered": false,
+          "worldX": -126.87,
+          "worldY": -179.73
+        },
+        {
+          "id": "r1_p2",
+          "rowIdx": 1,
+          "val": 9,
+          "isCorrect": false,
+          "shattered": false,
+          "worldX": -12.49,
+          "worldY": -260.47
+        }
+      ],
+      "framing": {
+        "isFramedCorrectly": false,
+        "nextRowMinX": -55.25,
+        "nextRowMaxX": 301.51
+      },
+      "safePose": {
+        "x": 0,
+        "y": 0,
+        "row": 0,
+        "val": 5
+      },
+      "travelPreview": null,
+      "recoveryState": {
+        "isRecovering": false,
+        "shieldRemaining": 0
+      },
+      "timerState": {
+        "timeLeft": 10,
+        "isExpired": false
+      },
+      "pendingTransition": null,
+      "domainEvents": [
+        {
+          "seq": 1,
+          "type": "SESSION_INITIALIZED",
+          "payload": {
+            "levelId": "d2_skip5",
+            "seed": 404
+          }
+        }
+      ]
+    },
+    {
+      "scenarioId": "MATH_SKIP_COUNT",
+      "stepIndex": 3,
+      "label": "skip_row1_resolved",
+      "session": {
+        "status": "playing",
+        "score": 0,
+        "timeLeft": 9.5,
+        "levelIndex": 0,
+        "levelId": "d2_skip5"
+      },
+      "player": {
+        "currentRow": 0,
+        "x": -150.78,
+        "y": -280.81,
+        "jumping": true,
+        "bouncing": false,
+        "falling": false
+      },
+      "camera": {
+        "x": -79.29,
+        "y": -179.83
+      },
+      "plasma": {
+        "waveY": 306,
+        "speed": 28,
+        "gapToPlayer": -586.81,
+        "shieldActive": false
+      },
+      "activeChallenge": {
+        "id": "ch_skip_up_1_4179",
+        "prompt": {
+          "kind": "skip_forward",
+          "operands": [
+            5,
+            5
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "result",
+          "text": "Skip count by 5",
+          "equation": "5 + 5 = ?",
+          "display": "Step: +5",
+          "displayText": "5 + 5 = ?",
+          "hintText": "Count forward by 5 from 5",
+          "metadata": {
+            "step": 5,
+            "direction": 1,
+            "currentVal": 5,
+            "resolvedStart": 5
+          }
+        },
+        "correctAnswer": 10,
+        "optionCount": 3
+      },
+      "actionableRowPlatforms": [
+        {
+          "id": "r1_p0",
+          "rowIdx": 1,
+          "val": 10,
+          "isCorrect": true,
+          "shattered": false,
+          "worldX": -241.25,
+          "worldY": -99
+        },
+        {
+          "id": "r1_p1",
+          "rowIdx": 1,
+          "val": 15,
+          "isCorrect": false,
+          "shattered": false,
+          "worldX": -126.87,
+          "worldY": -179.73
+        },
+        {
+          "id": "r1_p2",
+          "rowIdx": 1,
+          "val": 9,
+          "isCorrect": false,
+          "shattered": false,
+          "worldX": -12.49,
+          "worldY": -260.47
+        }
+      ],
+      "framing": {
+        "isFramedCorrectly": true,
+        "nextRowMinX": 24.05,
+        "nextRowMaxX": 380.8
+      },
+      "safePose": {
+        "x": 0,
+        "y": 0,
+        "row": 0,
+        "val": 5
+      },
+      "travelPreview": 5,
+      "recoveryState": {
+        "isRecovering": false,
+        "shieldRemaining": 0
+      },
+      "timerState": {
+        "timeLeft": 9.5,
+        "isExpired": false
+      },
+      "pendingTransition": null,
+      "domainEvents": [
+        {
+          "seq": 1,
+          "type": "SESSION_INITIALIZED",
+          "payload": {
+            "levelId": "d2_skip5",
+            "seed": 404
+          }
+        },
+        {
+          "seq": 2,
+          "type": "PLATFORM_SELECTED",
+          "payload": {
+            "rowIdx": 1,
+            "platformId": "r1_p0",
+            "val": 10,
+            "isCorrect": true
+          }
+        }
+      ]
+    }
+  ],
+  "finalOutcome": "COMPLETED"
+}

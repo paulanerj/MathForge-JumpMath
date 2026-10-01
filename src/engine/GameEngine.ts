@@ -11,6 +11,16 @@ import { MathChallengeEngine } from '../math/MathChallengeEngine';
 import { MathChallenge } from '../math/mathTypes';
 import { ChallengeTrace, CommitmentSource } from '../evidence/challengeTrace';
 import { derivePlasmaPresentation, PLASMA_LAB_GAPS, PlasmaLabState, PlasmaPresentation } from './plasmaPresentation';
+import { telemetry } from '../debug/DevelopmentTelemetry';
+import { realmForLevel } from '../visual/realms';
+import {
+  clientToCanvasCoords,
+  testPlatformHit,
+  resolvePlatformSelection,
+  getPlatformVisualBounds,
+  VISUAL_PLATFORM_HW,
+  PlatformVisualBounds,
+} from './PlatformHitGeometry';
 
 export class GameEngine {
   config: ZyxConfig;
@@ -132,6 +142,11 @@ export class GameEngine {
     this.state.timeLeft = this.config.gameplay.turnTimeLimit;
     this.initializePlasmaForNewLevel();
     this.captureSafePose();
+    telemetry.recordEvent('LEVEL', 'level_initialized', {
+      levelId: this.state.schema.id,
+      mode: this.state.schema.mathConfig.mode,
+      initialZyxVal: session.initialZyxVal,
+    });
   }
 
   handleInput(clientX: number, clientY: number) {
@@ -140,19 +155,157 @@ export class GameEngine {
       this.audio.init();
       this.audio.play('world.enter');
     }
-    if (this.state.status !== 'playing') return;
+    if (this.state.status !== 'playing') {
+      telemetry.recordEvent('PLATFORM', 'platform_selection_blocked', {
+        reason: 'game_status_not_playing',
+        status: this.state.status,
+      });
+      return;
+    }
+    if (this.state.zyx.jumping || this.state.zyx.bouncing || this.state.zyx.falling) {
+      telemetry.recordEvent('PLATFORM', 'platform_selection_blocked', {
+        reason: 'player_in_motion',
+        jumping: this.state.zyx.jumping,
+        bouncing: this.state.zyx.bouncing,
+        falling: this.state.zyx.falling,
+      });
+      return;
+    }
 
-    const rect = this.canvas.getBoundingClientRect();
-    const scaleX = 500 / rect.width;
-    const scaleY = 800 / rect.height;
-    const lx = (clientX - rect.left) * scaleX;
-    const ly = (clientY - rect.top) * scaleY;
+    const { lx, ly, inBounds } = clientToCanvasCoords(this.canvas, clientX, clientY);
     const worldX = lx - this.canvas.width / 2 + this.camera.x;
     const worldY = ly - this.canvas.height / 2 + this.camera.y;
-    const clickedPlatform = this.platformManager.platforms.find(p => {
-      return Math.abs(p.x - worldX) < p.width / 2 && Math.abs(p.y - worldY) < p.height / 2;
+
+    telemetry.recordEvent('INPUT', 'platform_pointer_received', {
+      clientX,
+      clientY,
+      lx,
+      ly,
+      inBounds,
+      worldX,
+      worldY,
+      camera: { x: this.camera.x, y: this.camera.y },
     });
-    if (clickedPlatform) this.executeJump(clickedPlatform);
+
+    const actionableRow = this.state.zyx.currentRow + 1;
+    const candidates = this.platformManager.platforms.filter(
+      (p) => p.rowIdx === actionableRow && !p.shattered
+    );
+
+    const shape = realmForLevel(this.state.schema.theme).platform;
+
+    telemetry.recordEvent('PLATFORM', 'platform_hit_test', {
+      pointer: { worldX, worldY },
+      actionableRow,
+      candidateCount: candidates.length,
+      shape,
+      camera: { x: this.camera.x, y: this.camera.y },
+    });
+
+    const tested = candidates.map((p) => ({
+      platform: p,
+      hit: testPlatformHit(worldX, worldY, p, shape, 8),
+    }));
+
+    const resolved = resolvePlatformSelection(tested);
+
+    if (resolved) {
+      telemetry.recordEvent('PLATFORM', 'platform_hit', {
+        platformId: resolved.platform.id,
+        rowIdx: resolved.platform.rowIdx,
+        isInsideVisualBody: resolved.hit.isInsideVisualBody,
+        distToCenter: resolved.hit.distToCenter,
+        visualBounds: resolved.hit.bounds,
+      });
+      telemetry.recordEvent('PLATFORM', 'platform_selection', {
+        platformId: resolved.platform.id,
+        rowIdx: resolved.platform.rowIdx,
+        val: resolved.platform.val,
+        isCorrect: resolved.platform.isCorrect,
+      });
+      this.executeJump(resolved.platform);
+    } else {
+      telemetry.recordEvent('PLATFORM', 'platform_hit_miss', {
+        pointer: { worldX, worldY },
+        actionableRow,
+        candidateCount: candidates.length,
+      });
+    }
+  }
+
+  evaluateActionableRowFraming(): {
+    currentRowBounds: { minX: number; maxX: number };
+    nextRowBounds: { minX: number; maxX: number };
+    isFramedCorrectly: boolean;
+    clippingReason?: string;
+  } {
+    const rawPv = this.state.schema.progressionVector;
+    const mag = Math.hypot(rawPv.x, rawPv.y) || 1;
+    const pv = { x: rawPv.x / mag, y: rawPv.y / mag };
+    const rowStepX = pv.x * this.platformManager.gapY;
+    const ox = -pv.y;
+    const gapX = this.platformManager.gapX;
+    const hw = VISUAL_PLATFORM_HW;
+
+    const currentRow = this.state.zyx.currentRow;
+    const nextRow = currentRow + 1;
+
+    // Current row screen bounds (if currentRow > 0)
+    let currentMinX = 250;
+    let currentMaxX = 250;
+    if (currentRow > 0) {
+      const baseX_A = currentRow * rowStepX;
+      const c1 = 250 - this.camera.x + (baseX_A - ox * gapX);
+      const c3 = 250 - this.camera.x + (baseX_A + ox * gapX);
+      currentMinX = Math.min(c1, c3) - hw;
+      currentMaxX = Math.max(c1, c3) + hw;
+    }
+
+    // Next row screen bounds
+    const baseX_B = nextRow * rowStepX;
+    const n1 = 250 - this.camera.x + (baseX_B - ox * gapX);
+    const n2 = 250 - this.camera.x + baseX_B;
+    const n3 = 250 - this.camera.x + (baseX_B + ox * gapX);
+    const nextMinX = Math.min(n1, n2, n3) - hw;
+    const nextMaxX = Math.max(n1, n2, n3) + hw;
+    const minCenter = Math.min(n1, n2, n3);
+    const maxCenter = Math.max(n1, n2, n3);
+
+    let isFramedCorrectly = true;
+    let clippingReason: string | undefined;
+
+    if (minCenter < 20 || maxCenter > 480) {
+      isFramedCorrectly = false;
+      clippingReason = `Next-row answer center outside readable viewport: minCenter=${minCenter.toFixed(1)}, maxCenter=${maxCenter.toFixed(1)}`;
+    }
+
+    telemetry.recordEvent('PLATFORM', 'actionable_row_evaluated', {
+      levelId: this.state.schema.id,
+      rowIdx: currentRow,
+      nextRowIdx: nextRow,
+      progressionVector: rawPv,
+      camera: { x: this.camera.x, y: this.camera.y },
+      viewport: { width: this.canvas.width, height: this.canvas.height },
+      currentRowBounds: { minX: currentMinX, maxX: currentMaxX },
+      nextRowBounds: { minX: nextMinX, maxX: nextMaxX },
+      isFramedCorrectly,
+    });
+
+    if (!isFramedCorrectly) {
+      telemetry.recordEvent('PLATFORM', 'actionable_row_clipped', {
+        levelId: this.state.schema.id,
+        rowIdx: currentRow,
+        reason: clippingReason,
+        nextRowBounds: { minX: nextMinX, maxX: nextMaxX },
+      });
+    }
+
+    return {
+      currentRowBounds: { minX: currentMinX, maxX: currentMaxX },
+      nextRowBounds: { minX: nextMinX, maxX: nextMaxX },
+      isFramedCorrectly,
+      clippingReason,
+    };
   }
 
   private hintActive(): boolean {
@@ -346,6 +499,13 @@ export class GameEngine {
     (this.state.zyx as any).prevX = this.state.zyx.x;
     (this.state.zyx as any).prevY = this.state.zyx.y;
     this.revealCommittedNextStep(platform);
+    telemetry.recordEvent('PLAYER', 'player_jump_started', {
+      rowIdx: platform.rowIdx,
+      isCorrect: platform.isCorrect,
+      challengeId: platform.challengeId ?? null,
+      optionId: platform.optionId ?? null,
+      timeLeft: this.state.timeLeft,
+    });
   }
 
   /** Show the already-generated next operand during travel. Does not resolve or spawn. */
@@ -425,7 +585,9 @@ export class GameEngine {
     }
     this.clearDeathStates();
     this.initializePlasmaForNewLevel();
-    this.camera.x = 0;
+    const initPv = this.state.schema.progressionVector;
+    const initMag = Math.hypot(initPv.x, initPv.y) || 1;
+    this.camera.x = initPv.x !== 0 ? 0.5 * (initPv.x / initMag) * this.platformManager.gapY : 0;
     this.camera.y = 0;
     this.completionPosted = false;
     this.calibrationFrozen = false;
@@ -433,6 +595,7 @@ export class GameEngine {
     this.audio.init();
     this.audio.play('ambience.bed');
     this.captureSafePose();
+    this.evaluateActionableRowFraming();
     this.reformT = 1;
     this.plasmaShield = 0;
     this.heat = 0;
@@ -468,6 +631,9 @@ export class GameEngine {
     });
     this.audio.init();
     this.audio.play('ambience.bed');
+    telemetry.recordEvent('RECOVERY', 'respawn_completed', {
+      currentRow: this.state.zyx.currentRow,
+    });
   }
 
   private postLevelComplete() {
@@ -530,9 +696,14 @@ export class GameEngine {
     this.mortician.type = '';
     const rawPv = this.state.schema.progressionVector;
     const mag = Math.hypot(rawPv.x, rawPv.y) || 1;
-    const along = rawPv.x !== 0 ? (z.currentRow + 1) * (rawPv.x / mag) * this.platformManager.gapY : 0;
-    this.camera.x = rawPv.x !== 0 ? 0.3 * z.x + 0.7 * along : 0;
+    const rowStep = (rawPv.x / mag) * this.platformManager.gapY;
+    this.camera.x = rawPv.x !== 0 ? (z.currentRow + 0.5) * rowStep : 0;
     this.camera.y = z.y - this.config.camera.targetOffsetY;
+    this.evaluateActionableRowFraming();
+    telemetry.recordEvent('RECOVERY', 'recovery_shield_started', {
+      row: pose.row,
+      shield: this.plasmaShield,
+    });
   }
 
   loadSchema(schema: LevelSchema) {
@@ -563,6 +734,12 @@ export class GameEngine {
     this.state.flowState = false;
     this.audio.stopAll();
     this.mortician.init(type, this);
+    telemetry.recordEvent('DEATH', 'death_started', {
+      type,
+      cause: failureClass,
+      waveGap: this.waveGap(),
+      timeLeft: this.state.timeLeft,
+    });
     this.audio.play('state.death', { deathType: failureClass === 'timer' ? 'timer' : 'wave' });
   }
 
@@ -801,6 +978,11 @@ export class GameEngine {
       });
     }
     if (isCorrect) {
+      telemetry.recordEvent('PLATFORM', 'correct_platform_landed', {
+        rowIdx: this.targetPlatform.rowIdx,
+        correctInRow: this.correctInRow + 1,
+        score: this.state.score + 1,
+      });
       this.travelPreview = null;
       this.state.zyx.currentRow = this.targetPlatform.rowIdx;
       this.state.score++;
@@ -827,6 +1009,10 @@ export class GameEngine {
         });
       }
       if (this.correctInRow >= this.WIN_CONDITION) {
+        telemetry.recordEvent('LEVEL', 'level_completed', {
+          levelId: this.state.schema.id,
+          score: this.state.score,
+        });
         this.audio.play('progress.level_clear', { momentum: this.audio.getMomentum() });
         this.postLevelComplete();
         return;
@@ -847,6 +1033,12 @@ export class GameEngine {
       this.noteSpawned(nextChallenge, nextRowIdx, 'after-resolve');
       this.captureSafePose();
     } else {
+      telemetry.recordEvent('PLATFORM', 'wrong_platform_landed', {
+        rowIdx: this.targetPlatform.rowIdx,
+      });
+      telemetry.recordEvent('PLATFORM', 'platform_shattered', {
+        rowIdx: this.targetPlatform.rowIdx,
+      });
       this.restoreTravelPreview();
       this.state.combo = 0;
       this.state.flowState = false;

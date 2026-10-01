@@ -21,6 +21,15 @@ const suites = [
   'tests/config_authority_suite.ts',
   'tests/player_path_suite.ts',
   'tests/torture_suite.ts',
+  'tests/settings_interaction_suite.ts',
+  'tests/characterization/safety_test.ts',
+  'tests/characterization/campaign_math_tape.ts',
+  'tests/characterization/long_run_pruning_test.ts',
+  'tests/characterization/false_parity_test.ts',
+  'tests/characterization/false_divergence_test.ts',
+  'tests/characterization/framerate_dependency_test.ts',
+  'tests/characterization/oracle_mutation_gate.ts',
+  'tests/characterization/manifest_integrity_test.ts',
 ];
 
 const only = process.argv.find((arg) => arg.startsWith('--only='));

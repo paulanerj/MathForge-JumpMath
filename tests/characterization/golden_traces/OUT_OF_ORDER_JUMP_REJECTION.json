@@ -1,0 +1,387 @@
+{
+  "schemaVersion": "1.0.0",
+  "baselineId": "JUMPMATH-R2-PHASE-4C-FROZEN",
+  "scenarioId": "OUT_OF_ORDER_JUMP_REJECTION",
+  "levelId": "f1_sum10",
+  "seed": 1717,
+  "viewport": {
+    "width": 500,
+    "height": 800,
+    "dpr": 1
+  },
+  "observations": [
+    {
+      "scenarioId": "OUT_OF_ORDER_JUMP_REJECTION",
+      "stepIndex": 0,
+      "label": "row0_start",
+      "session": {
+        "status": "playing",
+        "score": 0,
+        "timeLeft": 10,
+        "levelIndex": 0,
+        "levelId": "f1_sum10"
+      },
+      "player": {
+        "currentRow": 0,
+        "x": 0,
+        "y": 0,
+        "jumping": false,
+        "bouncing": false,
+        "falling": false
+      },
+      "camera": {
+        "x": 0,
+        "y": 0
+      },
+      "plasma": {
+        "waveY": 320,
+        "speed": 28,
+        "gapToPlayer": -320,
+        "shieldActive": false
+      },
+      "activeChallenge": {
+        "id": "ch_sumto_1_3187",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            4,
+            10
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 10",
+          "equation": "4 + ? = 10",
+          "display": "Target: 10",
+          "displayText": "4 + ? = 10",
+          "hintText": "What number added to 4 makes 10?",
+          "metadata": {
+            "target": 10,
+            "currentVal": 4
+          }
+        },
+        "correctAnswer": 6,
+        "optionCount": 3
+      },
+      "actionableRowPlatforms": [
+        {
+          "id": "r1_p0",
+          "rowIdx": 1,
+          "val": 7,
+          "isCorrect": false,
+          "shattered": false,
+          "worldX": -140,
+          "worldY": -220
+        },
+        {
+          "id": "r1_p1",
+          "rowIdx": 1,
+          "val": 6,
+          "isCorrect": true,
+          "shattered": false,
+          "worldX": 0,
+          "worldY": -220
+        },
+        {
+          "id": "r1_p2",
+          "rowIdx": 1,
+          "val": 4,
+          "isCorrect": false,
+          "shattered": false,
+          "worldX": 140,
+          "worldY": -220
+        }
+      ],
+      "framing": {
+        "isFramedCorrectly": true,
+        "nextRowMinX": 46,
+        "nextRowMaxX": 454
+      },
+      "safePose": {
+        "x": 0,
+        "y": 0,
+        "row": 0,
+        "val": 4
+      },
+      "travelPreview": null,
+      "recoveryState": {
+        "isRecovering": false,
+        "shieldRemaining": 0
+      },
+      "timerState": {
+        "timeLeft": 10,
+        "isExpired": false
+      },
+      "pendingTransition": null,
+      "domainEvents": [
+        {
+          "seq": 1,
+          "type": "SESSION_INITIALIZED",
+          "payload": {
+            "levelId": "f1_sum10",
+            "seed": 1717
+          }
+        }
+      ]
+    },
+    {
+      "scenarioId": "OUT_OF_ORDER_JUMP_REJECTION",
+      "stepIndex": 2,
+      "label": "row2_attempt_ignored",
+      "session": {
+        "status": "playing",
+        "score": 0,
+        "timeLeft": 10,
+        "levelIndex": 0,
+        "levelId": "f1_sum10"
+      },
+      "player": {
+        "currentRow": 0,
+        "x": 0,
+        "y": 0,
+        "jumping": false,
+        "bouncing": false,
+        "falling": false
+      },
+      "camera": {
+        "x": 0,
+        "y": 0
+      },
+      "plasma": {
+        "waveY": 320,
+        "speed": 28,
+        "gapToPlayer": -320,
+        "shieldActive": false
+      },
+      "activeChallenge": {
+        "id": "ch_sumto_1_3187",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            4,
+            10
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 10",
+          "equation": "4 + ? = 10",
+          "display": "Target: 10",
+          "displayText": "4 + ? = 10",
+          "hintText": "What number added to 4 makes 10?",
+          "metadata": {
+            "target": 10,
+            "currentVal": 4
+          }
+        },
+        "correctAnswer": 6,
+        "optionCount": 3
+      },
+      "actionableRowPlatforms": [
+        {
+          "id": "r1_p0",
+          "rowIdx": 1,
+          "val": 7,
+          "isCorrect": false,
+          "shattered": false,
+          "worldX": -140,
+          "worldY": -220
+        },
+        {
+          "id": "r1_p1",
+          "rowIdx": 1,
+          "val": 6,
+          "isCorrect": true,
+          "shattered": false,
+          "worldX": 0,
+          "worldY": -220
+        },
+        {
+          "id": "r1_p2",
+          "rowIdx": 1,
+          "val": 4,
+          "isCorrect": false,
+          "shattered": false,
+          "worldX": 140,
+          "worldY": -220
+        }
+      ],
+      "framing": {
+        "isFramedCorrectly": true,
+        "nextRowMinX": 46,
+        "nextRowMaxX": 454
+      },
+      "safePose": {
+        "x": 0,
+        "y": 0,
+        "row": 0,
+        "val": 4
+      },
+      "travelPreview": null,
+      "recoveryState": {
+        "isRecovering": false,
+        "shieldRemaining": 0
+      },
+      "timerState": {
+        "timeLeft": 10,
+        "isExpired": false
+      },
+      "pendingTransition": null,
+      "domainEvents": [
+        {
+          "seq": 1,
+          "type": "SESSION_INITIALIZED",
+          "payload": {
+            "levelId": "f1_sum10",
+            "seed": 1717
+          }
+        },
+        {
+          "seq": 2,
+          "type": "PLATFORM_SELECTED",
+          "payload": {
+            "rowIdx": 2,
+            "platformId": "r2_p2",
+            "val": 9,
+            "isCorrect": true
+          }
+        }
+      ]
+    },
+    {
+      "scenarioId": "OUT_OF_ORDER_JUMP_REJECTION",
+      "stepIndex": 5,
+      "label": "row1_valid_landed",
+      "session": {
+        "status": "playing",
+        "score": 0,
+        "timeLeft": 9.5,
+        "levelIndex": 0,
+        "levelId": "f1_sum10"
+      },
+      "player": {
+        "currentRow": 0,
+        "x": 0,
+        "y": -356.44,
+        "jumping": true,
+        "bouncing": false,
+        "falling": false
+      },
+      "camera": {
+        "x": 0,
+        "y": -229.76
+      },
+      "plasma": {
+        "waveY": 306,
+        "speed": 28,
+        "gapToPlayer": -662.44,
+        "shieldActive": false
+      },
+      "activeChallenge": {
+        "id": "ch_sumto_1_3187",
+        "prompt": {
+          "kind": "sum_to",
+          "operands": [
+            4,
+            10
+          ],
+          "operator": "+",
+          "relation": "=",
+          "unknownPosition": "operand_2",
+          "text": "Sum to 10",
+          "equation": "4 + ? = 10",
+          "display": "Target: 10",
+          "displayText": "4 + ? = 10",
+          "hintText": "What number added to 4 makes 10?",
+          "metadata": {
+            "target": 10,
+            "currentVal": 4
+          }
+        },
+        "correctAnswer": 6,
+        "optionCount": 3
+      },
+      "actionableRowPlatforms": [
+        {
+          "id": "r1_p0",
+          "rowIdx": 1,
+          "val": 7,
+          "isCorrect": false,
+          "shattered": false,
+          "worldX": -140,
+          "worldY": -220
+        },
+        {
+          "id": "r1_p1",
+          "rowIdx": 1,
+          "val": 6,
+          "isCorrect": true,
+          "shattered": false,
+          "worldX": 0,
+          "worldY": -220
+        },
+        {
+          "id": "r1_p2",
+          "rowIdx": 1,
+          "val": 4,
+          "isCorrect": false,
+          "shattered": false,
+          "worldX": 140,
+          "worldY": -220
+        }
+      ],
+      "framing": {
+        "isFramedCorrectly": true,
+        "nextRowMinX": 46,
+        "nextRowMaxX": 454
+      },
+      "safePose": {
+        "x": 0,
+        "y": 0,
+        "row": 0,
+        "val": 4
+      },
+      "travelPreview": 4,
+      "recoveryState": {
+        "isRecovering": false,
+        "shieldRemaining": 0
+      },
+      "timerState": {
+        "timeLeft": 9.5,
+        "isExpired": false
+      },
+      "pendingTransition": null,
+      "domainEvents": [
+        {
+          "seq": 1,
+          "type": "SESSION_INITIALIZED",
+          "payload": {
+            "levelId": "f1_sum10",
+            "seed": 1717
+          }
+        },
+        {
+          "seq": 2,
+          "type": "PLATFORM_SELECTED",
+          "payload": {
+            "rowIdx": 2,
+            "platformId": "r2_p2",
+            "val": 9,
+            "isCorrect": true
+          }
+        },
+        {
+          "seq": 3,
+          "type": "PLATFORM_SELECTED",
+          "payload": {
+            "rowIdx": 1,
+            "platformId": "r1_p1",
+            "val": 6,
+            "isCorrect": true
+          }
+        }
+      ]
+    }
+  ],
+  "finalOutcome": "COMPLETED"
+}
