@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#f5eee1"><title>Vert Trace · V03</title><style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#f5eee1"><title>Vert Trace · V04 · Expanded Ink</title><style>
 :root{color-scheme:light;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#344156;background:#f5eee1}
 *{box-sizing:border-box}html{-webkit-text-size-adjust:100%}body{margin:0;min-height:100vh;background:linear-gradient(155deg,#f9f1e4,#ede2d1);padding:10px 10px max(20px,env(safe-area-inset-bottom));}button,select{font:inherit}button{touch-action:manipulation;-webkit-tap-highlight-color:transparent;cursor:pointer}button:disabled{opacity:.56;cursor:default}
 .app{margin:0 auto;max-width:430px;background:linear-gradient(160deg,#fff,#faf7f1);border-radius:36px;padding:14px 14px 22px;box-shadow:0 14px 42px #54432e27;min-height:600px}
@@ -17,12 +17,36 @@
 .previewWarning{padding:10px 12px;margin:0 0 11px;border:2px solid #e7a756;border-radius:13px;color:#6d4a13;background:#fff2d6;font-size:12px;line-height:1.5;font-weight:690}
 .hidden{display:none!important}button:focus-visible,select:focus-visible,canvas:focus-visible{outline:3px solid #238bd8;outline-offset:3px}
 @media(min-width:700px){body{padding-top:20px}.app{padding:18px 22px 26px}}@media(max-width:360px){.app{padding:11px 9px 17px;border-radius:25px}.mathCard{height:124px;width:168px}.mathCard .big{font-size:64px}.inkRegion{height:92px}.status{padding:9px}}
+
+/* V04 — handwriting-first touch layout. Original VERT surface and DigitGate weights remain intact. */
+body{padding:6px 6px max(24px,env(safe-area-inset-bottom))}
+.app{max-width:520px;min-height:0;border-radius:23px;padding:9px 10px 22px}
+.header{padding:2px 5px 8px}
+.equation{gap:3px}
+.mathCard:not(.active){height:104px;width:164px;border-width:2px;border-radius:19px}
+.mathCard:not(.active) .big{font-size:52px}
+.mathCard:not(.active) .role{margin-top:1px}
+.mathOp{font-size:24px;line-height:24px}
+.equals{height:4px;margin:3px 0}
+.mathCard.active{width:100%;max-width:480px;height:clamp(258px,38svh,360px);border-radius:24px;padding:10px 9px}
+.mathCard.active .role{font-size:12px;letter-spacing:1.4px}
+.mathCard.active.reelCard{width:176px;height:132px;padding:0}
+.inkRegion,.inkRegion.double{width:100%;height:calc(100% - 21px);max-width:452px;margin:0 auto 5px;gap:10px}
+.inkCell{border:3px dashed #d9b46b;border-radius:20px}
+.inkCell .inkLabel{top:9px;left:10px;font-size:11px}
+.inkCell .inkRead{top:9px;right:12px;font-size:14px}
+.mode{max-width:380px;margin:10px auto 5px}
+.brief{margin:0 0 5px}
+.micro{margin-top:7px}
+.micro button{min-height:44px}
+.choice button{min-height:44px;min-width:44px}
+.status{min-height:44px}
+@media(max-width:360px){.app{padding:8px 8px 19px}.mathCard.active{height:258px;width:100%}.mathCard:not(.active){height:94px}.mathCard:not(.active) .big{font-size:47px}}
+@media(orientation:landscape) and (max-height:550px){.mathCard.active{height:260px}}
 </style></head>
 <body><main class="app" id="app">
  <div class="previewWarning" id="previewWarning" role="alert">This viewer is showing a <b>static preview</b>, not the running game. Touch controls need JavaScript. Open the HTML in a real Safari/Chrome web page (preferably an HTTPS test site).</div>
  <header class="header"><div class="brand">✦ VERT <span style="color:#3479b8">TRACE</span></div><div class="badge">✓ Solved <b id="solved">0</b></div></header>
- <nav class="mode" aria-label="Input method"><button id="writeMode" class="active" aria-pressed="true">✎ Write</button><button id="reelMode" aria-pressed="false">↕ Reel</button></nav>
- <p class="brief" id="instruction">Write the missing number in the gold box</p>
  <section class="equation" id="equation" aria-label="Vertical math equation">
   <!-- Essential fallback content is static: blocked JavaScript cannot hide the equation. -->
   <div class="mathCard active" id="staticA"><span class="big">?</span><span class="role">A · WRITE</span></div>
@@ -31,6 +55,8 @@
   <div class="equals"></div>
   <div class="mathCard fixedResult"><span class="big">8</span><span class="role">C · RESULT</span></div>
  </section>
+ <nav class="mode" aria-label="Input method"><button id="writeMode" class="active" aria-pressed="true">✎ Write</button><button id="reelMode" aria-pressed="false">↕ Reel</button></nav>
+ <p class="brief" id="instruction">Write the missing number in the gold box</p>
  <div id="reelControls" class="reelControls hidden"><button id="down" aria-label="Previous number">−</button><span style="font-weight:750;color:#7c8492;font-size:13px">SWIPE THE GOLD REEL</span><button id="up" aria-label="Next number">+</button></div>
  <div class="micro" id="writeControls"><button class="outline tiny" id="undo">↶ Undo</button><button class="outline tiny" id="clear">✕ Clear</button><button class="outline tiny readButton" id="read">Read now</button></div>
  <div class="choice" id="choices" aria-label="Recognition alternatives"></div>
@@ -42,7 +68,7 @@
   <label>Missing number<select id="position"><option value="left_operand">Top (A)</option><option value="right_operand">Middle (B)</option><option value="result">Bottom (C)</option><option value="mixed">Mixed positions</option></select></label>
   <label>Number range<select id="range"><option value="9">1–9</option><option value="20">1–20</option></select></label>
   <label>Digits<select id="digitCount"><option value="1">One digit</option><option value="2">Two separate digits</option></select></label>
-  <label class="wide">Answer-aware weighting<select id="prior"><option value="off">Off — raw handwriting only</option><option value="guarded">Guarded — only when ink supports the answer</option></select></label>
+  <label class="wide">Answer-aware weighting<select id="prior"><option value="off">Off — raw handwriting only</option><option value="guarded" selected>Guarded — only when ink supports the answer</option></select></label>
   <label class="wide"><input type="checkbox" id="diagToggle"> Show recognition details</label>
  </div><div id="diag" class="diag hidden">No recognition result</div><p>Reading a digit never submits a math answer. Check answer is the only attempt boundary. If recognition is uncertain, choose a suggested digit or redraw.</p></details>
  </main>
@@ -249,11 +275,21 @@ class DigitRecognizer{
   const shape=v.shape,raw=this.rank(v.rawProbs);
   if(Math.max(shape.w,shape.h)<.045 || shape.n<3)return {state:'blank',reason:'Please draw a larger digit',ms:performance.now()-started};
   if(shape.w>2.1*shape.h&&shape.w>.52)return {state:'uncertain',reason:'Stroke too wide',rawRanked:raw,ms:performance.now()-started};
-  const eligible=mode==='guarded' && Number.isInteger(expected) && raw[0].p<=.88 && raw.slice(0,2).some(q=>q.d===expected&&q.p>=.16);
+  // A math hint may resolve a genuine visual ambiguity but never manufactures a candidate.
+  // These are neural ranking scores, NOT calibrated statistical probabilities.
+  const expectedRank=raw.findIndex(q=>q.d===expected);
+  const expectedSignal=expectedRank>=0?raw[expectedRank].p:0;
+  const aspect=shape.w/Math.max(shape.h,0.00001);
+  const geometryConsistent=!(expected===5&&raw[0].d===1&&aspect<.42) &&
+                           !(expected===1&&raw[0].d===5&&aspect>0.90);
+  const eligible=mode==='guarded' && Number.isInteger(expected) &&
+      raw[0].p<=.94 && expectedRank>=0 && expectedRank<3 &&
+      expectedSignal>=.09 && geometryConsistent;
   let probabilities=v.rawProbs;
-  if(eligible){const logits=Array.from(v.rawLogits);logits[expected]+=1.2;probabilities=this.engine._softmax(logits);}
-  const rank=this.rank(probabilities),chosen=rank[0],runner=rank[1],accepted=chosen.p>=(eligible?.60:.58) && (chosen.p-runner.p)>=(eligible?.13:.08);
-  return {state:accepted?'accepted':'uncertain',digit:accepted?chosen.d:null,rawGuess:raw[0].d,guess:chosen.d,rawRanked:raw,weightedRanked:rank,boostApplied:eligible,reason:accepted?'Read complete':'Uncertain recognition',ms:performance.now()-started};
+  if(eligible){const logits=Array.from(v.rawLogits);logits[expected]+=1.55;probabilities=this.engine._softmax(logits);}
+  const rank=this.rank(probabilities),chosen=rank[0],runner=rank[1];
+  const accepted=chosen.p>=(eligible?.56:.58) && (chosen.p-runner.p)>=(eligible?.08:.08);
+  return {state:accepted?'accepted':'uncertain',digit:accepted?chosen.d:null,rawGuess:raw[0].d,guess:chosen.d,rawRanked:raw,weightedRanked:rank,boostApplied:eligible,expectedRank,expectedSignal,aspect,reason:accepted?'Read complete':'Uncertain recognition',ms:performance.now()-started};
  }
 }
 class VertTrace{
@@ -279,7 +315,7 @@ class VertTrace{
   return {A,B,C,op,role,correct:{left_operand:A,right_operand:B,result:C}[role],min:1,max};
  }
  next(first=false){
-  this.cancelRead();this.count++;this.problem=this.make();this.locked=false;this.attempts=0;this.readResult=null;this.manual={};this.predictions=[];
+  $('digitKeypad')?.remove();this.cancelRead();this.count++;this.problem=this.make();this.locked=false;this.attempts=0;this.readResult=null;this.manual={};this.predictions=[];
   this.slots=Array.from({length:Number($('digitCount').value)},()=>[]);this.activeSlot=0;
   this.reelValue=this.problem.correct===this.problem.max?this.problem.max-1:this.problem.correct+1;
   $('check').classList.remove('hidden');$('next').classList.add('hidden');
@@ -300,7 +336,7 @@ class VertTrace{
    const fixedResult=role==='result'&&!active;
    const name=role==='left_operand'?'A':role==='right_operand'?'B':'C';
    if(!active)return `<div class="mathCard${fixedResult?' fixedResult':''}"><span class="big">${val}</span><span class="role">${name}${fixedResult?' · RESULT':''}</span></div>`;
-   if(this.mode==='reel')return `<div class="mathCard active" id="activeCard"><div class="reel" id="reel" aria-label="Number reel. Swipe up/down to select. Tap Check answer to submit" tabindex="0"><span class="adj" id="prevValue"></span><span class="center" id="currentValue"></span><span class="adj" id="nextValue"></span></div><span class="reelHint">▲<br>▼</span><span class="role">${name} · DIAL</span></div>`;
+   if(this.mode==='reel')return `<div class="mathCard active reelCard" id="activeCard"><div class="reel" id="reel" aria-label="Number reel. Swipe up/down to select. Tap Check answer to submit" tabindex="0"><span class="adj" id="prevValue"></span><span class="center" id="currentValue"></span><span class="adj" id="nextValue"></span></div><span class="reelHint">▲<br>▼</span><span class="role">${name} · DIAL</span></div>`;
    return `<div class="mathCard active" id="activeCard"><div class="inkRegion${this.slots.length===2?' double':''}" id="inkRegion">${this.slots.map((_,i)=>`<div class="inkCell" id="cell${i}"><canvas id="canvas${i}" aria-label="Write digit ${i+1}" tabindex="0"></canvas><span class="inkLabel">${this.slots.length===2?(i===0?'TENS':'ONES'):'WRITE'}</span><span class="inkRead" id="inkRead${i}"></span></div>`).join('')}</div><span class="role">${name} · WRITE HERE</span></div>`;
   };
   $('equation').innerHTML=card(p.A,'left_operand')+`<div class="mathOp">${p.op}</div>`+card(p.B,'right_operand')+'<div class="equals"></div>'+card(p.C,'result');
@@ -314,7 +350,7 @@ class VertTrace{
  updateReel(){for(const [id,n] of [['prevValue',-1],['currentValue',0],['nextValue',1]]){if($(id))$(id).textContent=this.wrap(this.reelValue+n);}}
  changeReel(d){if(this.locked||this.mode!=='reel')return;this.reelValue=this.wrap(this.reelValue+d);this.updateReel();}
  cancelRead(){clearTimeout(this.timer);this.timer=null;}
- invalidate(){this.cancelRead();this.readResult=null;this.predictions=[];this.manual={};$('check').disabled=this.locked||this.mode==='write';this.updateCandidates();this.updateInkLabels();this.report();}
+ invalidate(){this.cancelRead();this.readResult=null;this.predictions=[];this.manual={};$('digitKeypad')?.remove();$('check').disabled=this.locked||this.mode==='write';this.updateCandidates();this.updateInkLabels();this.report();}
  resizeCanvases(){this.slots.forEach((s,i)=>{const c=$('canvas'+i);if(!c)return;const r=c.getBoundingClientRect(),dpr=Math.min(window.devicePixelRatio||1,2);c.width=Math.max(1,Math.round(r.width*dpr));c.height=Math.max(1,Math.round(r.height*dpr));c.getContext('2d').setTransform(dpr,0,0,dpr,0,0);this.paint(i);});}
  paint(i){const c=$('canvas'+i);if(!c)return;const ctx=c.getContext('2d'),r=c.getBoundingClientRect();ctx.clearRect(0,0,r.width,r.height);ctx.lineCap='round';ctx.lineJoin='round';ctx.lineWidth=Math.max(7,Math.min(13,r.width*.075));ctx.strokeStyle='#1c79c9';for(const stroke of this.slots[i]){if(stroke.length<2)continue;ctx.beginPath();ctx.moveTo(stroke[0].x*r.width,stroke[0].y*r.height);for(const pt of stroke.slice(1))ctx.lineTo(pt.x*r.width,pt.y*r.height);ctx.stroke();}}
  point(e,c){const b=c.getBoundingClientRect();return {x:clamp((e.clientX-b.left)/b.width,0,1),y:clamp((e.clientY-b.top)/b.height,0,1)};}
@@ -324,11 +360,31 @@ class VertTrace{
  pointerUp(e,i){if(this.drawing?.id!==e.pointerId||this.drawing?.i!==i)return;this.addPoint(e,i);this.drawing=null;if(this.slots[i].at(-1)?.length<2)this.slots[i].pop();this.paint(i);this.timer=setTimeout(()=>this.recognize(),650);}
  clear(){if(this.locked)return;this.slots[this.activeSlot]=[];this.invalidate();this.paint(this.activeSlot);this.message('Cleared. Write again.');}
  undo(){if(this.locked)return;this.slots[this.activeSlot].pop();this.invalidate();this.paint(this.activeSlot);this.message('Last stroke removed.');}
- recognize(){if(this.mode!=='write'||this.locked)return;this.cancelRead();const exp=String(this.problem.correct);const hints=exp.length===this.slots.length?exp.split('').map(Number):[];try{this.predictions=this.slots.map((s,i)=>this.recognizer.read(s,hints[i]??null,$('prior').value));}catch(e){console.error(e);this.message('Recognizer error: '+e.message,'warn');return;}this.manual={};this.updateResult();}
+ // Store pointer coordinates in normalized screen units for drawing, but convert
+ // them back to aspect-correct units before DigitGate's shape rasterization.
+ // Without this correction a wide canvas compresses horizontal handwriting strokes.
+ recognitionStrokes(s,i){
+  const c=$('canvas'+i),r=c?.getBoundingClientRect();
+  const w=Math.max(1,r?.width||1),h=Math.max(1,r?.height||1),base=Math.max(w,h);
+  return s.map(stroke=>stroke.map(p=>({x:p.x*w/base,y:p.y*h/base})));
+ }
+ recognize(){if(this.mode!=='write'||this.locked)return;this.cancelRead();const exp=String(this.problem.correct);const hints=exp.length===this.slots.length?exp.split('').map(Number):[];try{this.predictions=this.slots.map((s,i)=>this.recognizer.read(this.recognitionStrokes(s,i),hints[i]??null,$('prior').value));}catch(e){console.error(e);this.message('Recognizer error: '+e.message,'warn');return;}this.manual={};this.updateResult();}
  updateResult(){const text=this.predictions.map((r,i)=>Number.isInteger(this.manual[i])?this.manual[i]:(r.state==='accepted'?r.digit:'?')).join('');const ready=/^\d{1,2}$/.test(text) && !(text.length>1&&text[0]==='0');this.readResult={ready,text};$('check').disabled=this.locked||!ready;this.updateInkLabels();this.updateCandidates();this.report();if(ready){this.message(`Recognized ${text}. Tap Check answer when ready.`);}else if(this.slots.every(s=>!s.length)){this.message('Draw your number inside the gold card.');}else this.message('Recognition uncertain. Redraw or tap a suggested number.','warn');}
  updateInkLabels(){this.slots.forEach((_,i)=>{if($('inkRead'+i))$('inkRead'+i).textContent=Number.isInteger(this.manual[i])?'✓ '+this.manual[i]:(this.predictions[i]?.state==='accepted'?'→ '+this.predictions[i].digit:'');});}
- updateCandidates(){const container=$('choices');container.replaceChildren();this.predictions.forEach((r,i)=>{const picks=r.rawRanked?.slice(0,3)||[];for(const candidate of picks){const b=document.createElement('button');b.type='button';b.textContent=String(candidate.d);b.title='Recognition suggestion '+candidate.d;b.className=(this.manual[i]===candidate.d || (!Number.isInteger(this.manual[i])&&r.digit===candidate.d))?'selected':'';b.disabled=this.locked;b.onclick=()=>{this.manual[i]=candidate.d;this.updateResult();};container.appendChild(b);}});}
- report(){const box=$('diag');box.classList.toggle('hidden',!$('diagToggle').checked);if(!$('diagToggle').checked)return;box.textContent=this.predictions.length?this.predictions.map((r,i)=>'Digit '+(i+1)+' / '+r.state+' / '+r.ms.toFixed(1)+'ms\nRaw: '+(r.rawRanked||[]).slice(0,4).map(x=>x.d+':'+(x.p*100).toFixed(1)+'%').join('  ')+'\nGuarded hint: '+Boolean(r.boostApplied)).join('\n\n'):'No recognition has run yet.';}
+ updateCandidates(){const container=$('choices');container.replaceChildren();this.predictions.forEach((r,i)=>{
+  const picks=r.rawRanked?.slice(0,4)||[];
+  // Show what the ink model considered, not the secret math answer.
+  for(const candidate of picks){const b=document.createElement('button');b.type='button';b.textContent=String(candidate.d);b.title='Recognition suggestion '+candidate.d;b.className=(this.manual[i]===candidate.d || (!Number.isInteger(this.manual[i])&&r.digit===candidate.d))?'selected':'';b.disabled=this.locked;b.onclick=()=>{this.manual[i]=candidate.d;this.updateResult();};container.appendChild(b);}
+  if(this.slots[i]?.length){const b=document.createElement('button');b.type='button';b.textContent='Edit';b.title='Choose digit manually if the handwriting model missed it';b.className='outline';b.disabled=this.locked;b.onclick=()=>this.toggleKeypad(i);container.appendChild(b);}
+ });}
+ toggleKeypad(i){
+  const existing=$('digitKeypad');if(existing){existing.remove();if(existing.dataset.slot===String(i))return;}
+  const pad=document.createElement('div');pad.id='digitKeypad';pad.dataset.slot=String(i);pad.setAttribute('aria-label','Correct recognition manually');
+  Object.assign(pad.style,{display:'grid',gridTemplateColumns:'repeat(5,minmax(0,1fr))',gap:'7px',margin:'8px auto',maxWidth:'320px'});
+  for(let d=0;d<=9;d++){const b=document.createElement('button');b.type='button';b.className='outline';b.textContent=String(d);b.style.minHeight='44px';b.onclick=()=>{this.manual[i]=d;pad.remove();this.updateResult();};pad.appendChild(b);}
+  $('choices').after(pad);
+ }
+ report(){const box=$('diag');box.classList.toggle('hidden',!$('diagToggle').checked);if(!$('diagToggle').checked)return;box.textContent=this.predictions.length?this.predictions.map((r,i)=>'Digit '+(i+1)+' / '+r.state+' / '+r.ms.toFixed(1)+'ms\\nRaw ranking: '+(r.rawRanked||[]).slice(0,5).map(x=>x.d+':'+(x.p*100).toFixed(1)).join('  ')+'\\nPost-hint: '+(r.weightedRanked||[]).slice(0,4).map(x=>x.d+':'+(x.p*100).toFixed(1)).join('  ')+'\\nExpected rank: '+r.expectedRank+' / signal: '+((r.expectedSignal||0)*100).toFixed(1)+'% / aspect: '+Number(r.aspect||0).toFixed(2)+' / hint applied: '+Boolean(r.boostApplied)).join('\\n\\n'):'No recognition has run yet.';}
  check(){if(this.locked)return;const selected=this.mode==='write'?(this.readResult?.ready?Number(this.readResult.text):null):this.reelValue;if(selected===null){this.message('Write and recognize a number first.','warn');return;}if(selected<this.problem.min||selected>this.problem.max){this.message('Use a value from '+this.problem.min+' to '+this.problem.max+'.','warn');return;}this.attempts++;const correct=selected===this.problem.correct;const {A,B,C,op,role}=this.problem;const vals={left_operand:A,right_operand:B,result:C};vals[role]=selected;const answer=vals.left_operand+' '+op+' '+vals.right_operand+' = '+vals.result;if(correct){this.solved++;this.locked=true;$('check').classList.add('hidden');$('next').classList.remove('hidden');$('solved').textContent=this.solved;this.message('Correct! '+answer+' 🎉','good');}else this.message('Not quite: '+answer+'. Try again.','bad');window.dispatchEvent(new CustomEvent('vert-trace-attempt',{detail:{method:this.mode,selected,correct,expected:this.problem.correct,attempt:this.attempts,role,responseType:'vertical_equation_value_selection',attemptBoundary:'explicit_check_action'}}));}
 }
 function launch(){try{window.vertTrace=new VertTrace();}catch(e){console.error('Vert Trace startup failed',e);$('previewWarning').textContent='The game could not start: '+e.message+'. The equation remains visible so this error can be diagnosed.';$('status').textContent='Startup failed; this viewer may block scripts.';}}
