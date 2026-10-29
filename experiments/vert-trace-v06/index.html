@@ -1,3 +1,4 @@
+
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#f5eee1"><title>Vert Trace · V06 — Live Ink</title><style>
 
 :root{
@@ -497,3 +498,101 @@ class VertTrace{
   if(this.locked||this.drawing||e.button>0)return;
   e.preventDefault();this.activeSlot=i;
   // A new stroke reopens the entire digit: prior guesses are never frozen.
+  this.invalidate();this.slots[i].push([]);
+  this.drawing={id:e.pointerId,i};
+  e.currentTarget.setPointerCapture?.(e.pointerId);this.addPoint(e,i);
+ }
+ pointerMove(e,i){
+  if(this.drawing?.id!==e.pointerId||this.drawing?.i!==i)return;
+  e.preventDefault();const events=e.getCoalescedEvents?.()||[];
+  for(const v of events.length?events:[e])this.addPoint(v,i);
+ }
+ pointerUp(e,i){
+  if(this.drawing?.id!==e.pointerId||this.drawing?.i!==i)return;
+  e.preventDefault();this.addPoint(e,i);this.drawing=null;
+  if(this.slots[i].at(-1)?.length<2)this.slots[i].pop();
+  this.paint(i);
+  // Immediate provisional reading, then a settled reading after the pause.
+  // Any new stroke invalidates both; no attempt is ever submitted here.
+  if($('readStyle')?.value==='live')this.recognize(true);
+  else this.live('Finishing ink…','reading');
+  this.scheduleFinalRead();
+ }
+ clear(){
+  if(this.locked)return;
+  this.slots[this.activeSlot]=[];this.invalidate();this.paint(this.activeSlot);
+  this.message('Cleared. Draw again.');this.live('Ready to write');
+ }
+ undo(){
+  if(this.locked)return;
+  this.slots[this.activeSlot].pop();this.invalidate();this.paint(this.activeSlot);
+  if(this.slots.some(s=>s.length)){if($('readStyle')?.value==='live')this.recognize(true);this.scheduleFinalRead();}
+  else this.live('Ready to write');
+  this.message('Last stroke removed.');
+ }
+ recognize(provisional=false){
+  if(this.mode!=='write'||this.locked||this.drawing)return;
+  if(!provisional){clearTimeout(this.timer);this.timer=null;this.pending=false;}
+  const exp=String(this.problem.correct);
+  const hints=exp.length===this.slots.length?exp.split('').map(Number):[];
+  try{
+   // Re-evaluate every stroke in every slot, not just the latest stroke.
+   this.predictions=this.slots.map((strokes,i)=>this.recognizer.read(strokes,hints[i]??null,$('prior').value));
+  }catch(e){console.error(e);this.message('Recognition failed: '+e.message,'warn');this.live('Read unavailable','bad');return;}
+  this.updateResult(provisional);
+ }
+ updateResult(provisional=false){
+  const result=this.predictions.map((r,i)=>Number.isInteger(this.manual[i])?this.manual[i]:(r.state==='accepted'?r.digit:'?')).join('');
+  const ready=/^\d{1,3}$/.test(result)&&!(result.length>1&&result[0]==='0');
+  this.readResult={ready,text:result,provisional};
+  $('check').disabled=this.locked||this.slots.every(s=>!s.length);
+  this.updateInkLabels();this.updateCandidates();this.report();
+  const prefix=provisional?'Reading (still writing)':'Detected';
+  if(ready){this.live((provisional?'~ ':'✓ ')+result,provisional?'reading':'good');this.message(`${prefix} ${result}. Add more ink if needed, or press Submit.`);}
+  else if(this.slots.every(s=>!s.length)){this.live('Ready to write');this.message('Write the missing number in the gold card.');}
+  else{this.live('Uncertain','bad');this.message('Add another stroke, redraw, or choose a suggested digit. Submit will recheck.','warn');}
+ }
+ updateInkLabels(){this.slots.forEach((_,i)=>{if($('inkRead'+i))$('inkRead'+i).textContent=Number.isInteger(this.manual[i])?'✓ '+this.manual[i]:(this.predictions[i]?.state==='accepted'?'~ '+this.predictions[i].digit:'');});}
+ updateCandidates(){const container=$('choices');container.replaceChildren();this.predictions.forEach((r,i)=>{const picks=r.rawRanked?.slice(0,3)||[];for(const candidate of picks){const b=document.createElement('button');b.type='button';b.textContent=String(candidate.d);b.title='Recognition suggestion '+candidate.d;b.className=(this.manual[i]===candidate.d || (!Number.isInteger(this.manual[i])&&r.digit===candidate.d))?'selected':'';b.disabled=this.locked;b.onclick=()=>{this.manual[i]=candidate.d;this.updateResult(false);};container.appendChild(b);}});}
+ report(){const box=$('diag');box.classList.toggle('hidden',!$('diagToggle').checked);if(!$('diagToggle').checked)return;box.textContent=this.predictions.length?this.predictions.map((r,i)=>'Digit '+(i+1)+' / '+r.state+' / '+r.ms.toFixed(1)+'ms\nRaw: '+(r.rawRanked||[]).slice(0,4).map(x=>x.d+':'+(x.p*100).toFixed(1)+'%').join('  ')+'\nGuarded hint: '+Boolean(r.boostApplied)).join('\n\n'):'No recognition has run yet.';}
+ check(){
+  if(this.locked)return;
+  if(this.mode==='write'){
+   if(this.drawing){this.message('Finish the stroke before submitting.','warn');return;}
+   // If a stroke arrived during the debounce, finish analysis synchronously now.
+   if(this.pending || !this.readResult){this.recognize(false);}
+  }
+  const selected=this.mode==='write'?(this.readResult?.ready?Number(this.readResult.text):null):this.reelValue;
+  if(selected===null){this.message('Could not read your number confidently. Add ink or tap a suggested digit.','warn');return;}
+  if(selected<this.problem.min||selected>this.problem.max){this.message('Use a value from '+this.problem.min+' to '+this.problem.max+'.','warn');return;}
+  this.attempts++;
+  const correct=selected===this.problem.correct;
+  const {A,B,C,op,role}=this.problem;
+  const vals={left_operand:A,right_operand:B,result:C};vals[role]=selected;
+  const answer=vals.left_operand+' '+op+' '+vals.right_operand+' = '+vals.result;
+  if(correct){
+   this.solved++;this.streak++;this.locked=true;$('check').classList.add('hidden');$('next').classList.remove('hidden');
+   $('solved').textContent=this.solved;if($('streak'))$('streak').textContent=this.streak;
+   const active=$('activeCard');if(active){active.classList.remove('error');void active.offsetWidth;active.classList.add('success');setTimeout(()=>active.classList.remove('success'),620);}
+   this.message('Correct! '+answer+'  Nice job.','good');this.live('✓ '+selected,'good');
+   this.autoNextTimer=setTimeout(()=>{if(this.locked)this.next();},1400);
+  }else{
+   this.streak=0;if($('streak'))$('streak').textContent=this.streak;
+   const active=$('activeCard');if(active){active.classList.remove('success');void active.offsetWidth;active.classList.add('error');setTimeout(()=>active.classList.remove('error'),420);}
+   this.message('Not quite: '+answer+'. Adjust the writing or reel and try again.','bad');
+   this.live('Submitted '+selected,'bad');
+  }
+  window.dispatchEvent(new CustomEvent('vert-trace-attempt',{detail:{
+   method:this.mode,selected,correct,expected:this.problem.correct,attempt:this.attempts,
+   role,responseType:'vertical_equation_value_selection',attemptBoundary:'explicit_submit_action',
+   rawDigits:this.predictions.map(p=>p.rawGuess??null),
+   weighted:this.predictions.map(p=>Boolean(p.boostApplied)),engine:$('engineSelect')?.value||'shape'
+  }}));
+ }
+
+}
+function launch(){try{window.vertTrace=new VertTrace();}catch(e){console.error('Vert Trace startup failed',e);$('previewWarning').textContent='The game could not start: '+e.message+'. The equation remains visible so this error can be diagnosed.';$('status').textContent='Startup failed; this viewer may block scripts.';}}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',launch,{once:true});else launch();
+})();
+</script>
+ </body></html>
